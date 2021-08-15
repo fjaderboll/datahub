@@ -1,6 +1,8 @@
 <?php
 use OpenApi\Annotations as OA;
 
+require_once(__DIR__."/include.php");
+
 /**
  * @OA\Info(
  *     version="1.0",
@@ -82,3 +84,5 @@ use OpenApi\Annotations as OA;
  * 	)
  * )
  */
+
+ echo $_SERVER['REDIRECT_URL'];
