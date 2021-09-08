@@ -1,3 +1,4 @@
+/dist/
 vendor/
 /rest/swagger/
 /rest/swagger.json
