@@ -1,26 +1,29 @@
 <?php
 
 $endpoints = array();
+$endpointAuth = array();
 
-function registerEndpoint($method, $url, $func) {
-    global $endpoints;
+function registerEndpoint($method, $auth, $url, $func) {
+    global $endpoints, $endpointAuth;
 
     if(!isset($endpoints[$method])) {
         $endpoints[$method] = array();
+        $endpointAuth[$method] = array();
     }
     $endpoints[$method][$url] = $func;
+    $endpointAuth[$method][$url] = $auth;
 }
 
-function verifyEndpointExists() {
+function verifyEndpoint() {
     findRequestHandler(false);
 }
 
-function executeEndpointFunction() {
+function executeEndpoint() {
     return findRequestHandler(true);
 }
 
 function findRequestHandler($execute) {
-    global $endpoints;
+    global $endpoints, $endpointAuth;
 
     $url = $_SERVER['REDIRECT_URL'];
     $url = substr($url, strpos($url, '/rest/') + 6);
@@ -49,6 +52,9 @@ function findRequestHandler($execute) {
                 }
 
                 if($match) {
+                    $auth = $endpointAuth[$method][$eUrl];
+                    verifyAuthorized($auth);
+
                     if($execute) {
                         return $eFunc(...$params);
                     } else {

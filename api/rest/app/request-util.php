@@ -1,4 +1,5 @@
 <?php
+
 	function requestFail($message, $status = 500) {
 		throw new RequestException($status, $message);
 	}
@@ -25,7 +26,8 @@
 	}
 
 	function getOptionalRequestValue($var, $defaultValue) {
-		$sources = array($_GET, $_POST);
+		//$sources = array($_GET, $_POST);
+		$sources = array($_REQUEST);
 
 		foreach($sources as $data) {
 			if(isset($data[$var]) && $data[$var] != null && $data[$var] != "") {

@@ -39,7 +39,7 @@
  *     )
  * )
  */
-registerEndpoint(Method::POST, "users", function() {
+registerEndpoint(Method::POST, Authorization::NONE, "users", function() {
     return "user created";
 });
 
@@ -62,11 +62,11 @@ registerEndpoint(Method::POST, "users", function() {
  *     )
  * )
  */
-registerEndpoint(Method::GET, "users", function() {
+registerEndpoint(Method::GET, Authorization::ADMIN, "users", function() {
     return "user list";
 });
 
-registerEndpoint(Method::GET, "users/{username}", function($username) {
+registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function($username) {
     return "user: $username";
 });
 

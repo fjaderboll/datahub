@@ -5,17 +5,11 @@ function handleRequest() {
 
     http_response_code(500); // assume something fails, then change accordingly
 	try {
-		verifyEndpointExists();
+		verifyEndpoint();
 
-		/*if($handler->isAuthRequired()) {
-			verifyAuthorized();
-		}*/
-
-		//openDatabaseConnection();
-
-		$response = executeEndpointFunction();
-
-        //commitDatabaseConnection();
+		openDatabaseConnection();
+		$response = executeEndpoint();
+        commitDatabaseConnection();
 
 		http_response_code(200);
 		echo $response;
@@ -28,6 +22,6 @@ function handleRequest() {
 		echo $e->getMessage();
 		sleep(2);
 	} finally {
-		//closeDatabaseConnection();
+		closeDatabaseConnection();
 	}
 }
