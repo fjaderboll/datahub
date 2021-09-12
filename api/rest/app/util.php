@@ -204,3 +204,15 @@
 			return ($intValue != 0);
 		}
 	}
+
+	function toDbBoolean($value) {
+		if($value == null) {
+			return 0;
+		} else if(is_int($value)) {
+			return ($value != 0 ? 1 : 0);
+		} else if(is_string($value)) {
+			return (strtolower($value) == "true" ? 1 : 0);
+		} else {
+			return ($value ? 1 : 0);
+		}
+	}

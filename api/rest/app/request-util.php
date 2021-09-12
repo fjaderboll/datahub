@@ -26,8 +26,18 @@
 	}
 
 	function getOptionalRequestValue($var, $defaultValue) {
-		//$sources = array($_GET, $_POST);
-		$sources = array($_REQUEST);
+		$method = $_SERVER['REQUEST_METHOD'];
+		$sources = array();
+		if($method == Method::GET) {
+			array_push($sources, $_GET);
+		} else if($method == Method::POST) {
+			array_push($sources, $_POST);
+		} else if($method == Method::PUT) {
+			parse_str(file_get_contents("php://input"), $putVars);
+			array_push($sources, $putVars);
+		} else {
+			array_push($sources, $_REQUEST);
+		}
 
 		foreach($sources as $data) {
 			if(isset($data[$var]) && $data[$var] != null && $data[$var] != "") {

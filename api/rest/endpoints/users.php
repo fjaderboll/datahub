@@ -3,40 +3,18 @@
 /**
  * @OA\Post(
  *     path="/users",
- *     summary="Creates a new user",
+ *     summary="Create new user",
  *     @OA\RequestBody(
  *         @OA\MediaType(
  *             mediaType="application/json",
  *             @OA\Schema(
- *                 @OA\Property(
- *                     property="id",
- *                     type="string"
- *                 ),
- *                 @OA\Property(
- *                     property="name",
- *                     type="string"
- *                 ),
- *                 @OA\Property(
- *                     property="phone",
- *                     oneOf={
- *                     	   @OA\Schema(type="string"),
- *                     	   @OA\Schema(type="integer"),
- *                     }
- *                 ),
- *                 example={"id": "a3fb6", "name": "Jessica Smith", "phone": 12345678}
+ *                 @OA\Property(property="username", type="string"),
+ *                 @OA\Property(property="password", type="string"),
+ *                 example={"username": "foo", "password": "bar"}
  *             )
  *         )
  *     ),
- *     @OA\Response(
- *         response=200,
- *         description="OK",
- *         @OA\JsonContent(
- *             oneOf={
- *                 @OA\Schema(ref="#/components/schemas/Result"),
- *                 @OA\Schema(type="boolean")
- *             }
- *         )
- *     )
+ *     @OA\Response(response=200, description="OK")
  * )
  */
 registerEndpoint(Method::POST, Authorization::NONE, "users", function() {
@@ -65,22 +43,11 @@ registerEndpoint(Method::POST, Authorization::NONE, "users", function() {
 });
 
 /**
- * @OA\Put(
- *     path="/users/{id}",
- *     summary="Updates a user",
- *     @OA\Parameter(
- *         description="Parameter with mutliple examples",
- *         in="path",
- *         name="id",
- *         required=true,
- *         @OA\Schema(type="string"),
- *         @OA\Examples(example="int", value="1", summary="An int value."),
- *         @OA\Examples(example="uuid", value="0006faf6-7a61-426c-9034-579f2cfcfa83", summary="An UUID value."),
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="OK"
- *     )
+ * @OA\Get(
+ *     path="/users",
+ *     summary="List all users. Requires admin privileges.",
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=403, description="Not authorized")
  * )
  */
 registerEndpoint(Method::GET, Authorization::ADMIN, "users", function() {
@@ -88,20 +55,65 @@ registerEndpoint(Method::GET, Authorization::ADMIN, "users", function() {
     $users = array();
     foreach($dbUsers as $dbUser) {
 		$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
-        $user['admin'] = ($user['admin'] > 0);
+        $user['admin'] = toBoolean($user['admin']);
 		array_push($users, $user);
 	}
     return $users;
 });
 
+/**
+ * @OA\Get(
+ *     path="/users/{username}",
+ *     summary="Retrieve user information",
+ *     @OA\Parameter(
+ *         description="Username of user. Requires admin privileges for other users than your own.",
+ *         in="path",
+ *         name="username",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=403, description="Not authorized"),
+ *     @OA\Response(response=404, description="User not found")
+ * )
+ */
 registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function($username) {
-    $dbUser = dbQuerySingle("SELECT * FROM users WHERE id = ?", getUserId());
-	$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
-    $user['admin'] = ($user['admin'] > 0);
-
-	return $user;
+    if($username == getUsername() || isAdmin()) {
+        $dbUser = dbQuerySingle("SELECT * FROM users WHERE username = ?", $username);
+        if($dbUser) {
+        	$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
+            $user['admin'] = toBoolean($user['admin']);
+        	return $user;
+        }
+        requestFail("User not found", 404);
+    }
+    requestAuthFail("Not authorized");
 });
 
+/**
+ * @OA\Post(
+ *     path="/users/{username}/login",
+ *     summary="Login",
+ *     @OA\Parameter(
+ *         description="Username of user",
+ *         in="path",
+ *         name="username",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\RequestBody(
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *             @OA\Schema(
+ *                 @OA\Property(property="password", type="string"),
+ *                 example={"password": "bar"}
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=403, description="Invalid credentials")
+ * )
+ */
 registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", function($username) {
     $password = getMandatoryRequestValue("password");
     $users = dbQuery("SELECT * FROM users WHERE username = ?", $username);
@@ -120,20 +132,53 @@ registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", fu
 
 /**
  * @OA\Put(
- *     path="/users/{id}",
- *     summary="Updates a user",
+ *     path="/users/{username}",
+ *     summary="Update user",
  *     @OA\Parameter(
- *         description="Parameter with mutliple examples",
+ *         description="Username of user. Requires admin privileges for other users than your own.",
  *         in="path",
- *         name="id",
+ *         name="username",
  *         required=true,
- *         @OA\Schema(type="string"),
- *         @OA\Examples(example="int", value="1", summary="An int value."),
- *         @OA\Examples(example="uuid", value="0006faf6-7a61-426c-9034-579f2cfcfa83", summary="An UUID value."),
+ *         @OA\Schema(type="string")
  *     ),
- *     @OA\Response(
- *         response=200,
- *         description="OK"
- *     )
+ *     @OA\RequestBody(
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *             @OA\Schema(
+ *                 @OA\Property(property="email", type="string"),
+ *                 example={"email": "foo@bar.com", "admin": true}
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=403, description="Not authorized"),
+ *     @OA\Response(response=404, description="User not found")
  * )
  */
+registerEndpoint(Method::PUT, Authorization::USER, "users/{username}", function($username) {
+    if($username == getUsername() || isAdmin()) {
+        $userCount = dbQuerySingle("SELECT count(*) FROM users WHERE username = ?", $username)[0];
+        if($userCount != 1) {
+            requestFail("User not found", 404);
+        }
+        
+        $changes = 0;
+
+        $email = getOptionalRequestValue("email", null);
+        if($email) {
+            $changes += dbUpdate("UPDATE users SET email = ? WHERE username = ?", $email, $username);
+        }
+
+        $admin = getOptionalRequestValue("admin", null);
+        if($admin) {
+            if(isAdmin()) {
+                $changes += dbUpdate("UPDATE users SET admin = ? WHERE username = ?", toDbBoolean($admin), $username);
+            } else {
+                requestAuthFail("Not authorized");
+            }
+        }
+
+        return ($changes > 0 ? "User updated" : "Nothing updated");
+    }
+    requestAuthFail("Not authorized");
+});
