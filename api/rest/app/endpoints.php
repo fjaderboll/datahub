@@ -66,3 +66,14 @@ function findRequestHandler($execute) {
     }
     requestFail("Unknown request: $method $url", 404);
 }
+
+function verifyAuthorized($auth) {
+    if($auth != Authorization::NONE) {
+        if(!isAuthenticated()) {
+            requestAuthFail("Invalid token");
+        }
+        if($auth == Authorization::ADMIN && !isAdmin()) {
+            requestAuthFail("Not authorized");
+        }
+    }
+}

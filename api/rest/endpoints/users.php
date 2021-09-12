@@ -3,7 +3,7 @@
 /**
  * @OA\Post(
  *     path="/users",
- *     summary="Adds a new user - with oneOf examples",
+ *     summary="Creates a new user",
  *     @OA\RequestBody(
  *         @OA\MediaType(
  *             mediaType="application/json",
@@ -40,7 +40,28 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::NONE, "users", function() {
-    return "user created";
+    $username = getMandatoryRequestValue("username");
+	$password = getMandatoryRequestValue("password");
+
+	$passwordSalt = createPasswordSalt();
+	$passwordHash = createPasswordHash($password, $passwordSalt);
+
+    $userCount = dbQuerySingle("SELECT count(*) FROM users")[0];
+
+	dbUpdate("
+			INSERT INTO users(
+				username,
+				password_hash,
+				password_salt,
+                admin
+			) VALUES (?, ?, ?, ?)
+			",
+			$username,
+			$passwordHash,
+			$passwordSalt,
+            ($userCount == 0 ? 1 : 0)
+	);
+	return "User $username created";
 });
 
 /**
@@ -63,11 +84,38 @@ registerEndpoint(Method::POST, Authorization::NONE, "users", function() {
  * )
  */
 registerEndpoint(Method::GET, Authorization::ADMIN, "users", function() {
-    return "user list";
+    $dbUsers = dbQuery("SELECT * FROM users");
+    $users = array();
+    foreach($dbUsers as $dbUser) {
+		$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
+        $user['admin'] = ($user['admin'] > 0);
+		array_push($users, $user);
+	}
+    return $users;
 });
 
 registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function($username) {
-    return "user: $username";
+    $dbUser = dbQuerySingle("SELECT * FROM users WHERE id = ?", getUserId());
+	$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
+    $user['admin'] = ($user['admin'] > 0);
+
+	return $user;
+});
+
+registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", function($username) {
+    $password = getMandatoryRequestValue("password");
+    $users = dbQuery("SELECT * FROM users WHERE username = ?", $username);
+    if(count($users) == 1) {
+        $user = $users[0];
+        $passwordHash = createPasswordHash($password, $user['password_salt']);
+        if($passwordHash == $user['password_hash']) {
+            $token = createToken($username, $user['id'], $user['admin'] > 0);
+            return jsonEncode(array(
+                "token" => $token
+            ));
+        }
+    }
+    requestAuthFail("Invalid credentials");
 });
 
 /**

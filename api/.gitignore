@@ -2,4 +2,4 @@
 vendor/
 /rest/swagger/
 /rest/swagger.json
-/rest/data/database.db
+/rest/data/main.db

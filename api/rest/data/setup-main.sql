@@ -3,6 +3,7 @@ CREATE TABLE users (
     "username" TEXT UNIQUE NOT NULL,
     "password_hash" TEXT NOT NULL,
 	"password_salt" TEXT NOT NULL,
+    "admin" INTEGER DEFAULT 0 NOT NULL,
 	"email" TEXT
 );
 
