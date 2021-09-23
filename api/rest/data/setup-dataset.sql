@@ -1,37 +1,56 @@
-CREATE TABLE users (
+
+CREATE TABLE dataset_token (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "username" TEXT UNIQUE NOT NULL,
-    "password_hash" TEXT NOT NULL,
-	"password_salt" TEXT NOT NULL,
-    "admin" INTEGER DEFAULT 0 NOT NULL,
-	"email" TEXT
+    "dataset_id" INTEGER NOT NULL,
+    "token" TEXT UNIQUE NOT NULL,
+    "enabled" INTEGER DEFAULT 1 NOT NULL,
+
+    FOREIGN KEY(dataset_id) REFERENCES dataset(id)
 );
 
-CREATE TABLE dataset (
+CREATE TABLE dataset_export (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "user_id" INTEGER NOT NULL,
+    "dataset_id" INTEGER NOT NULL,
+    "export_type_id" INTEGER NOT NULL,
+    "export_format_id" INTEGER NOT NULL,
+    "enabled" INTEGER DEFAULT 1 NOT NULL,
+    "url" TEXT,
+
+    FOREIGN KEY(dataset_id) REFERENCES dataset(id),
+    FOREIGN KEY(export_type_id) REFERENCES export_type(id),
+    FOREIGN KEY(export_format_id) REFERENCES export_format(id)
+);
+
+CREATE TABLE node (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+	"dataset_id" INTEGER NOT NULL,
+    "name" TEXT UNIQUE NOT NULL,
+    "location" TEXT,
+	"desc" TEXT,
+
+	FOREIGN KEY(dataset_id) REFERENCES dataset(id)
+);
+
+CREATE TABLE sensor (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+	"node_id" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
-    "desc" TEXT,
+	"desc" TEXT,
+	"value_unit" TEXT,
+	"discrete_values" INTEGER DEFAULT 0 NOT NULL,
 
-    UNIQUE(user_id, name),
-    FOREIGN KEY(user_id) REFERENCES users(id)
+    UNIQUE(node_id, name),
+	FOREIGN KEY(node_id) REFERENCES node(id)
 );
 
-CREATE TABLE export_type (
+CREATE TABLE reading (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT UNIQUE NOT NULL,
-    "desc" TEXT NOT NULL
-);
-INSERT INTO export_type('HTTP Push - POST', 'Makes a HTTP(S) request using method POST');
+    "sensor_id" INTEGER NOT NULL,
+    "value" REAL NOT NULL,
+    "timestamp" TIMESTAMP DEFAULT (datetime('now', 'localtime')) NOT NULL,
 
-CREATE TABLE export_format (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT UNIQUE NOT NULL,
-    "desc" TEXT NOT NULL
+    FOREIGN KEY(sensor_id) REFERENCES sensor(id)
 );
-INSERT INTO export_format('JSON', 'Standard JSON');
-INSERT INTO export_format('CSV keys/values', 'Keys on line 1, values on line 2');
-INSERT INTO export_format('CSV values', 'Values on line 1');
 
 ---------------- views ----------------
 /*
