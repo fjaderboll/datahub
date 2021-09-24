@@ -14,12 +14,15 @@
  *             )
  *         )
  *     ),
- *     @OA\Response(response=200, description="OK")
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=400, description="Invalid username")
  * )
  */
 registerEndpoint(Method::POST, Authorization::NONE, "users", function() {
-    $username = getMandatoryRequestValue("username");
+    $username = strtolower(getMandatoryRequestValue("username"));
 	$password = getMandatoryRequestValue("password");
+
+    verifyValidName($username);
 
 	$passwordSalt = createPasswordSalt();
 	$passwordHash = createPasswordHash($password, $passwordSalt);
@@ -78,6 +81,7 @@ registerEndpoint(Method::GET, Authorization::ADMIN, "users", function() {
  * )
  */
 registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function($username) {
+    $username = strtolower($username);
     if($username == getUsername() || isAdmin()) {
         $dbUser = dbQuerySingle("SELECT * FROM users WHERE username = ?", $username);
         if($dbUser) {
@@ -115,6 +119,7 @@ registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function(
  * )
  */
 registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", function($username) {
+    $username = strtolower($username);
     $password = getMandatoryRequestValue("password");
     $users = dbQuery("SELECT * FROM users WHERE username = ?", $username);
     if(count($users) == 1) {
@@ -156,12 +161,13 @@ registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", fu
  * )
  */
 registerEndpoint(Method::PUT, Authorization::USER, "users/{username}", function($username) {
+    $username = strtolower($username);
     if($username == getUsername() || isAdmin()) {
         $userCount = dbQuerySingle("SELECT count(*) FROM users WHERE username = ?", $username)[0];
         if($userCount != 1) {
             requestFail("User not found", 404);
         }
-        
+
         $changes = 0;
 
         $email = getOptionalRequestValue("email", null);

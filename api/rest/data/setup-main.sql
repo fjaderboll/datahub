@@ -22,16 +22,16 @@ CREATE TABLE export_type (
     "name" TEXT UNIQUE NOT NULL,
     "desc" TEXT NOT NULL
 );
-INSERT INTO export_type('HTTP Push - POST', 'Makes a HTTP(S) request using method POST');
+INSERT INTO export_type(name, desc) VALUES('HTTP Push - POST', 'Makes a HTTP(S) request using method POST');
 
 CREATE TABLE export_format (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "name" TEXT UNIQUE NOT NULL,
     "desc" TEXT NOT NULL
 );
-INSERT INTO export_format('JSON', 'Standard JSON');
-INSERT INTO export_format('CSV keys/values', 'Keys on line 1, values on line 2');
-INSERT INTO export_format('CSV values', 'Values on line 1');
+INSERT INTO export_format(name, desc) VALUES('JSON', 'Standard JSON');
+INSERT INTO export_format(name, desc) VALUES('CSV keys/values', 'Keys on line 1, values on line 2');
+INSERT INTO export_format(name, desc) VALUES('CSV values', 'Values on line 1');
 
 ---------------- views ----------------
 /*

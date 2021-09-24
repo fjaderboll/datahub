@@ -216,3 +216,10 @@
 			return ($value ? 1 : 0);
 		}
 	}
+
+	function verifyValidName($name) {
+		$regex = "[a-z][a-z0-9_\-]*[^_-]";
+		if(!preg_match("/^$regex$/", $name)) {
+			requestParameterFail("Name does not match $regex");
+		}
+	}
