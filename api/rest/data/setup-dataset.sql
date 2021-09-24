@@ -4,6 +4,8 @@ CREATE TABLE dataset_token (
     "dataset_id" INTEGER NOT NULL,
     "token" TEXT UNIQUE NOT NULL,
     "enabled" INTEGER DEFAULT 1 NOT NULL,
+    "read" INTEGER DEFAULT 1 NOT NULL,
+    "write" INTEGER DEFAULT 1 NOT NULL,
 
     FOREIGN KEY(dataset_id) REFERENCES dataset(id)
 );

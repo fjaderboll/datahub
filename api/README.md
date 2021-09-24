@@ -13,6 +13,5 @@ popd
 
 ## Generate swagger.json
 ```shell
-cd swagger-generator/vendor/zircote/swagger-php/bin/
-./openapi ../../../../../rest/ -o ../../../../../rest/swagger.json
+./build-swagger.sh
 ```
