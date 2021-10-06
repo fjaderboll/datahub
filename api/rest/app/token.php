@@ -9,6 +9,7 @@ $token_crypt_key = "eHke6jT6sZJhb1c0yI2JEgY6V9kQTYwZ";
 $token_crypt_iv = hex2bin('3B2A7D2864211336363339432B2D1827'); //openssl_random_pseudo_bytes($token_crypt_iv_length);
 
 $authUser = null;
+$datasetToken = null;
 
 function encrypt($data) {
 	global $token_crypt_method, $token_crypt_key, $token_crypt_iv;
@@ -20,7 +21,19 @@ function decrypt($data) {
 	return openssl_decrypt($data, $token_crypt_method, $token_crypt_key, 0, $token_crypt_iv);
 }
 
-function createToken($username, $id, $admin) {
+function getHeaderToken() {
+	$headers = apache_request_headers();
+	if(isset($headers['Authorization'])) {
+		$parts = explode(' ', $headers['Authorization']);
+		if(count($parts) == 2 && $parts[0] == "Bearer") {
+			$token = $parts[1];
+			return $token;
+		}
+	}
+	return null;
+}
+
+function createUserToken($username, $id, $admin) {
 	global $authUser;
 
 	$authUser = array(
@@ -35,15 +48,13 @@ function createToken($username, $id, $admin) {
 	return $encoded;
 }
 
-function readTokenProperty($property) {
+function readUserProperty($property) {
 	global $authUser;
 
 	if(!$authUser) {
-		$headers = apache_request_headers();
-		if(isset($headers['Authorization'])) {
-			$parts = explode(' ', $headers['Authorization']);
-			if(count($parts) == 2 && $parts[0] == "Bearer") {
-				$token = $parts[1];
+		$token = getHeaderToken();
+		if($token) {
+			try {
 				$decoded = base64_decode($token);
 				$json = decrypt($decoded);
 				$user = jsonDecode($json);
@@ -54,7 +65,7 @@ function readTokenProperty($property) {
 						$authUser = $user;
 					}
 				}
-			}
+			} catch(Exception $e) { }
 		}
 	}
 	if($authUser) {
@@ -63,18 +74,59 @@ function readTokenProperty($property) {
 	return null;
 }
 
-function isAuthenticated() {
-	return (readTokenProperty("id") != null);
+function createDatasetToken($datasetId) {
+	$e = encrypt($datasetId);
+	$token = uniqid(base64_encode($e).".");
+	return $token;
+}
+
+function readDatasetProperty($property) {
+	global $datasetToken;
+
+	if(!$datasetToken) {
+		$token = getHeaderToken();
+		if($token) {
+			try {
+				$parts = explode('.', $token);
+				if(count($parts) == 2) {
+					$e = $parts[0];
+					$datasetId = decrypt(base64_decode($e));
+
+					openDatabaseConnection($id);
+					$datasetTokens = dbQuery("SELECT * FROM dataset_token WHERE dataset_id = ? AND token = ? AND enabled = ?", $datasetId, $token, 1);
+				    if(count($datasetTokens) == 1) {
+						$datasetToken = $datasetTokens[0];
+					}
+				}
+			} catch(Exception $e) { }
+		}
+	}
+	if($datasetToken) {
+		return $datasetToken[$property];
+	}
+	return null;
+}
+
+function isUser() {
+	return (getUserId() != null);
+}
+
+function isDataset() {
+	return (getDatasetId() != null);
 }
 
 function isAdmin() {
-	return readTokenProperty("admin");
+	return readUserProperty("admin");
 }
 
 function getUsername() {
-	return readTokenProperty("username");
+	return readUserProperty("username");
 }
 
 function getUserId() {
-	return readTokenProperty("id");
+	return readUserProperty("id");
+}
+
+function getDatasetId() {
+	return readDatasetProperty("dataset_id");
 }

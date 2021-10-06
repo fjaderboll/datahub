@@ -3,3 +3,4 @@ vendor/
 /rest/swagger/
 /rest/swagger.json
 /rest/data/main.db
+/rest/data/datasets/

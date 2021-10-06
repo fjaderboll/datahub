@@ -1,30 +1,61 @@
 <?php
     $db = null;
 
-    function openDatabaseConnection() {
-        global $DB_FILE, $db;
+    function openDatabaseConnection($datasetId = null) {
+        global $DB_MAIN_FILE, $DB_SETUP_MAIN_SQL, $db;
 
-        if(!isset($db) || $db == null) {
-            $firstTime = !file_exists($DB_FILE);
+        if(!file_exists($DB_MAIN_FILE)) {
+            initBlankDatabase($DB_MAIN_FILE, $DB_SETUP_MAIN_SQL);
+        }
 
-            $db = new SQLite3($DB_FILE);
-            $db->enableExceptions(true);
-            $db->busyTimeout(3000);
-            $db->exec("PRAGMA foreign_keys = ON"); // enforce foreign keys
-            $db->exec("BEGIN");
-
-            if($firstTime) {
-                initNewDatabase();
+        if($db == null) {
+            if(isUser()) {
+                $db = openDatabaseFile($DB_MAIN_FILE);
+                if($datasetId != null || isDataset()) {
+                    $db->exec("ATTACH DATABASE ".getDatasetFilename($datasetId)." AS ds");
+                }
+            } else if($datasetId != null || isDataset()) {
+                $db = openDatabaseFile(getDatasetFilename($datasetId));
+            } else {
+                $db = openDatabaseFile($DB_MAIN_FILE);
             }
         }
     }
 
-    function initNewDatabase() {
-        global $DB_SETUP_SQL, $db;
+    function openDatabaseFile($file) {
+        $localDb = new SQLite3($file);
+        $localDb->enableExceptions(true);
+        $localDb->busyTimeout(3000);
+        $localDb->exec("PRAGMA foreign_keys = ON"); // enforce foreign keys
+        $localDb->exec("BEGIN");
 
-        $sql = file_get_contents($DB_SETUP_SQL);
-        $db->exec($sql);
-        commitDatabaseConnection();
+        return $localDb;
+    }
+
+    function initBlankDatabase($dbFile, $setupSqlFile) {
+        $sql = file_get_contents($setupSqlFile);
+
+        $newDb = openDatabaseFile($dbFile);
+        $newDb->exec($sql);
+        $newDb->exec("COMMIT");
+        $newDb->close();
+    }
+
+    function getDatasetFilename($datasetId = null) {
+        global $DB_DATASET_DIR;
+        if($datasetId == null) {
+            $datasetId = getDatasetId();
+        }
+        return $DB_DATASET_DIR.$datasetId.".db";
+    }
+
+    function initDatasetDatabase($datasetId) {
+        global $DB_SETUP_DATASET_SQL;
+        initBlankDatabase(getDatasetFilename($datasetId), $DB_SETUP_DATASET_SQL);
+    }
+
+    function removeDatasetDatabase($datasetId) {
+        unlink(getDatasetFilename($datasetId));
     }
 
     function rollbackDatabaseConnection() {

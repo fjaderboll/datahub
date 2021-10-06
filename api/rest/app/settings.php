@@ -3,8 +3,11 @@
 	ini_set('display_errors', 1);
 	ini_set('intl.default_locale', 'sv-SE');
 
-	$DB_FILE  = __DIR__."/../data/main.db";
-	$DB_SETUP_SQL  = __DIR__."/../data/setup-main.sql";
+	$DB_MAIN_FILE  = __DIR__."/../data/main.db";
+	$DB_DATASET_DIR  = __DIR__."/../data/datasets/";
+
+	$DB_SETUP_MAIN_SQL  = __DIR__."/../data/setup-main.sql";
+	$DB_SETUP_DATASET_SQL  = __DIR__."/../data/setup-dataset.sql";
 
 	$TIMESTAMP_FORMAT_DB = "Y-m-d H:i:s";
 	$TIMESTAMP_FORMAT_JSON = "c";

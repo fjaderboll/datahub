@@ -68,12 +68,18 @@ function findRequestHandler($execute) {
 }
 
 function verifyAuthorized($auth) {
+    $fail = false;
     if($auth != Authorization::NONE) {
-        if(!isAuthenticated()) {
-            requestAuthFail("Invalid token");
+        if($auth == Authorization::DATASET && !(isUser() || isDataset())) {
+            $fail = true;
+        } else if($auth == Authorization::USER && !isUser()) {
+            $fail = true;
+        } else if($auth == Authorization::ADMIN && !isAdmin()) {
+            $fail = true;
         }
-        if($auth == Authorization::ADMIN && !isAdmin()) {
-            requestAuthFail("Not authorized");
-        }
+    }
+
+    if($fail) {
+        requestAuthFail("Not authorized");
     }
 }

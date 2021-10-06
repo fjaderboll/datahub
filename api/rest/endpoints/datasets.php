@@ -25,6 +25,8 @@ registerEndpoint(Method::POST, Authorization::USER, "datasets", function() {
     verifyValidName($name);
 
     dbUpdate("INSERT INTO dataset(user_id, name, desc) VALUES (?, ?, ?)", getUserId(), $name, $desc);
+    $datasetId = dbGetLastId();
+    initDatasetDatabase($datasetId);
 
     return "Dataset $name created";
 });
@@ -63,7 +65,7 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets", function() {
  */
 registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}", function($name) {
     $name = strtolower($name);
-    $dbDataset = dbQuerySingle("SELECT * FROM dataset WHERE name = ?", $name);
+    $dbDataset = dbQuerySingle("SELECT * FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name);
     if($dbDataset) {
     	$dataset = convertFromDbObject($dbDataset, array('name', 'desc'));
         return $dataset;
@@ -97,7 +99,7 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}", function($
  */
 registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}", function($name) {
     $name = strtolower($name);
-    $datasetCount = dbQuerySingle("SELECT count(*) FROM dataset WHERE name = ?", $name)[0];
+    $datasetCount = dbQuerySingle("SELECT count(*) FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name)[0];
     if($datasetCount != 1) {
         requestFail("Dataset not found", 404);
     }
@@ -106,13 +108,36 @@ registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}", function($
 
     $desc = getOptionalRequestValue("desc", null);
     if($desc) {
-        $changes += dbUpdate("UPDATE dataset SET desc = ? WHERE name = ?", $desc, $name);
+        $changes += dbUpdate("UPDATE dataset SET desc = ? WHERE user_id = ? AND name = ?", $desc, getUserId(), $name);
     }
 
     $newName = getOptionalRequestValue("name", null);
     if($newName) {
-        $changes += dbUpdate("UPDATE dataset SET name = ? WHERE name = ?", $newName, $name);
+        $changes += dbUpdate("UPDATE dataset SET name = ? WHERE user_id = ? AND name = ?", $newName, getUserId(), $name);
     }
 
     return ($changes > 0 ? "Dataset updated" : "Nothing updated");
+});
+
+/**
+ * @OA\Delete(
+ *     path="/datasets/{name}",
+ *     summary="Delete dataset",
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=404, description="Dataset not found")
+ * )
+ */
+registerEndpoint(Method::DELETE, Authorization::USER, "datasets/{name}", function($name) {
+    $name = strtolower($name);
+
+    $datasets = dbQuery("SELECT * FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name);
+    if(count($datasets) == 0) {
+        requestFail("Dataset not found", 404);
+    } else {
+        $datasetId = $datasets[0]['id'];
+        dbUpdate("DELETE FROM dataset WHERE id = ?", $datasetId);
+        removeDatasetDatabase($datasetId);
+
+        return "Deleted dataset ".$datasets[0]['name'];
+    }
 });
