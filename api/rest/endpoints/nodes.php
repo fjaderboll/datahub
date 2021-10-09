@@ -26,7 +26,7 @@ registerEndpoint(Method::POST, Authorization::DATASET, "nodes", function() {
     verifyDatasetWrite();
     verifyValidName($name);
 
-    dbUpdate("INSERT INTO node(dataset_id, name, desc, location) VALUES (?, ?, ?)", getDatasetId(), $name, $desc, $location);
+    dbUpdate("INSERT INTO node(dataset_id, name, desc) VALUES (?, ?, ?)", getDatasetId(), $name, $desc);
 
     return "Node $name created";
 });

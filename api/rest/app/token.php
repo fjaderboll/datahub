@@ -74,9 +74,16 @@ function readUserProperty($property) {
 	return null;
 }
 
+function obfuscateDatasetId($id) {
+	$mask = 10101;
+	return $id ^ $mask; // will always be unique for every input number (and reversible using same method)
+}
+
 function createDatasetToken($datasetId) {
-	$e = encrypt($datasetId);
-	$token = uniqid(base64_encode($e).".");
+	$length = 32;
+	$di = obfuscateDatasetId($datasetId);
+	$random = bin2hex(random_bytes($length));
+	$token = substr($di.".".$random, 0, $length);
 	return $token;
 }
 
@@ -89,8 +96,8 @@ function readDatasetProperty($property) {
 			try {
 				$parts = explode('.', $token);
 				if(count($parts) == 2) {
-					$e = $parts[0];
-					$datasetId = decrypt(base64_decode($e));
+					$di = $parts[0];
+					$datasetId = obfuscateDatasetId($di);
 
 					openDatabaseConnection($datasetId);
 					$datasetTokens = dbQuery("SELECT * FROM dataset_token WHERE dataset_id = ? AND token = ? AND enabled = ?", $datasetId, $token, 1);
