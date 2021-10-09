@@ -38,8 +38,7 @@ CREATE TABLE sensor (
 	"node_id" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
 	"desc" TEXT,
-	"value_unit" TEXT,
-	"discrete_values" INTEGER DEFAULT 0 NOT NULL,
+	"unit" TEXT,
 
     UNIQUE(node_id, name),
 	FOREIGN KEY(node_id) REFERENCES node(id)

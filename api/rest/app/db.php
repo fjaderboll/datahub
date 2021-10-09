@@ -1,8 +1,9 @@
 <?php
     $db = null;
+    $dbAttached = false;
 
     function openDatabaseConnection($datasetId = null) {
-        global $DB_MAIN_FILE, $DB_SETUP_MAIN_SQL, $db;
+        global $DB_MAIN_FILE, $DB_SETUP_MAIN_SQL, $db, $dbAttached;
 
         if(!file_exists($DB_MAIN_FILE)) {
             initBlankDatabase($DB_MAIN_FILE, $DB_SETUP_MAIN_SQL);
@@ -11,14 +12,18 @@
         if($db == null) {
             if(isUser()) {
                 $db = openDatabaseFile($DB_MAIN_FILE);
-                if($datasetId != null || isDataset()) {
-                    $db->exec("ATTACH DATABASE ".getDatasetFilename($datasetId)." AS ds");
+                if($datasetId != null) {
+                    $db->exec("ATTACH DATABASE '".getDatasetFilename($datasetId)."' AS ds");
+                    $dbAttached = true;
                 }
             } else if($datasetId != null || isDataset()) {
                 $db = openDatabaseFile(getDatasetFilename($datasetId));
             } else {
                 $db = openDatabaseFile($DB_MAIN_FILE);
             }
+        } else if(!$dbAttached && isUser() && $datasetId != null) {
+            $db->exec("ATTACH DATABASE '".getDatasetFilename($datasetId)."' AS ds");
+            $dbAttached = true;
         }
     }
 

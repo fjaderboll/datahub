@@ -43,7 +43,8 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets", function() {
     $datasets = array();
     foreach($dbDatasets as $dbDataset) {
 		$dataset = convertFromDbObject($dbDataset, array('name', 'desc'));
-		array_push($datasets, $dataset);
+        $dataset['size'] = filesize(getDatasetFilename($dbDataset['id']));
+        array_push($datasets, $dataset);
 	}
     return $datasets;
 });
@@ -65,12 +66,31 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets", function() {
  */
 registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}", function($name) {
     $name = strtolower($name);
-    $dbDataset = dbQuerySingle("SELECT * FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name);
-    if($dbDataset) {
-    	$dataset = convertFromDbObject($dbDataset, array('name', 'desc'));
-        return $dataset;
+    $dbDatasets = dbQuery("SELECT * FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name);
+    if(count($dbDatasets) == 0) {
+        requestFail("Dataset not found", 404);
     }
-    requestFail("Dataset not found", 404);
+
+    $datasetId = $dbDatasets[0]['id'];
+    $dataset = convertFromDbObject($dbDatasets[0], array('name', 'desc'));
+    $dataset['size'] = filesize(getDatasetFilename($datasetId));
+
+    openDatabaseConnection($datasetId);
+
+    $dbNodes = dbQuery("SELECT * FROM node WHERE dataset_id = ?", $datasetId);
+    $dataset['nodes'] = array();
+    foreach($dbNodes as $dbNode) {
+        $node = convertFromDbObject($dbNode, array('name', 'location', 'desc'));
+
+        $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ?", $dbNode['id']);
+        $node['sensors'] = array();
+        foreach($dbSensors as $dbSensor) {
+            $sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit'));
+            array_push($node['sensors'], $sensor);
+        }
+        array_push($dataset['nodes'], $node);
+    }
+    return $dataset;
 });
 
 /**
@@ -123,6 +143,13 @@ registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}", function($
  * @OA\Delete(
  *     path="/datasets/{name}",
  *     summary="Delete dataset",
+ *     @OA\Parameter(
+ *         description="Name of dataset.",
+ *         in="path",
+ *         name="name",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
  *     @OA\Response(response=200, description="OK"),
  *     @OA\Response(response=404, description="Dataset not found")
  * )

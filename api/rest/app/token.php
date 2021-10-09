@@ -92,7 +92,7 @@ function readDatasetProperty($property) {
 					$e = $parts[0];
 					$datasetId = decrypt(base64_decode($e));
 
-					openDatabaseConnection($id);
+					openDatabaseConnection($datasetId);
 					$datasetTokens = dbQuery("SELECT * FROM dataset_token WHERE dataset_id = ? AND token = ? AND enabled = ?", $datasetId, $token, 1);
 				    if(count($datasetTokens) == 1) {
 						$datasetToken = $datasetTokens[0];

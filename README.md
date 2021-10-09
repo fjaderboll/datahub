@@ -3,13 +3,12 @@ This is very early in the development, so a lot left to happen before it will
 be usuable.
 
 **Initial TODOs**
-* create dataset database when creating dataset
+* dataset token and attachment of database
 * write endpoints for:
     * nodes
     * sensors
     * readings
     * dataset export
-* dataset token and attachment of database
 * extract crypt key to separate none versioned file
 * write Aurelia frontend (wanna help?)
 
@@ -30,7 +29,7 @@ using pure Javascript, so this can easily be put on any web hotel or be self
 hosted on your own webserver.
 
 ### Structure
-...create visual graph
+...TODO create visual graph
 
 ### Data storage and separation
 All user and setup data is stored in an SQLite3 database named `main.db`.
@@ -38,8 +37,9 @@ All user and setup data is stored in an SQLite3 database named `main.db`.
 The dataset's data is stored in individual databases, improving
 concurrent read and write since one dataset is not dependent on another dataset.
 
-A *user token* will give full access to all the user's datasets, while the
-*dataset tokens* only can read and write from the dataset they belong to.
+There are two kinds of tokens:
+* *user token* - will give full access to all the user's datasets, but do expire. Mainly for administration.
+* *dataset tokens* - can only read and/or write in the dataset they belong to, and do not expire, hence this is the token to be used in your IoT devices.
 
 ## Usage
 The IoT device can do a simple HTTP request like this:
@@ -49,8 +49,9 @@ POST /rest/nodes/my-house/sensors/temp-indoor/readings
 POST /rest/nodes/garage/sensors/temp/readings
 ```
 with this data:
-```json
-{ "value": 22.5 }
+```
+{ "value": 22.5 }    # Content-type: application/json
+value=22.5           # Content-type: application/x-www-form-urlencoded
 ```
 
 This data can later be retrieved with:
@@ -79,10 +80,13 @@ sudo apt install apache2 php php-sqlite3
 ```
 
 ## Setup
-...
+...TODO
 
 ## Future improvements
+* Retention policy (just keep X months of data)
+* Vacuum (every X:th request or something smarter)
 * Dockerfile
 * Add Swagger authorization annotation
+* Group endpoints in Swagger (now everyone is in "default")
 * Use proper JWT for user tokens
 * Autovaccum databases
