@@ -11,3 +11,5 @@
 
 	require_once(__DIR__."/../endpoints/users.php");
 	require_once(__DIR__."/../endpoints/datasets.php");
+	require_once(__DIR__."/../endpoints/datasets-tokens.php");
+	require_once(__DIR__."/../endpoints/nodes.php");

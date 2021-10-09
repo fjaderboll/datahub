@@ -6,8 +6,9 @@ CREATE TABLE dataset_token (
     "enabled" INTEGER DEFAULT 1 NOT NULL,
     "read" INTEGER DEFAULT 1 NOT NULL,
     "write" INTEGER DEFAULT 1 NOT NULL,
+    "desc" TEXT
 
-    FOREIGN KEY(dataset_id) REFERENCES dataset(id)
+    --FOREIGN KEY(dataset_id) REFERENCES dataset(id)
 );
 
 CREATE TABLE dataset_export (
@@ -18,19 +19,18 @@ CREATE TABLE dataset_export (
     "enabled" INTEGER DEFAULT 1 NOT NULL,
     "url" TEXT,
 
-    FOREIGN KEY(dataset_id) REFERENCES dataset(id),
-    FOREIGN KEY(export_type_id) REFERENCES export_type(id),
-    FOREIGN KEY(export_format_id) REFERENCES export_format(id)
+    --FOREIGN KEY(dataset_id) REFERENCES dataset(id),
+    --FOREIGN KEY(export_type_id) REFERENCES export_type(id),
+    --FOREIGN KEY(export_format_id) REFERENCES export_format(id)
 );
 
 CREATE TABLE node (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"dataset_id" INTEGER NOT NULL,
     "name" TEXT UNIQUE NOT NULL,
-    "location" TEXT,
-	"desc" TEXT,
+    "desc" TEXT,
 
-	FOREIGN KEY(dataset_id) REFERENCES dataset(id)
+	--FOREIGN KEY(dataset_id) REFERENCES dataset(id)
 );
 
 CREATE TABLE sensor (

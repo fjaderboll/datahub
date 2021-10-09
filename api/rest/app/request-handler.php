@@ -1,7 +1,7 @@
 <?php
 
 function handleRequest() {
-    global $endpoints;
+    global $FAIL_DELAY;
 
     http_response_code(500); // assume something fails, then change accordingly
     header('Content-type: text/plain; charset=utf-8');
@@ -22,11 +22,11 @@ function handleRequest() {
 	} catch(RequestException $e) {
 		http_response_code($e->getStatus());
         echo $e->getMessage();
-		sleep(2);
+		sleep($FAIL_DELAY);
 	} catch(Exception $e) {
 		http_response_code(500);
         echo $e->getMessage();
-		sleep(2);
+		sleep($FAIL_DELAY);
 	} finally {
 		closeDatabaseConnection();
 	}

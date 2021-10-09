@@ -3,6 +3,8 @@
 	ini_set('display_errors', 1);
 	ini_set('intl.default_locale', 'sv-SE');
 
+	$FAIL_DELAY = 1; // seconds
+
 	$DB_MAIN_FILE  = __DIR__."/../data/main.db";
 	$DB_DATASET_DIR  = __DIR__."/../data/datasets/";
 

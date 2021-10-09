@@ -130,3 +130,15 @@ function getUserId() {
 function getDatasetId() {
 	return readDatasetProperty("dataset_id");
 }
+
+function verifyDatasetRead() {
+	if(!readDatasetProperty("read")) {
+		requestAuthFail("Read not allowed");
+	}
+}
+
+function verifyDatasetWrite() {
+	if(!readDatasetProperty("write")) {
+		requestAuthFail("Write not allowed");
+	}
+}

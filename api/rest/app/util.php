@@ -198,7 +198,7 @@
 	}
 
 	function toBoolean($intValue) {
-		if($intValue == null) {
+		if($intValue === null) {
 			return null;
 		} else {
 			return ($intValue != 0);
@@ -206,7 +206,7 @@
 	}
 
 	function toDbBoolean($value) {
-		if($value == null) {
+		if($value === null) {
 			return 0;
 		} else if(is_int($value)) {
 			return ($value != 0 ? 1 : 0);

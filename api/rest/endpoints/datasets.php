@@ -34,7 +34,7 @@ registerEndpoint(Method::POST, Authorization::USER, "datasets", function() {
 /**
  * @OA\Get(
  *     path="/datasets",
- *     summary="List all datasets.",
+ *     summary="List all datasets",
  *     @OA\Response(response=200, description="OK")
  * )
  */
@@ -65,22 +65,16 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets", function() {
  * )
  */
 registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}", function($name) {
-    $name = strtolower($name);
-    $dbDatasets = dbQuery("SELECT * FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name);
-    if(count($dbDatasets) == 0) {
-        requestFail("Dataset not found", 404);
-    }
+    $dbDataset = findDataset($name);
+    $dataset = convertFromDbObject($dbDataset, array('name', 'desc'));
+    $dataset['size'] = filesize(getDatasetFilename($dbDataset['id']));
 
-    $datasetId = $dbDatasets[0]['id'];
-    $dataset = convertFromDbObject($dbDatasets[0], array('name', 'desc'));
-    $dataset['size'] = filesize(getDatasetFilename($datasetId));
+    openDatabaseConnection($dbDataset['id']);
 
-    openDatabaseConnection($datasetId);
-
-    $dbNodes = dbQuery("SELECT * FROM node WHERE dataset_id = ?", $datasetId);
+    $dbNodes = dbQuery("SELECT * FROM node WHERE dataset_id = ?", $dbDataset['id']);
     $dataset['nodes'] = array();
     foreach($dbNodes as $dbNode) {
-        $node = convertFromDbObject($dbNode, array('name', 'location', 'desc'));
+        $node = convertFromDbObject($dbNode, array('name', 'desc'));
 
         $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ?", $dbNode['id']);
         $node['sensors'] = array();
@@ -118,22 +112,18 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}", function($
  * )
  */
 registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}", function($name) {
-    $name = strtolower($name);
-    $datasetCount = dbQuerySingle("SELECT count(*) FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name)[0];
-    if($datasetCount != 1) {
-        requestFail("Dataset not found", 404);
-    }
+    $dbDataset = findDataset($name);
 
     $changes = 0;
 
     $desc = getOptionalRequestValue("desc", null);
     if($desc) {
-        $changes += dbUpdate("UPDATE dataset SET desc = ? WHERE user_id = ? AND name = ?", $desc, getUserId(), $name);
+        $changes += dbUpdate("UPDATE dataset SET desc = ? WHERE id = ?", $desc, $dbDataset['id']);
     }
 
     $newName = getOptionalRequestValue("name", null);
     if($newName) {
-        $changes += dbUpdate("UPDATE dataset SET name = ? WHERE user_id = ? AND name = ?", $newName, getUserId(), $name);
+        $changes += dbUpdate("UPDATE dataset SET name = ? WHERE id = ?", $newName, $dbDataset['id']);
     }
 
     return ($changes > 0 ? "Dataset updated" : "Nothing updated");
@@ -155,16 +145,20 @@ registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}", function($
  * )
  */
 registerEndpoint(Method::DELETE, Authorization::USER, "datasets/{name}", function($name) {
-    $name = strtolower($name);
+    $dbDataset = findDataset($name);
+    dbUpdate("DELETE FROM dataset WHERE id = ?", $dbDataset['id']);
+    removeDatasetDatabase($dbDataset['id']);
 
+    return "Deleted dataset ".$dbDataset['name'];
+});
+
+// ----------------------
+function findDataset($name) {
+    $name = strtolower($name);
     $datasets = dbQuery("SELECT * FROM dataset WHERE user_id = ? AND name = ?", getUserId(), $name);
     if(count($datasets) == 0) {
         requestFail("Dataset not found", 404);
     } else {
-        $datasetId = $datasets[0]['id'];
-        dbUpdate("DELETE FROM dataset WHERE id = ?", $datasetId);
-        removeDatasetDatabase($datasetId);
-
-        return "Deleted dataset ".$datasets[0]['name'];
+        return $datasets[0];
     }
-});
+}
