@@ -3,7 +3,6 @@ This is very early in the development, so a lot left to happen before it will
 be usuable.
 
 **Initial TODOs**
-* dataset token and attachment of database
 * write endpoints for:
     * nodes
     * sensors

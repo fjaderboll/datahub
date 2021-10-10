@@ -80,10 +80,10 @@ function obfuscateDatasetId($id) {
 }
 
 function createDatasetToken($datasetId) {
-	$length = 32;
+	$tokenLength = 32;
 	$di = obfuscateDatasetId($datasetId);
-	$random = bin2hex(random_bytes($length));
-	$token = substr($di.".".$random, 0, $length);
+	$random = bin2hex(random_bytes($tokenLength / 2));
+	$token = substr($di.".".$random, 0, $tokenLength);
 	return $token;
 }
 
