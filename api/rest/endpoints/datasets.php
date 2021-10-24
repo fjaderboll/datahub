@@ -126,7 +126,7 @@ registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}", function($
         $changes += dbUpdate("UPDATE dataset SET name = ? WHERE id = ?", $newName, $dbDataset['id']);
     }
 
-    return ($changes > 0 ? "Dataset updated" : "Nothing updated");
+    return ($changes > 0 ? "Dataset updated" : "Dataset not updated");
 });
 
 /**

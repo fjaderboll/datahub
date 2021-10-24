@@ -4,7 +4,6 @@ be usuable.
 
 **Initial TODOs**
 * write endpoints for:
-    * nodes
     * sensors
     * readings
     * dataset export
@@ -88,4 +87,3 @@ sudo apt install apache2 php php-sqlite3
 * Add Swagger authorization annotation
 * Group endpoints in Swagger (now everyone is in "default")
 * Use proper JWT for user tokens
-* Autovaccum databases
