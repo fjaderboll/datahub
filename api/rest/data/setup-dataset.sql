@@ -17,7 +17,9 @@ CREATE TABLE dataset_export (
     "export_type_id" INTEGER NOT NULL,
     "export_format_id" INTEGER NOT NULL,
     "enabled" INTEGER DEFAULT 1 NOT NULL,
-    "url" TEXT
+    "url" TEXT,
+    "username" TEXT,
+    "password" TEXT
 
     --FOREIGN KEY(dataset_id) REFERENCES dataset(id),
     --FOREIGN KEY(export_type_id) REFERENCES export_type(id),

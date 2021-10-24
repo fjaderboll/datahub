@@ -23,6 +23,7 @@ CREATE TABLE export_type (
     "desc" TEXT NOT NULL
 );
 INSERT INTO export_type(name, desc) VALUES('HTTP Push - POST', 'Makes a HTTP(S) request using method POST');
+INSERT INTO export_type(name, desc) VALUES('MQTT Publish', 'Publish a message to an existing MQTT Broker');
 
 CREATE TABLE export_format (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
