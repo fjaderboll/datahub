@@ -8,7 +8,7 @@ be usuable.
     * readings
     * dataset export
 * extract crypt key to separate none versioned file
-* write Aurelia frontend (wanna help?)
+* write frontend
 
 # Datahub
 

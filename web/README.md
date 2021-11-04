@@ -1,20 +1,17 @@
-# Datahub
-This project is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli).
-For more information, go to https://aurelia.io/docs/cli/webpack
 
-## Setup
+# Datahub - web
 
 ```shell
-sudo npm install -g aurelia-cli
-npm install
+npm install # install dependencies (first time only)
+npm start # start server at http://localhost:4200
+npm run build # production
 ```
 
-## Run dev app
-Run `au run`, then open `http://localhost:8080`
-
-## Build for production
-Run `au build --env prod`.
-
-## Unit tests
-Run `au test` (or `au jest`).
-To run in watch mode, `au test --watch` or `au jest --watch`.
+```shell
+ng generate component xyz  # create new component
+ng generate component pages/Login
+ng add @angular/material # add Angular Material
+ng add _____ # add dependency
+ng build # build for production
+ng test # run tests
+```
