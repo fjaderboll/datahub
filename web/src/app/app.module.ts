@@ -11,6 +11,8 @@ import { UserViewComponent } from './pages/user-view/user-view.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { FooterComponent } from './components/footer/footer.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+	MatIconModule,
+	BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

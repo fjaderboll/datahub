@@ -11,3 +11,7 @@
     color: white;
     font-weight: 600;
 }
+
+.toolbar * {
+	margin-left: 1em;
+}

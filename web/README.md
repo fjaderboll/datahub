@@ -21,3 +21,5 @@ ng build # build for production
 npm run build # production
 ng test # run tests
 ```
+
+Icon library: https://fonts.google.com/icons?selected=Material+Icons
