@@ -1,10 +1,15 @@
 
 .toolbar {
-    background-color: #1976d2;
+    background: linear-gradient(120deg, #001970 142px, #303f9f 142px);
     color: white;
 }
-.toolbar > * {
+.toolbar .title {
 	margin-left: 0.5em;
+	margin-right: 1em;
+}
+.toolbar .logo {
+	width: 32px;
+	height: 32px;
 }
 
 .spacer {
