@@ -11,8 +11,10 @@ import { UserViewComponent } from './pages/user-view/user-view.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -29,8 +31,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     BrowserModule,
     AppRoutingModule,
+	BrowserAnimationsModule,
 	MatIconModule,
-	BrowserAnimationsModule
+	MatToolbarModule,
+	MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

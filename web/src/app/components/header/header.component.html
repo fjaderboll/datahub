@@ -1,4 +1,37 @@
-<div class="toolbar" role="banner">
-	<mat-icon aria-hidden="false" aria-label="logo">multiple_stop</mat-icon>
+<mat-toolbar class="toolbar">
+	<mat-icon>multiple_stop</mat-icon>
 	<span>Datahub</span>
-</div>
+
+	<button mat-button routerLink="/datasets">
+    	<mat-icon>inventory</mat-icon>
+		<span>Datasets</span>
+  	</button>
+
+	<button mat-button routerLink="/users">
+    	<mat-icon>people</mat-icon>
+		<span>Users</span>
+  	</button>
+
+	<span class="spacer"></span>
+
+	<button mat-button routerLink="/login">
+    	<mat-icon>lock</mat-icon>
+		<span>Sign in</span>
+  	</button>
+
+	<button mat-button routerLink="/register">
+    	<mat-icon>person_add</mat-icon>
+		<span>Register</span>
+  	</button>
+
+	<button mat-button routerLink="/users/username">
+    	<mat-icon>person</mat-icon>
+		<span>Profile</span>
+  	</button>
+
+	<button mat-button>
+    	<mat-icon>lock_open</mat-icon>
+		<span>Sign out</span>
+  	</button>
+
+</mat-toolbar>

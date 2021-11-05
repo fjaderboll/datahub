@@ -22,4 +22,5 @@ npm run build # production
 ng test # run tests
 ```
 
+Material Components: https://material.angular.io/components/
 Icon library: https://fonts.google.com/icons?selected=Material+Icons
