@@ -1,11 +1,15 @@
 
 .toolbar {
-    background: linear-gradient(120deg, #001970 142px, #303f9f 142px);
+    background: linear-gradient(120deg, #001970 165px, #303f9f 165px);
     color: white;
 }
 .toolbar .title {
 	margin-left: 0.5em;
 	margin-right: 1em;
+
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 32px;
 }
 .toolbar .logo {
 	width: 32px;

@@ -1,35 +1,37 @@
 <mat-toolbar class="toolbar">
-	<img class="logo" src="assets/img/logo/logo-white.min.svg" />
-	<span class="title">Datahub</span>
+	<a mat-button routerLink="/">
+		<img class="logo" src="assets/img/logo/logo-white.min.svg" />
+		<span class="title">Datahub</span>
+	</a>
 
-	<button mat-button routerLink="/datasets">
+	<a mat-button routerLink="/datasets" *ngIf="auth.isLoggedIn()">
     	<mat-icon>inventory</mat-icon>
 		<span>Datasets</span>
-  	</button>
+	</a>
 
-	<button mat-button routerLink="/users">
+	<a mat-button routerLink="/users" *ngIf="auth.isAdmin()">
     	<mat-icon>people</mat-icon>
 		<span>Users</span>
-  	</button>
+	</a>
 
 	<span class="spacer"></span>
 
-	<button mat-button routerLink="/register">
+	<a mat-button routerLink="/register" *ngIf="showRegisterLink()">
     	<mat-icon>person_add</mat-icon>
 		<span>Register</span>
-  	</button>
+	</a>
 
-	<button mat-button routerLink="/login">
+	<a mat-button routerLink="/login" *ngIf="showLoginLink()">
     	<mat-icon>lock</mat-icon>
 		<span>Sign in</span>
-  	</button>
+	</a>
 
-	<button mat-button routerLink="/users/username">
+	<a mat-button routerLink="/users/{{ auth.getUsername() }}" *ngIf="auth.isLoggedIn()">
     	<mat-icon>person</mat-icon>
-		<span>Profile</span>
-  	</button>
+		<span>{{ auth.getUsername() }}</span>
+	</a>
 
-	<button mat-button>
+	<button mat-button *ngIf="auth.isLoggedIn()" (click)="logout()">
     	<mat-icon>lock_open</mat-icon>
 		<span>Sign out</span>
   	</button>

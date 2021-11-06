@@ -15,6 +15,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,8 @@ import { MatButtonModule } from '@angular/material/button';
     UserViewComponent,
     UserListComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +38,9 @@ import { MatButtonModule } from '@angular/material/button';
 	BrowserAnimationsModule,
 	MatIconModule,
 	MatToolbarModule,
-	MatButtonModule
+	MatButtonModule,
+	MatFormFieldModule,
+	MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

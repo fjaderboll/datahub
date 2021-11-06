@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DatasetListComponent } from './pages/dataset-list/dataset-list.component';
 import { DatasetViewComponent } from './pages/dataset-view/dataset-view.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -13,7 +14,9 @@ const routes: Routes = [
   { path: 'datasets', component: DatasetListComponent },
   { path: 'datasets/:name', component: DatasetViewComponent },
   { path: 'users', component: UserListComponent },
-  { path: 'users/:username', component: UserViewComponent }
+  { path: 'users/:username', component: UserViewComponent },
+  { path: '', component: DashboardComponent },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

@@ -1,1 +1,23 @@
-<p>login works!</p>
+<div class="row form">
+	<div class="col">
+		<mat-form-field appearance="outline">
+			<mat-label>Username</mat-label>
+			<input type="text" matInput placeholder="Username">
+		</mat-form-field>
+	</div>
+
+	<div class="col">
+		<mat-form-field appearance="outline">
+			<mat-label>Password</mat-label>
+			<input [type]="showPassword ? 'text' : 'password'" matInput placeholder="Password">
+			<mat-icon matSuffix (click)="showPassword = !showPassword">{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+		</mat-form-field>
+	</div>
+
+	<div class="col">
+		<button mat-raised-button color="primary" (click)="login()">
+			<mat-icon>lock</mat-icon>
+			<span>Sign in</span>
+		</button>
+	</div>
+</div>

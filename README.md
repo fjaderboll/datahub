@@ -22,8 +22,8 @@ IoT database.
 
 ### Goal
 The goal is a fast lightweight system that uses standard REST for storing
-and retrieving data. Backend is written in PHP and frontend using Aurelia
-using pure Javascript, so this can easily be put on any web hotel or be self
+and retrieving data. Backend is written in PHP and frontend using Angular,
+so this can easily be put on any web hotel or be self
 hosted on your own webserver.
 
 ### Structure
@@ -81,7 +81,11 @@ sudo apt install apache2 php php-sqlite3
 ...TODO
 
 ## Future improvements
-* Retention policy (just keep X months of data)
+* Retention policy:
+    * Per dataset
+    * Maximum 1.000.000 entries (configurable)
+    * Entry = nodes, sensors, readings, tokens
+    * Every X:th (on average) POST request, delete readings to get below maximum
 * Vacuum (every X:th request or something smarter)
 * Dockerfile
 * Add Swagger authorization annotation

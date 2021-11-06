@@ -1,15 +1,33 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+	selector: 'app-header',
+	templateUrl: './header.component.html',
+	styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+	constructor(
+		private router: Router,
+		public auth: AuthenticationService
+	) { }
 
-  ngOnInit(): void {
-  }
+  	ngOnInit(): void {
+  	}
+
+	public showRegisterLink() {
+		return !this.auth.isLoggedIn() && this.router.url != '/register';
+	}
+
+	public showLoginLink() {
+		return !this.auth.isLoggedIn() && this.router.url != '/login';
+	}
+
+	public logout() {
+		this.auth.logout();
+		this.router.navigate(['/login']);
+	}
 
 }
