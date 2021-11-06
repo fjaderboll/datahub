@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { ServerService } from './server.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -6,14 +8,31 @@ import { Injectable } from '@angular/core';
 export class AuthenticationService {
 	private loggedIn: boolean = false;
 
-	constructor() { }
+	constructor(
+		public server: ServerService
+	) { }
 
 	public isLoggedIn() {
 		return this.loggedIn;
 	}
 
 	public login(username: string, password: string) {
-		this.loggedIn = true;
+		return new Observable(
+			observer => {
+				this.server.login(username, password).subscribe({
+					next: (v) => {
+						this.loggedIn = true;
+						observer.next(v);
+					},
+					error: (e) => {
+						observer.error(e);
+					},
+					complete: () => {
+						observer.complete();
+					}
+				});
+			}
+		);
 	}
 
 	public logout() {

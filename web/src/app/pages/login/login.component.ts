@@ -19,8 +19,14 @@ export class LoginComponent implements OnInit {
 	}
 
 	public login() {
-		this.auth.login("", "");
-		this.router.navigate(['/']);
+		this.auth.login("", "").subscribe({
+			next: (v) => {
+				this.router.navigate(['/']);
+			},
+			error: (e) => {
+				console.log(e);
+			}
+		});
 	}
 
 }
