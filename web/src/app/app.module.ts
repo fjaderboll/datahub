@@ -19,6 +19,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ToastrModule } from 'ngx-toastr';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -38,11 +40,16 @@ import { HttpClientModule } from '@angular/common/http';
 	HttpClientModule,
     AppRoutingModule,
 	BrowserAnimationsModule,
+	ToastrModule.forRoot({
+		positionClass: 'toast-bottom-right',
+		preventDuplicates: true
+	}),
 	MatIconModule,
 	MatToolbarModule,
 	MatButtonModule,
 	MatFormFieldModule,
-	MatInputModule
+	MatInputModule,
+	FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

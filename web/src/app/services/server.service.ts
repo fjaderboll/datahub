@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { UtilsService } from './utils.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -7,8 +8,13 @@ import { Injectable } from '@angular/core';
 export class ServerService {
 
 	constructor(
-		private http: HttpClient
+		private http: HttpClient,
+		private utils: UtilsService
 	) { }
+
+	public showHttpError(error: any) {
+		this.utils.toastError(error.message);
+	}
 
 	public login(username: string, password: string) {
 		let baseUrl = "datahub2/api/rest";
