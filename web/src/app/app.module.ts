@@ -21,6 +21,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -49,7 +52,10 @@ import { FormsModule } from '@angular/forms';
 	MatButtonModule,
 	MatFormFieldModule,
 	MatInputModule,
-	FormsModule
+	FormsModule,
+	MatTableModule,
+	MatPaginatorModule,
+	MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

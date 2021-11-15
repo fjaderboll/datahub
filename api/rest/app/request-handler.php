@@ -8,7 +8,7 @@ function handleRequest() {
 	$method = $_SERVER['REQUEST_METHOD'];
 	header('Access-Control-Allow-Origin: http://localhost:4200');
 	if($method == "OPTIONS") {
-		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
 		http_response_code(204);
 		return;
 	}

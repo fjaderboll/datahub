@@ -47,9 +47,11 @@ export class AuthenticationService {
 			localStorage.setItem('token', this.token);
 			localStorage.setItem('username', this.username);
 			localStorage.setItem('admin', this.admin + "");
+			this.server.setToken(this.token);
 		} else {
 			this.token = null;
 			localStorage.removeItem('token');
+			this.server.setToken("");
 		}
 	}
 

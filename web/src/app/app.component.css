@@ -1,7 +1,7 @@
 
 .content {
     display: flex;
-    margin: 82px auto 32px;
+    margin: 2em auto 2em;
     padding: 0 16px;
     max-width: 960px;
     flex-direction: column;
