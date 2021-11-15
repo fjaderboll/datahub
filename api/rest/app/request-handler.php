@@ -3,8 +3,17 @@
 function handleRequest() {
     global $FAIL_DELAY;
 
+	header('Content-type: text/plain; charset=utf-8');
+
+	$method = $_SERVER['REQUEST_METHOD'];
+	header('Access-Control-Allow-Origin: http://localhost:4200');
+	if($method == "OPTIONS") {
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+		http_response_code(204);
+		return;
+	}
+
     http_response_code(500); // assume something fails, then change accordingly
-    header('Content-type: text/plain; charset=utf-8');
 	try {
 		verifyEndpoint();
 

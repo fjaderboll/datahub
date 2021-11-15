@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
 	}
 
 	public login() {
-		this.auth.login("", "").subscribe({
+		this.auth.login(this.username, this.password).subscribe({
 			next: (v) => {
 				this.router.navigate(['/']);
 				this.utils.toastSuccess("Successfully signed in");

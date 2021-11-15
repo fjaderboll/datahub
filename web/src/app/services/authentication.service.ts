@@ -6,15 +6,11 @@ import { ServerService } from './server.service';
 	providedIn: 'root'
 })
 export class AuthenticationService {
-	private loggedIn: boolean = false;
+	private loggedIn: boolean = true;
 
 	constructor(
 		public server: ServerService
 	) { }
-
-	public isLoggedIn() {
-		return this.loggedIn;
-	}
 
 	public login(username: string, password: string) {
 		return new Observable(
@@ -35,8 +31,16 @@ export class AuthenticationService {
 		);
 	}
 
+	public isLoggedIn() {
+		let token = localStorage.getItem('token');
+		if(token) {
+			return true;
+		}
+		return false;
+	}
+
 	public logout() {
-		this.loggedIn = false;
+		localStorage.removeItem('token');
 	}
 
 	public isAdmin() {
