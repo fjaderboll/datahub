@@ -26,23 +26,22 @@
 	}
 
 	function getOptionalRequestValue($var, $defaultValue) {
-		$method = $_SERVER['REQUEST_METHOD'];
-		$sources = array();
-		if($method == Method::GET) {
-			array_push($sources, $_GET);
-		} else if($method == Method::POST) {
-			array_push($sources, $_POST);
-		} else if($method == Method::PUT) {
-			parse_str(file_get_contents("php://input"), $putVars);
-			array_push($sources, $putVars);
-		} else {
-			array_push($sources, $_REQUEST);
-		}
-
-		foreach($sources as $data) {
-			if(isset($data[$var]) && $data[$var] != null && $data[$var] != "") {
-				return $data[$var];
+		if(isset($_SERVER["CONTENT_TYPE"]) && $_SERVER["CONTENT_TYPE"] == "application/json") {
+			$data = jsonDecode(file_get_contents('php://input'));
+		} else { // application/x-www-form-urlencoded
+			$method = $_SERVER['REQUEST_METHOD'];
+			if($method == Method::GET) {
+				$data = $_GET;
+			} else if($method == Method::POST) {
+				$data = $_POST;
+			} else if($method == Method::PUT) {
+				parse_str(file_get_contents("php://input"), $data);
+			} else {
+				$data = $_REQUEST;
 			}
+		}
+		if(isset($data[$var]) && $data[$var] != null && (!is_string($data[$var]) || $data[$var] != "")) {
+			return $data[$var];
 		}
 		return $defaultValue;
 	}

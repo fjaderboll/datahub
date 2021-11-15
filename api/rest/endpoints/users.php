@@ -128,7 +128,9 @@ registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", fu
         if($passwordHash == $user['password_hash']) {
             $token = createUserToken($username, $user['id'], $user['admin'] > 0);
             return jsonEncode(array(
-                "token" => $token
+                "username" => $username,
+                "admin" => $user['admin'] > 0,
+                "token" => $token            
             ));
         }
     }
