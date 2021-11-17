@@ -15,8 +15,8 @@ export class UtilsService {
 	}
 
 	public toastError(message: string) {
-		this.toastr.error(message);
 		console.log(message);
+		this.toastr.error(message);
 	}
 
 	public printFilesize = function(bytes: number, decimals?: number) {

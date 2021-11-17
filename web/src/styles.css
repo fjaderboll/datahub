@@ -7,6 +7,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 	padding: 1em;
 }
 
+.mat-button-base .mat-icon {
+	margin-right: 0.25em;
+}
+
 .align-right {
 	text-align: right;
 }

@@ -1,12 +1,12 @@
-<div class="row form">
-	<div class="col">
+<div class="form">
+	<div>
 		<mat-form-field appearance="outline">
 			<mat-label>Username</mat-label>
 			<input type="text" matInput required [(ngModel)]="username" placeholder="Username">
 		</mat-form-field>
 	</div>
 
-	<div class="col">
+	<div>
 		<mat-form-field appearance="outline">
 			<mat-label>Password</mat-label>
 			<input [type]="showPassword ? 'text' : 'password'" matInput required [(ngModel)]="password" placeholder="Password">
@@ -14,7 +14,7 @@
 		</mat-form-field>
 	</div>
 
-	<div class="col">
+	<div>
 		<button mat-raised-button color="primary" (click)="login()" [disabled]="username.length * password.length == 0">
 			<mat-icon>lock</mat-icon>
 			<span>Sign in</span>

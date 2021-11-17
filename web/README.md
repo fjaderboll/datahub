@@ -14,8 +14,9 @@ npm start      # start server at http://localhost:4200
 
 ## Development
 ```shell
-ng generate component pages/DatasetView     # create new page
-ng generate service services/Authentication # create new service
+ng generate component pages/DatasetView        # create new page
+ng generate component dialogs/CreateUserDialog # create new dialog (and replace all 'component' with 'dialog')
+ng generate service services/Authentication    # create new service
 ng add @angular/material # add Angular Material
 ng add _____ # add dependency
 ng build # build for production

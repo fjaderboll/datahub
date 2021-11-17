@@ -9,7 +9,8 @@ import { AuthenticationService } from './authentication.service';
 })
 export class ServerService {
 	private apiUrl: string;
-	private httpOptions: any;
+	private httpOptionsJson: any;
+	private httpOptionsText: any;
 
 	constructor(
 		private http: HttpClient,
@@ -19,15 +20,22 @@ export class ServerService {
 	}
 
 	public setToken(token: string) {
-		this.httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Authorization': ' Bearer ' + token
-			})
+		let headers = new HttpHeaders({
+			'Content-Type': 'application/json',
+			'Authorization': ' Bearer ' + token
+		});
+		this.httpOptionsJson = {
+			headers,
+			responseType: 'json'
+		};
+		this.httpOptionsText = {
+			headers,
+			responseType: 'text'
 		};
 	}
 
 	public showHttpError(error: any) {
+		console.log(error);
 		this.utils.toastError(error.message);
 	}
 
@@ -38,7 +46,12 @@ export class ServerService {
 
 	public getUsers() {
 		let url = this.apiUrl + "users/";
-		return this.http.get(url, this.httpOptions);
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public createUser(username: string, password: string) {
+		let url = this.apiUrl + "users/";
+		return this.http.post(url, { username, password }, this.httpOptionsText);
 	}
 
 }

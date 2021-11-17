@@ -24,6 +24,8 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { MatSortModule } from '@angular/material/sort';
     UserListComponent,
     HeaderComponent,
     FooterComponent,
-    DashboardComponent
+    DashboardComponent,
+    CreateUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +58,8 @@ import { MatSortModule } from '@angular/material/sort';
 	FormsModule,
 	MatTableModule,
 	MatPaginatorModule,
-	MatSortModule
+	MatSortModule,
+	MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

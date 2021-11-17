@@ -1,7 +1,9 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { CreateUserDialogComponent } from 'src/app/dialogs/create-user-dialog/create-user-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -21,10 +23,15 @@ export class UserListComponent implements OnInit, AfterViewInit {
   	constructor(
 		public auth: AuthenticationService,
 		private server: ServerService,
-		private utils: UtilsService
+		private utils: UtilsService,
+		private dialog: MatDialog
 	) { }
 
   	ngOnInit(): void {
+		this.loadUsers();
+  	}
+
+	public loadUsers() {
 		this.server.getUsers().subscribe({
 			next: (v: any) => {
 				v.forEach((user: any) => {
@@ -36,7 +43,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
 				this.server.showHttpError(e);
 			}
 		});
-  	}
+	}
 
 	ngAfterViewInit() {
 		this.dataSource.paginator = this.paginator;
@@ -44,7 +51,12 @@ export class UserListComponent implements OnInit, AfterViewInit {
 	}
 
 	public createUser() {
-		console.log('TODO create');
+		const dialog = this.dialog.open(CreateUserDialogComponent);
+		dialog.afterClosed().subscribe(userCreated => {
+			if(userCreated) {
+				this.loadUsers();
+			}
+		});
 	}
 
 }
