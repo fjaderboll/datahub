@@ -59,6 +59,14 @@ registerEndpoint(Method::GET, Authorization::ADMIN, "users", function() {
     foreach($dbUsers as $dbUser) {
 		$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
         $user['admin'] = toBoolean($user['admin']);
+
+        $dbDatasets = dbQuery("SELECT id FROM dataset WHERE user_id = ?", $dbUser['id']);
+        $user['datasetsCount'] = count($dbDatasets);
+        $user['datasetsSize'] = 0;
+        foreach($dbDatasets as $dbDataset) {
+            $user['datasetsSize'] += filesize(getDatasetFilename($dbDataset['id']));
+        }
+
 		array_push($users, $user);
 	}
     return $users;
@@ -87,6 +95,14 @@ registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function(
         if($dbUser) {
         	$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
             $user['admin'] = toBoolean($user['admin']);
+
+            $dbDatasets = dbQuery("SELECT * FROM dataset WHERE user_id = ?", $dbUser['id']);
+            $user['datasets'] = array();
+            foreach($dbDatasets as $dbDataset) {
+                $dataset = convertFromDbObject($dbDataset, array('name', 'desc'));
+                $dataset['size'] = filesize(getDatasetFilename($dbDataset['id']));
+                array_push($user['datasets'], $dataset);
+            }
         	return $user;
         }
         requestFail("User not found", 404);
