@@ -16,7 +16,7 @@
 
 	<div>
 		<mat-form-field appearance="outline">
-			<mat-label>Password</mat-label>
+			<mat-label>Re-type password</mat-label>
 			<input [type]="showPassword ? 'text' : 'password'" matInput required [(ngModel)]="password2" placeholder="Re-type password">
 			<mat-icon matSuffix (click)="showPassword = !showPassword">{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
 		</mat-form-field>

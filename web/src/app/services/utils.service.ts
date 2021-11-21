@@ -14,6 +14,10 @@ export class UtilsService {
 		this.toastr.success(message);
 	}
 
+	public toastWarn(message: string) {
+		this.toastr.warning(message);
+	}
+
 	public toastError(message: string) {
 		console.log(message);
 		this.toastr.error(message);

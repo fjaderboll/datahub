@@ -40,7 +40,7 @@ function createUserToken($username, $id, $admin) {
 		"username" => $username,
 		"id" => $id,
 		"admin" => $admin,
-		"expire" => date('c', strtotime("+12 hours"))
+		"expire" => date('c', strtotime("+8 hours"))
 	);
 	$json = jsonEncode($authUser);
 	$encrypted = encrypt($json);
@@ -128,6 +128,10 @@ function isAdmin() {
 
 function getUsername() {
 	return readUserProperty("username");
+}
+
+function getUserExpire() {
+	return readUserProperty("expire");
 }
 
 function getUserId() {

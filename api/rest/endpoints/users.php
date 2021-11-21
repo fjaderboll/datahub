@@ -146,7 +146,8 @@ registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", fu
             return jsonEncode(array(
                 "username" => $username,
                 "admin" => $user['admin'] > 0,
-                "token" => $token            
+                "token" => $token,
+                "expire" => getUserExpire()
             ));
         }
     }
