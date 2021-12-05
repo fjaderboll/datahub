@@ -19,13 +19,9 @@ export class HeaderComponent implements OnInit {
   	ngOnInit(): void {
   	}
 
-	public showRegisterLink() {
-		return !this.auth.isLoggedIn() && this.router.url != '/register';
-	}
-
-	public showLoginLink() {
+	/*public showLoginLink() {
 		return !this.auth.isLoggedIn() && this.router.url != '/login';
-	}
+	}*/
 
 	public logout() {
 		this.auth.logout();

@@ -31,7 +31,7 @@ export class CreateUserDialogComponent implements OnInit {
 		this.server.createUser(this.username, this.password1).subscribe({
 			next: (v: any) => {
 				this.utils.toastSuccess(v);
-				this.dialogRef.close(true);
+				this.dialogRef.close(this.username);
 			},
 			error: (e) => {
 				this.server.showHttpError(e);

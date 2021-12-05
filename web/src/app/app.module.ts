@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './pages/login/login.component';
-import { RegisterComponent } from './pages/register/register.component';
 import { DatasetViewComponent } from './pages/dataset-view/dataset-view.component';
 import { DatasetListComponent } from './pages/dataset-list/dataset-list.component';
 import { UserViewComponent } from './pages/user-view/user-view.component';
@@ -31,7 +30,6 @@ import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-u
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent,
     DatasetViewComponent,
     DatasetListComponent,
     UserViewComponent,

@@ -52,8 +52,8 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
 	public createUser() {
 		const dialog = this.dialog.open(CreateUserDialogComponent);
-		dialog.afterClosed().subscribe(userCreated => {
-			if(userCreated) {
+		dialog.afterClosed().subscribe(newUsername => {
+			if(newUsername) {
 				this.loadUsers();
 			}
 		});

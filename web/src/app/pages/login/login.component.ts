@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { CreateUserDialogComponent } from 'src/app/dialogs/create-user-dialog/create-user-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -17,6 +19,7 @@ export class LoginComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private dialog: MatDialog,
 		public auth: AuthenticationService,
 		private server: ServerService,
 		private utils: UtilsService
@@ -37,6 +40,16 @@ export class LoginComponent implements OnInit {
 				} else {
 					this.server.showHttpError(e);
 				}
+			}
+		});
+	}
+
+	public register() {
+		const dialog = this.dialog.open(CreateUserDialogComponent);
+		dialog.afterClosed().subscribe(newUsername => {
+			if(newUsername) {
+				this.username = newUsername;
+				this.password = "";
 			}
 		});
 	}
