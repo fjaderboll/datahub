@@ -1,1 +1,22 @@
-<p>user-view works!</p>
+
+<div>
+	Username:
+	<span>{{ user?.username }}</span>
+</div>
+
+<div>
+	E-mail:
+	<app-inline-edit type="text" [value]="user?.email" (onChange)="changedValue('email', $event)"></app-inline-edit>
+</div>
+
+<div>
+	Administrator:
+	<app-inline-edit type="boolean" [value]="user?.admin" (onChange)="changedValue('admin', $event)" [disabled]="!user?.admin"></app-inline-edit>
+</div>
+
+<div *ngIf="user?.admin" class="margin-top">
+	<button mat-raised-button color="primary" (click)="impersonate()">
+		<mat-icon>person</mat-icon>
+		<span>Impersonate</span>
+	</button>
+</div>

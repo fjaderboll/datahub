@@ -195,7 +195,7 @@ registerEndpoint(Method::PUT, Authorization::USER, "users/{username}", function(
         }
 
         $admin = getOptionalRequestValue("admin", null);
-        if($admin) {
+        if($admin !== null) {
             if(isAdmin()) {
                 $changes += dbUpdate("UPDATE users SET admin = ? WHERE username = ?", toDbBoolean($admin), $username);
             } else {

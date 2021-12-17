@@ -24,7 +24,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
+import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-u
     HeaderComponent,
     FooterComponent,
     DashboardComponent,
-    CreateUserDialogComponent
+    CreateUserDialogComponent,
+    InlineEditComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +60,8 @@ import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-u
 	MatTableModule,
 	MatPaginatorModule,
 	MatSortModule,
-	MatDialogModule
+	MatDialogModule,
+	MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

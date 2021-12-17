@@ -14,8 +14,8 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit, AfterViewInit {
-	displayedColumns: string[] = ['username', 'email', 'admin', 'datasetsCount', 'datasetsSize'];
-  	dataSource = new MatTableDataSource<any>();
+	public displayedColumns: string[] = ['username', 'email', 'admin', 'datasetsCount', 'datasetsSize'];
+	public dataSource = new MatTableDataSource<any>();
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
@@ -31,7 +31,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
 		this.loadUsers();
   	}
 
-	public loadUsers() {
+	private loadUsers() {
 		this.server.getUsers().subscribe({
 			next: (v: any) => {
 				v.forEach((user: any) => {

@@ -14,6 +14,7 @@ npm start      # start server at http://localhost:4200
 
 ## Development
 ```shell
+ng generate component components/InlineEdit    # create new component
 ng generate component pages/DatasetView        # create new page
 ng generate component dialogs/CreateUserDialog # create new dialog (and replace all 'component' with 'dialog')
 ng generate service services/Authentication    # create new service

@@ -40,17 +40,27 @@ export class ServerService {
 	}
 
 	public login(username: string, password: string) {
-		let url = this.apiUrl + "users/" + username + "/login";
+		const url = this.apiUrl + "users/" + username + "/login";
 		return this.http.post(url, { password });
 	}
 
 	public getUsers() {
-		let url = this.apiUrl + "users/";
+		const url = this.apiUrl + "users/";
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
+	public getUser(username: string) {
+		const url = this.apiUrl + "users/" + username;
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public updateUser(username: string, property: string, value: any) {
+		const url = this.apiUrl + "users/" + username;
+		return this.http.put(url, { [property]: value }, this.httpOptionsText);
+	}
+
 	public createUser(username: string, password: string) {
-		let url = this.apiUrl + "users/";
+		const url = this.apiUrl + "users/";
 		return this.http.post(url, { username, password }, this.httpOptionsText);
 	}
 
