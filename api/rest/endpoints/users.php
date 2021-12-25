@@ -155,6 +155,38 @@ registerEndpoint(Method::POST, Authorization::NONE, "users/{username}/login", fu
 });
 
 /**
+ * @OA\Get(
+ *     path="/users/{username}/impersonate",
+ *     summary="Impersonate a user",
+ *     @OA\Parameter(
+ *         description="Username of user",
+ *         in="path",
+ *         name="username",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=403, description="Not authorized"),
+ *     @OA\Response(response=404, description="User not found")
+ * )
+ */
+registerEndpoint(Method::GET, Authorization::ADMIN, "users/{username}/impersonate", function($username) {
+    $username = strtolower($username);
+    $users = dbQuery("SELECT * FROM users WHERE username = ?", $username);
+    if(count($users) == 1) {
+        $user = $users[0];
+        $token = createUserToken($username, $user['id'], $user['admin'] > 0);
+        return jsonEncode(array(
+            "username" => $username,
+            "admin" => $user['admin'] > 0,
+            "token" => $token,
+            "expire" => getUserExpire()
+        ));
+    }
+    requestFail("User not found", 404);
+});
+
+/**
  * @OA\Put(
  *     path="/users/{username}",
  *     summary="Update user",

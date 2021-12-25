@@ -21,3 +21,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .margin-bottom {
 	margin-bottom: 1.5em;
 }
+
+dl.list {
+	display: grid;
+	grid-template-columns: max-content auto;
+	grid-column-gap: 15px;
+}
+dl.list > dt {
+	font-weight: 500;
+}
+dl.list > dt::after {
+	content: ":"
+}
+dl.list > dd {
+	font-weight: normal;
+}
+dl.list > dd:empty::after {
+	content: "-";
+}

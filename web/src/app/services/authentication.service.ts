@@ -47,6 +47,25 @@ export class AuthenticationService {
 		);
 	}
 
+	public impersonate(username: string) {
+		return new Observable(
+			observer => {
+				this.server.impersonate(username).subscribe({
+					next: (v: any) => {
+						this.setToken(v.token, v.username, v.admin, v.expire);
+						observer.next(v);
+					},
+					error: (e) => {
+						observer.error(e);
+					},
+					complete: () => {
+						observer.complete();
+					}
+				});
+			}
+		);
+	}
+
 	public setToken(token: string | null, username: string | null, admin: boolean, expire: string | null) {
 		if(token && token.length > 0 && username && username.length > 0) {
 			this.token = token;

@@ -44,6 +44,11 @@ export class ServerService {
 		return this.http.post(url, { password });
 	}
 
+	public impersonate(username: string) {
+		const url = this.apiUrl + "users/" + username + "/impersonate";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
 	public getUsers() {
 		const url = this.apiUrl + "users/";
 		return this.http.get(url, this.httpOptionsJson);

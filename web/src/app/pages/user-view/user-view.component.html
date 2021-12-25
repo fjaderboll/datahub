@@ -1,22 +1,16 @@
 
-<div>
-	Username:
-	<span>{{ user?.username }}</span>
-</div>
+<dl class="list">
+	<dt>Username</dt>
+	<dd>{{ user?.username }}</dd>
 
-<div>
-	E-mail:
-	<app-inline-edit type="text" [value]="user?.email" (onChange)="changedValue('email', $event)"></app-inline-edit>
-</div>
+	<dt>E-mail</dt>
+	<dd>
+		<app-inline-edit type="text" [value]="user?.email" (onChange)="changedValue('email', $event)"></app-inline-edit>
+	</dd>
 
-<div>
-	Administrator:
-	<app-inline-edit type="boolean" [value]="user?.admin" (onChange)="changedValue('admin', $event)" [disabled]="!user?.admin"></app-inline-edit>
-</div>
+	<dt>Administrator</dt>
+	<dd>
+		<app-inline-edit type="boolean" [value]="user?.admin" (onChange)="changedValue('admin', $event)" [disabled]="!auth.isAdmin()"></app-inline-edit>
+	</dd>
 
-<div *ngIf="user?.admin" class="margin-top">
-	<button mat-raised-button color="primary" (click)="impersonate()">
-		<mat-icon>person</mat-icon>
-		<span>Impersonate</span>
-	</button>
-</div>
+</dl>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class UserViewComponent implements OnInit {
 	public user: any;
 
 	constructor(
+		public auth: AuthenticationService,
 		private server: ServerService,
 		private route: ActivatedRoute
 	) { }
@@ -45,7 +47,14 @@ export class UserViewComponent implements OnInit {
 	}
 
 	public impersonate() {
-		
+		this.auth.impersonate(this.user.username).subscribe({
+			next: (v) => {
+				window.location.reload();
+			},
+			error: (e) => {
+				this.server.showHttpError(e);
+			}
+		});
 	}
 
 }
