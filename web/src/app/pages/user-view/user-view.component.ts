@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
   selector: 'app-user-view',
@@ -13,6 +14,7 @@ export class UserViewComponent implements OnInit {
 
 	constructor(
 		public auth: AuthenticationService,
+		private utils: UtilsService,
 		private server: ServerService,
 		private route: ActivatedRoute
 	) { }
@@ -26,8 +28,11 @@ export class UserViewComponent implements OnInit {
 
 		this.server.getUser(username).subscribe({
 			next: (user: any) => {
-				//user.datasetsSizeStr = this.utils.printFilesize(user.datasetsSize);
 				this.user = user;
+
+				this.user.datasets.forEach((dataset: any) => {
+					dataset.sizeStr = this.utils.printFilesize(dataset.size);
+				});
 			},
 			error: (e) => {
 				this.server.showHttpError(e);

@@ -1,1 +1,13 @@
-<p>dashboard works!</p>
+
+<div>
+	You have a <a routerLink="/datasets">{{ user?.datasets.length }}</a> datasets totaling {{ totalDatasetSize }}.
+</div>
+
+<div class="margin-top">
+	Swagger documentation:
+	<a href="{{ swaggerUrl }}">{{ swaggerUrl }}</a>
+</div>
+
+<div class="margin-top">
+	Source code and documentation is found here: <a href="https://github.com/fjaderboll/datahub">https://github.com/fjaderboll/datahub</a>
+</div>

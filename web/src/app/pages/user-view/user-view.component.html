@@ -13,4 +13,22 @@
 		<app-inline-edit type="boolean" [value]="user?.admin" (onChange)="changedValue('admin', $event)" [disabled]="!auth.isAdmin()"></app-inline-edit>
 	</dd>
 
+	<dt>Datasets</dt>
+	<dd>
+		<div>{{ user?.datasets.length }}</div>
+		<div *ngFor="let dataset of user?.datasets">
+			<span *ngIf="auth.getUsername() !== user?.username">{{ dataset.name }}, {{ dataset.sizeStr }}</span>
+			<span *ngIf="auth.getUsername() === user?.username">
+				<a routerLink="/datasets/{{ dataset.name }}">{{ dataset.name }}</a>, {{ dataset.sizeStr }}
+			</span>
+		</div>
+	</dd>
+
 </dl>
+
+<div *ngIf="auth.isAdmin() && auth.getUsername() !== user?.username" class="margin-top">
+	<button mat-raised-button color="primary" (click)="impersonate()">
+		<mat-icon>person</mat-icon>
+		<span>Impersonate</span>
+	</button>
+</div>

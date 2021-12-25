@@ -11,6 +11,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 	margin-right: 0.25em;
 }
 
+.align-center {
+	text-align: center;
+}
 .align-right {
 	text-align: right;
 }
@@ -20,6 +23,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 .margin-bottom {
 	margin-bottom: 1.5em;
+}
+
+a {
+	color: blue;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
 }
 
 dl.list {
@@ -32,6 +43,13 @@ dl.list > dt {
 }
 dl.list > dt::after {
 	content: ":"
+}
+dl.list dt.sub {
+	margin-left: 5px;
+}
+dl.list dt.sub:before {
+	color: #999;
+	content: '\2937\0020';
 }
 dl.list > dd {
 	font-weight: normal;
