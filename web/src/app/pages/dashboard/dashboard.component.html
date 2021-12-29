@@ -1,13 +1,28 @@
 
-<div>
-	You have a <a routerLink="/datasets">{{ user?.datasets.length }}</a> datasets totaling {{ totalDatasetSize }}.
+<div class="section row align-vertically">
+	<div>
+		<img class="icon" src="assets/img/logo/logo-black.min.svg" />
+	</div>
+	<div class="margin-left">
+		You have a <a routerLink="/datasets">{{ user?.datasets.length }} datasets</a> totaling {{ totalDatasetSize }}.
+	</div>
 </div>
 
-<div class="margin-top">
-	Swagger documentation:
-	<a href="{{ swaggerUrl }}">{{ swaggerUrl }}</a>
+<div class="section row align-vertically">
+	<div>
+		<img class="icon" src="/assets/img/icons/swagger.min.svg" />
+	</div>
+	<div class="margin-left">
+		Swagger documentation:
+		<a href="{{ swaggerUrl }}">{{ swaggerUrl }}</a>
+	</div>
 </div>
 
-<div class="margin-top">
-	Source code and documentation is found here: <a href="https://github.com/fjaderboll/datahub">https://github.com/fjaderboll/datahub</a>
+<div class="section row align-vertically">
+	<div>
+		<img class="icon" src="/assets/img/icons/github.png" />
+	</div>
+	<div class="margin-left">
+		Source code and documentation: <a href="https://github.com/fjaderboll/datahub">github.com/fjaderboll/datahub</a>
+	</div>
 </div>

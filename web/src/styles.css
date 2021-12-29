@@ -17,12 +17,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .align-right {
 	text-align: right;
 }
+.align-vertically {
+	align-items: center;
+}
 
 .margin-top {
 	margin-top: 1.5em;
 }
 .margin-bottom {
 	margin-bottom: 1.5em;
+}
+.margin-left {
+	margin-left: 1.5em;
+}
+
+.row {
+	display: flex;
+	flex-wrap: nowrap;
+}
+.col > * {
+	display: block;
+}
+.col.align-center > * {
+	margin: auto;
 }
 
 a {
