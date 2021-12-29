@@ -1,15 +1,3 @@
-**NOTE**
-This is very early in the development, so a lot left to happen before it will
-be usuable.
-
-**Initial TODOs**
-* write endpoints for:
-    * sensors
-    * readings
-    * dataset export
-* extract crypt key to separate none versioned file
-* write frontend
-
 # Datahub
 
 ## About
@@ -42,9 +30,9 @@ There are two kinds of tokens:
 ## Usage
 The IoT device can do a simple HTTP request like this:
 ```
-POST /rest/nodes/my-house/sensors/temp-outdoor/readings
-POST /rest/nodes/my-house/sensors/temp-indoor/readings
-POST /rest/nodes/garage/sensors/temp/readings
+POST /api/nodes/my-house/sensors/temp-outdoor/readings
+POST /api/nodes/my-house/sensors/temp-indoor/readings
+POST /api/nodes/garage/sensors/temp/readings
 ```
 with this data:
 ```
@@ -54,7 +42,7 @@ value=22.5           # Content-type: application/x-www-form-urlencoded
 
 This data can later be retrieved with:
 ```
-GET /rest/nodes/my-house/sensors/temp-outdoor/readings
+GET /api/nodes/my-house/sensors/temp-outdoor/readings
 ```
 returning:
 ```json
@@ -65,31 +53,17 @@ returning:
 ]
 ```
 
+For more examples, see [examples.md](api-examples.md)
+or read the Swagger documentation.
+
 Automatic export to another system can also be set up.
 
 ## File structure
-It consist of two separate parts:
+This project consist of two separate parts:
 
-* [frontend/README.md](frontend/README.md), Angular
-* [backend/README.md](backend/README.md), PHP
-
-## Requirements
-```shell
-sudo apt install apache2 php php-sqlite3
-```
-
-## Setup
-...TODO
+* The Angular [frontend](frontend/README.md) is only for convenient management of users and datasets and for viewing data
+* The PHP [backend](backend/README.md) is where it all happens
 
 ## Future improvements
-* Retention policy:
-    * Per dataset
-    * Maximum 1.000.000 entries (configurable)
-    * Entry = nodes, sensors, readings, tokens
-    * Every X:th (on average) POST request, delete readings to get below maximum
-* Vacuum (every X:th request or something smarter)
-* Dockerfile
-* Add Swagger authorization annotation
-* Group endpoints in Swagger (now everyone is in "default")
-* Use proper JWT for user tokens
-* Mobile friendly frontend
+
+* Create Dockerfile
