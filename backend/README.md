@@ -1,7 +1,17 @@
 # Datahub - REST API backend
-The `api` directory contains the `index.html` for the Swagger
+The `api` root directory contains the `index.html` for the Swagger
 documentation and a `.htaccess` file for redirecting all
 non-Swagger requests to `main.php`.
+
+## Data storage and separation
+All user and setup data is stored in an SQLite3 database named `main.db`.
+
+The dataset's data is stored in individual databases, improving
+concurrent read and write since one dataset is never locking another dataset.
+
+There are two kinds of tokens:
+* *user token* - will give full access to all the user's datasets, but do expire. Mainly for administration.
+* *dataset tokens* - can only read and/or write in the dataset they belong to, and do not expire, hence this is the token to be used in your IoT devices.
 
 ## Development setup
 

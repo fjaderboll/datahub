@@ -17,18 +17,8 @@ hosted on your own webserver.
 ### Structure
 ...TODO create visual graph
 
-### Data storage and separation
-All user and setup data is stored in an SQLite3 database named `main.db`.
-
-The dataset's data is stored in individual databases, improving
-concurrent read and write since one dataset is not dependent on another dataset.
-
-There are two kinds of tokens:
-* *user token* - will give full access to all the user's datasets, but do expire. Mainly for administration.
-* *dataset tokens* - can only read and/or write in the dataset they belong to, and do not expire, hence this is the token to be used in your IoT devices.
-
 ## Usage
-The IoT device can do a simple HTTP request like this:
+The IoT devices can do simple HTTP requests like this:
 ```
 POST /api/nodes/my-house/sensors/temp-outdoor/readings
 POST /api/nodes/my-house/sensors/temp-indoor/readings
@@ -36,8 +26,7 @@ POST /api/nodes/garage/sensors/temp/readings
 ```
 with this data:
 ```
-{ "value": 22.5 }    # Content-type: application/json
-value=22.5           # Content-type: application/x-www-form-urlencoded
+value=22.5
 ```
 
 This data can later be retrieved with:
@@ -53,7 +42,7 @@ returning:
 ]
 ```
 
-For more examples, see [examples.md](api-examples.md)
+For more examples, see [api-examples.md](api-examples.md)
 or read the Swagger documentation.
 
 Automatic export to another system can also be set up.
@@ -61,8 +50,8 @@ Automatic export to another system can also be set up.
 ## File structure
 This project consist of two separate parts:
 
-* The Angular [frontend](frontend/README.md) is only for convenient management of users and datasets and for viewing data
-* The PHP [backend](backend/README.md) is where it all happens
+* The frontend (see [frontend/README.md](frontend/README.md)) is only for convenient management of users and datasets and for viewing data
+* The backend (see [backend/README.md](backend/README.md)) is where it all happens
 
 ## Future improvements
 

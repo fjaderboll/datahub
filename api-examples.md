@@ -15,7 +15,7 @@ Historical data can then be retrieved with:
 ```
 GET /api/nodes/my-house/sensors/temperature/readings
 ```
-returning:
+returning as JSON array:
 ```json
 [
     { "value": 22.5, "timestamp": "2021-09-10T14:30:07Z" },
@@ -38,7 +38,7 @@ electric-meter=123456
 door-state=1
 ```
 
-This can then be retrieved for a single sensor with:
+Data can then be retrieved for a single sensor with:
 ```
 GET /api/nodes/my-house/sensors/electric-meter/readings
 ```
@@ -56,3 +56,6 @@ returning:
     { "sensor": "door-state", "value": 1, "timestamp": "2021-12-01T15:01:14Z" }
 ]
 ```
+
+## TODO
+* Examples of filtering readings, like getting the last X values or last values within X time units
