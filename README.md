@@ -68,9 +68,10 @@ returning:
 Automatic export to another system can also be set up.
 
 ## File structure
+It consist of two separate parts:
 
-* `web/` - frontend, see [web/README.md](web/README.md)
-* `api/` - backend, see [api/README.md](api/README.md)
+* [frontend/README.md](frontend/README.md), Angular
+* [backend/README.md](backend/README.md), PHP
 
 ## Requirements
 ```shell

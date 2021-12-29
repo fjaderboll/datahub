@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteRule "^$" - [L]
+RewriteRule "index.html" - [L]
+RewriteRule "swagger.json" - [L]
+RewriteRule "swagger/" - [L]
+RewriteRule "" app/main.php [L]

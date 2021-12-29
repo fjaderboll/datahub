@@ -1,0 +1,11 @@
+.form .mat-form-field {
+	width: 100%;
+}
+
+.form > div {
+	text-align: center;
+}
+
+.github {
+	margin-top: 5em;
+}

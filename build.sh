@@ -3,19 +3,20 @@
 cd "$(dirname "$0")"
 
 build() {
-    name=$1
-    path=$2
+    project=$1
+    filename=$2
+    subpath=$3
 
-    echo -n "Building $name..."
-    mkdir -p dist/tmp/$path
-    ./$name/build.sh > /dev/null 2>&1
-    tar xzf $name/dist/$name.tar.gz -C dist/tmp/$path
+    echo -n "Building $project..."
+    mkdir -p dist/tmp/$subpath
+    ./$project/build.sh > /dev/null 2>&1
+    tar xzf $project/dist/$filename.tar.gz -C dist/tmp/$subpath
     echo "OK"
 }
 
 rm -fr dist/tmp
-build web .
-build api api
+build frontend web .
+build backend api api
 
 cd dist/tmp
 tar czf ../datahub.tar.gz *

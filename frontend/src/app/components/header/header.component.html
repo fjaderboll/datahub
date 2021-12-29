@@ -1,0 +1,34 @@
+<mat-toolbar class="toolbar">
+	<a mat-button routerLink="/">
+		<img class="logo" src="assets/img/logo/logo-white.min.svg" />
+		<span class="title">Datahub</span>
+	</a>
+
+	<a mat-button routerLink="/datasets" *ngIf="auth.isLoggedIn()">
+    	<mat-icon>inventory</mat-icon>
+		<span>Datasets</span>
+	</a>
+
+	<a mat-button routerLink="/users" *ngIf="auth.isAdmin()">
+    	<mat-icon>people</mat-icon>
+		<span>Users</span>
+	</a>
+
+	<span class="spacer"></span>
+
+	<!--<a mat-button routerLink="/login" *ngIf="showLoginLink()">
+    	<mat-icon>lock</mat-icon>
+		<span>Sign in</span>
+	</a>-->
+
+	<a mat-button routerLink="/users/{{ auth.getUsername() }}" *ngIf="auth.isLoggedIn()">
+    	<mat-icon>person</mat-icon>
+		<span>{{ auth.getUsername() }}</span>
+	</a>
+
+	<button mat-button *ngIf="auth.isLoggedIn()" (click)="logout()">
+    	<mat-icon>lock_open</mat-icon>
+		<span>Sign out</span>
+  	</button>
+
+</mat-toolbar>
