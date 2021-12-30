@@ -71,17 +71,10 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}", function($
 
     openDatabaseConnection($dbDataset['id']);
 
-    $dbNodes = dbQuery("SELECT * FROM node WHERE dataset_id = ?", $dbDataset['id']);
+    $dbNodes = dbQuery("SELECT * FROM e_node");
     $dataset['nodes'] = array();
     foreach($dbNodes as $dbNode) {
-        $node = convertFromDbObject($dbNode, array('name', 'desc'));
-
-        $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ?", $dbNode['id']);
-        $node['sensors'] = array();
-        foreach($dbSensors as $dbSensor) {
-            $sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit'));
-            array_push($node['sensors'], $sensor);
-        }
+        $node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'last_reading_timestamp'));
         array_push($dataset['nodes'], $node);
     }
     return $dataset;

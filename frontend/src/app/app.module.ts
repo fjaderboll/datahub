@@ -29,6 +29,7 @@ import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-u
 import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
 import { CreateDatasetDialogComponent } from './dialogs/create-dataset-dialog/create-dataset-dialog.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { CreateNodeDialogComponent } from './dialogs/create-node-dialog/create-node-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
     CreateUserDialogComponent,
     InlineEditComponent,
     CreateDatasetDialogComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    CreateNodeDialogComponent
   ],
   imports: [
     BrowserModule,

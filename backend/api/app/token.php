@@ -100,7 +100,7 @@ function readDatasetProperty($property) {
 					$datasetId = obfuscateDatasetId($di);
 
 					openDatabaseConnection($datasetId);
-					$datasetTokens = dbQuery("SELECT * FROM dataset_token WHERE dataset_id = ? AND token = ? AND enabled = ?", $datasetId, $token, 1);
+					$datasetTokens = dbQuery("SELECT * FROM token WHERE token = ? AND enabled = ?", $token, 1);
 				    if(count($datasetTokens) == 1) {
 						$datasetToken = $datasetTokens[0];
 					}

@@ -20,15 +20,8 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::DATASET, "nodes", function() {
-    $name = strtolower(getMandatoryRequestValue("name"));
-    $desc = getOptionalRequestValue("desc", null);
-
     verifyDatasetWrite();
-    verifyValidName($name);
-
-    dbUpdate("INSERT INTO node(dataset_id, name, desc) VALUES (?, ?, ?)", getDatasetId(), $name, $desc);
-
-    return "Node $name created";
+    return createNode();
 });
 
 /**
@@ -40,14 +33,7 @@ registerEndpoint(Method::POST, Authorization::DATASET, "nodes", function() {
  */
 registerEndpoint(Method::GET, Authorization::DATASET, "nodes", function() {
     verifyDatasetRead();
-
-    $dbNodes = dbQuery("SELECT * FROM node WHERE dataset_id = ?", getDatasetId());
-    $nodes = array();
-    foreach($dbNodes as $dbNode) {
-		$node = convertFromDbObject($dbNode, array('name', 'desc'));
-        array_push($nodes, $node);
-	}
-    return $nodes;
+    return getNodes();
 });
 
 /**
@@ -67,17 +53,7 @@ registerEndpoint(Method::GET, Authorization::DATASET, "nodes", function() {
  */
 registerEndpoint(Method::GET, Authorization::DATASET, "nodes/{name}", function($name) {
     verifyDatasetRead();
-
-    $dbNode = findNode($name);
-    $node = convertFromDbObject($dbNode, array('name', 'desc'));
-
-    $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ?", $dbNode['id']);
-    $node['sensors'] = array();
-    foreach($dbSensors as $dbSensor) {
-        $sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit'));
-        array_push($node['sensors'], $sensor);
-    }
-    return $node;
+    return getNode($name);
 });
 
 /**
@@ -106,21 +82,7 @@ registerEndpoint(Method::GET, Authorization::DATASET, "nodes/{name}", function($
  */
 registerEndpoint(Method::PUT, Authorization::DATASET, "nodes/{name}", function($name) {
     verifyDatasetWrite();
-    $dbNode = findNode($name);
-
-    $changes = 0;
-
-    $desc = getOptionalRequestValue("desc", null);
-    if($desc) {
-        $changes += dbUpdate("UPDATE node SET desc = ? WHERE id = ?", $desc, $dbNode['id']);
-    }
-
-    $newName = getOptionalRequestValue("name", null);
-    if($newName) {
-        $changes += dbUpdate("UPDATE node SET name = ? WHERE id = ?", $newName, $dbNode['id']);
-    }
-
-    return ($changes > 0 ? "Node updated" : "Node not updated");
+    return updateNode($name);
 });
 
 /**
@@ -140,21 +102,77 @@ registerEndpoint(Method::PUT, Authorization::DATASET, "nodes/{name}", function($
  */
 registerEndpoint(Method::DELETE, Authorization::DATASET, "nodes/{name}", function($name) {
     verifyDatasetWrite();
+    return deleteNode($name);
+});
+
+// ----------------------
+function findNode($name) {
+    $name = strtolower($name);
+    $nodes = dbQuery("SELECT * FROM node WHERE name = ?", $name);
+    if(count($nodes) == 0) {
+        requestFail("Node not found", 404);
+    } else {
+        return $nodes[0];
+    }
+}
+
+function createNode() {
+    $name = strtolower(getMandatoryRequestValue("name"));
+    $desc = getOptionalRequestValue("desc", null);
+
+    verifyValidName($name);
+
+    dbUpdate("INSERT INTO node(name, desc) VALUES (?, ?)", $name, $desc);
+
+    return "Node $name created";
+}
+
+function getNodes() {
+    $dbNodes = dbQuery("SELECT * FROM node");
+    $nodes = array();
+    foreach($dbNodes as $dbNode) {
+		$node = convertFromDbObject($dbNode, array('name', 'desc'));
+        array_push($nodes, $node);
+	}
+    return $nodes;
+}
+
+function getNode($name) {
+    $dbNode = findNode($name);
+    $node = convertFromDbObject($dbNode, array('name', 'desc'));
+
+    $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ?", $dbNode['id']);
+    $node['sensors'] = array();
+    foreach($dbSensors as $dbSensor) {
+        $sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit'));
+        array_push($node['sensors'], $sensor);
+    }
+    return $node;
+}
+
+function updateNode($name) {
+    $dbNode = findNode($name);
+
+    $changes = 0;
+
+    $desc = getOptionalRequestValue("desc", null);
+    if($desc) {
+        $changes += dbUpdate("UPDATE node SET desc = ? WHERE id = ?", $desc, $dbNode['id']);
+    }
+
+    $newName = getOptionalRequestValue("name", null);
+    if($newName) {
+        $changes += dbUpdate("UPDATE node SET name = ? WHERE id = ?", $newName, $dbNode['id']);
+    }
+
+    return ($changes > 0 ? "Node updated" : "Node not updated");
+}
+
+function deleteNode($name) {
     $dbNode = findNode($name);
     dbUpdate("DELETE FROM reading WHERE sensor_id IN (SELECT id FROM sensor WHERE node_id = ?)", $dbNode['id']);
     dbUpdate("DELETE FROM sensor WHERE node_id = ?", $dbNode['id']);
     dbUpdate("DELETE FROM node WHERE id = ?", $dbNode['id']);
 
     return "Deleted node ".$dbNode['name'];
-});
-
-// ----------------------
-function findNode($name) {
-    $name = strtolower($name);
-    $nodes = dbQuery("SELECT * FROM node WHERE dataset_id = ? AND name = ?", getDatasetId(), $name);
-    if(count($nodes) == 0) {
-        requestFail("Node not found", 404);
-    } else {
-        return $nodes[0];
-    }
 }

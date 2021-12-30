@@ -1,7 +1,7 @@
 
-CREATE TABLE dataset_token (
+CREATE TABLE token (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "dataset_id" INTEGER NOT NULL,
+    --"dataset_id" INTEGER NOT NULL,
     "token" TEXT UNIQUE NOT NULL,
     "enabled" INTEGER DEFAULT 1 NOT NULL,
     "read" INTEGER DEFAULT 1 NOT NULL,
@@ -11,9 +11,9 @@ CREATE TABLE dataset_token (
     --FOREIGN KEY(dataset_id) REFERENCES dataset(id)
 );
 
-CREATE TABLE dataset_export (
+CREATE TABLE export (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "dataset_id" INTEGER NOT NULL,
+    --"dataset_id" INTEGER NOT NULL,
     "export_type_id" INTEGER NOT NULL,
     "export_format_id" INTEGER NOT NULL,
     "enabled" INTEGER DEFAULT 1 NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE dataset_export (
 
 CREATE TABLE node (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-	"dataset_id" INTEGER NOT NULL,
+	--"dataset_id" INTEGER NOT NULL,
     "name" TEXT UNIQUE NOT NULL,
     "desc" TEXT
 
@@ -56,6 +56,20 @@ CREATE TABLE reading (
 );
 
 ---------------- views ----------------
+CREATE VIEW e_node AS
+SELECT n.*,
+       (SELECT count(*)
+        FROM sensor
+        WHERE node_id = n.id
+       ) AS sensor_count,
+       (SELECT max(timestamp)
+        FROM reading
+        WHERE sensor_id IN (SELECT id
+                            FROM sensor
+                            WHERE node_id = n.id)
+       ) AS last_reading_timestamp
+FROM node n;
+
 /*
 CREATE VIEW e_dataset AS
 SELECT d.*,
@@ -80,16 +94,6 @@ SELECT ud.*,
 FROM user_dataset ud,
      users u
 WHERE ud.user_id = u.id;
-
-CREATE VIEW e_node AS
-SELECT n.*,
-       (SELECT max(r.timestamp)
-        FROM sensor s,
-             reading r
-        WHERE s.node_id = n.id
-        AND s.last_reading_id = r.id
-       ) AS last_reading_timestamp
-FROM node n;
 
 CREATE VIEW e_reading AS
 SELECT n.dataset_id,

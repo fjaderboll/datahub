@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
+import { CreateNodeDialogComponent } from 'src/app/dialogs/create-node-dialog/create-node-dialog.component';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -14,7 +16,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class DatasetViewComponent implements OnInit {
 	public dataset: any;
 
-	public displayedColumns: string[] = ['name', 'desc'];
+	public displayedColumns: string[] = ['name', 'desc', 'sensorCount', 'lastReadingTimestamp'];
 	public dataSource = new MatTableDataSource<any>();
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
@@ -22,7 +24,8 @@ export class DatasetViewComponent implements OnInit {
 	constructor(
 		private utils: UtilsService,
 		private server: ServerService,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private dialog: MatDialog
 	) { }
 
 	ngOnInit(): void {
@@ -61,7 +64,16 @@ export class DatasetViewComponent implements OnInit {
 	}
 
 	public createNode() {
-		
+		const dialog = this.dialog.open(CreateNodeDialogComponent, {
+			data: {
+				datasetName: this.dataset.name
+			}
+		});
+		dialog.afterClosed().subscribe(newName => {
+			if(newName) {
+				this.loadDataset();
+			}
+		});
 	}
 
 }

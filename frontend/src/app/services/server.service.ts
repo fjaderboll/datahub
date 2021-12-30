@@ -88,4 +88,9 @@ export class ServerService {
 		return this.http.post(url, { name, desc }, this.httpOptionsText);
 	}
 
+	public createNode(datasetName: string, nodeName: string, nodeDesc: string) {
+		const url = this.apiUrl + "datasets/" + datasetName + "/nodes";
+		return this.http.post(url, { name: nodeName, desc: nodeDesc }, this.httpOptionsText);
+	}
+
 }

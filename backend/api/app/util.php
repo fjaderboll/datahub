@@ -160,15 +160,26 @@
 
 		$newObject = array();
 		foreach($attrToKeep as $attr) {
+			$newAttr = underscoreToCamelCase($attr);
 			if(strpos($attr, "timestamp") !== false && $dbObject[$attr] != null) {
 				// 2017-12-02 08:00:21 -> 2017-12-02T08:00:21.0Z
 				$date = DateTime::createFromFormat($TIMESTAMP_FORMAT_DB, $dbObject[$attr]);
-				$newObject[$attr] = $date->format($TIMESTAMP_FORMAT_JSON);
+				$newObject[$newAttr] = $date->format($TIMESTAMP_FORMAT_JSON);
 			} else {
-				$newObject[$attr] = $dbObject[$attr];
+				$newObject[$newAttr] = $dbObject[$attr];
 			}
 		}
 		return $newObject;
+	}
+
+	function underscoreToCamelCase($str, $capitalizeFirstLetter = false) {
+		$str = str_replace("_", " ", $str);
+    	$str = ucwords($str);
+		$str = str_replace(" ", "", $str);
+		if(!$capitalizeFirstLetter) {
+			$str[0] = strtolower($str[0]);
+		}
+		return $str;
 	}
 
 	function findFiles($directory, $suffix) {

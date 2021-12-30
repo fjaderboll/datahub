@@ -30,7 +30,7 @@ registerEndpoint(Method::POST, Authorization::USER, "datasets/{name}/tokens", fu
     openDatabaseConnection($dbDataset['id']);
 
     $token = createDatasetToken($dbDataset['id']);
-    dbUpdate("INSERT INTO dataset_token(dataset_id, token, enabled, read, write, desc) VALUES (?, ?, ?, ?, ?, ?)", $dbDataset['id'], $token, $enabled, $read, $write, $desc);
+    dbUpdate("INSERT INTO token(token, enabled, read, write, desc) VALUES (?, ?, ?, ?, ?, ?)", $token, $enabled, $read, $write, $desc);
 
     return "Dataset token created";
 });
@@ -46,7 +46,7 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}/tokens", fun
     $dbDataset = findDataset($name);
     openDatabaseConnection($dbDataset['id']);
 
-    $dbTokens = dbQuery("SELECT * FROM dataset_token WHERE dataset_id = ?", $dbDataset['id']);
+    $dbTokens = dbQuery("SELECT * FROM token");
     $tokens = array();
     foreach($dbTokens as $dbToken) {
 		$token = convertFromDbObject($dbToken, array('id', 'token', 'enabled', 'read', 'write', 'desc'));
@@ -96,22 +96,22 @@ registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}/tokens/{id}"
 
     $enabled = getOptionalRequestValue("enabled", null);
     if($enabled) {
-        $changes += dbUpdate("UPDATE dataset_token SET enabled = ? WHERE id = ?", toDbBoolean($enabled), $id);
+        $changes += dbUpdate("UPDATE token SET enabled = ? WHERE id = ?", toDbBoolean($enabled), $id);
     }
 
     $read = getOptionalRequestValue("read", null);
     if($read) {
-        $changes += dbUpdate("UPDATE dataset_token SET read = ? WHERE id = ?", toDbBoolean($read), $id);
+        $changes += dbUpdate("UPDATE token SET read = ? WHERE id = ?", toDbBoolean($read), $id);
     }
 
     $write = getOptionalRequestValue("write", null);
     if($write) {
-        $changes += dbUpdate("UPDATE dataset_token SET write = ? WHERE id = ?", toDbBoolean($write), $id);
+        $changes += dbUpdate("UPDATE token SET write = ? WHERE id = ?", toDbBoolean($write), $id);
     }
 
     $desc = getOptionalRequestValue("desc", null);
     if($desc) {
-        $changes += dbUpdate("UPDATE dataset_token SET desc = ? WHERE id = ?", $desc, $id);
+        $changes += dbUpdate("UPDATE token SET desc = ? WHERE id = ?", $desc, $id);
     }
 
     return ($changes > 0 ? "Dataset token updated" : "Nothing updated");
@@ -135,7 +135,7 @@ registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}/tokens/{id}"
 registerEndpoint(Method::DELETE, Authorization::USER, "datasets/{name}/tokens/{id}", function($name, $id) {
     $dbDatasetToken = findDatasetToken($name, $id);
 
-    dbUpdate("DELETE FROM dataset_token WHERE id = ?", $id);
+    dbUpdate("DELETE FROM token WHERE id = ?", $id);
 
     return "Deleted dataset token";
 });
@@ -145,7 +145,7 @@ function findDatasetToken($datasetName, $tokenId) {
     $dbDataset = findDataset($datasetName);
     openDatabaseConnection($dbDataset['id']);
 
-    $datasetTokens = dbQuery("SELECT * FROM dataset_token WHERE dataset_id = ? AND id = ?", $dbDataset['id'], $tokenId);
+    $datasetTokens = dbQuery("SELECT * FROM token WHERE id = ?", $tokenId);
     if(count($datasetTokens) == 0) {
         requestFail("Dataset token not found", 404);
     } else {
