@@ -91,8 +91,9 @@ registerEndpoint(Method::GET, Authorization::ADMIN, "users", function() {
 registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function($username) {
     $username = strtolower($username);
     if($username == getUsername() || isAdmin()) {
-        $dbUser = dbQuerySingle("SELECT * FROM users WHERE username = ?", $username);
-        if($dbUser) {
+        $dbUsers = dbQuery("SELECT * FROM users WHERE username = ?", $username);
+        if(count($dbUsers) !== 0) {
+            $dbUser = $dbUsers[0];
         	$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
             $user['admin'] = toBoolean($user['admin']);
 
@@ -100,7 +101,7 @@ registerEndpoint(Method::GET, Authorization::USER, "users/{username}", function(
             $user['datasets'] = array();
             foreach($dbDatasets as $dbDataset) {
                 $dataset = convertFromDbObject($dbDataset, array('name', 'desc'));
-                $dataset['size'] = filesize(getDatasetFilename($dbDataset['id']));
+                //$dataset['size'] = filesize(getDatasetFilename($dbDataset['id']));
                 array_push($user['datasets'], $dataset);
             }
         	return $user;

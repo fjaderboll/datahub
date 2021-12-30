@@ -28,6 +28,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
 import { CreateDatasetDialogComponent } from './dialogs/create-dataset-dialog/create-dataset-dialog.component';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { CreateDatasetDialogComponent } from './dialogs/create-dataset-dialog/cr
     DashboardComponent,
     CreateUserDialogComponent,
     InlineEditComponent,
-    CreateDatasetDialogComponent
+    CreateDatasetDialogComponent,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,

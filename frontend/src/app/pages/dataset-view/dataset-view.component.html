@@ -1,1 +1,15 @@
-<p>dataset-view works!</p>
+<app-breadcrumb [links]="['/datasets', '/datasets/' + dataset?.name]" [names]="['Datasets', dataset?.name]"></app-breadcrumb>
+
+<dl class="list">
+	<dt>Name</dt>
+	<dd>{{ dataset?.name }}</dd>
+
+	<dt>Description</dt>
+	<dd>
+		<app-inline-edit type="text" [value]="dataset?.desc" (onChange)="changedValue('desc', $event)"></app-inline-edit>
+	</dd>
+
+	<dt>Size</dt>
+	<dd>{{ dataset?.sizeStr }}</dd>
+
+</dl>

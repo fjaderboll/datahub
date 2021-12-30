@@ -1,0 +1,15 @@
+.breadcrumb {
+	padding-bottom: 1em;
+}
+
+.breadcrumb-link {
+	margin-right: 0.25em;
+	font-size: 14px;
+}
+
+.breadcrumb-link .mat-icon {
+	margin-right: 0.25em;
+	height: 14px;
+	width: 14px;
+	font-size: 14px;
+}

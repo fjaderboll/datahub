@@ -73,6 +73,16 @@ export class ServerService {
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
+	public getDataset(name: string) {
+		const url = this.apiUrl + "datasets/" + name;
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public updateDataset(name: string, property: string, value: any) {
+		const url = this.apiUrl + "datasets/" + name;
+		return this.http.put(url, { [property]: value }, this.httpOptionsText);
+	}
+
 	public createDataset(name: string, desc: string) {
 		const url = this.apiUrl + "datasets/";
 		return this.http.post(url, { name, desc }, this.httpOptionsText);

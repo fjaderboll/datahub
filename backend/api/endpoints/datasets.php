@@ -117,7 +117,7 @@ registerEndpoint(Method::PUT, Authorization::USER, "datasets/{name}", function($
     $changes = 0;
 
     $desc = getOptionalRequestValue("desc", null);
-    if($desc) {
+    if($desc !== null) {
         $changes += dbUpdate("UPDATE dataset SET desc = ? WHERE id = ?", $desc, $dbDataset['id']);
     }
 

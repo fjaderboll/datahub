@@ -1,3 +1,5 @@
+<app-breadcrumb *ngIf="auth.isAdmin()" [links]="['/users', '/users/' + user?.username]" [names]="['Users', user?.username]"></app-breadcrumb>
+<app-breadcrumb *ngIf="!auth.isAdmin()" [links]="['/users/' + user?.username]" [names]="[user?.username]"></app-breadcrumb>
 
 <dl class="list">
 	<dt>Username</dt>
@@ -17,9 +19,9 @@
 	<dd>
 		<div>{{ user?.datasets.length }}</div>
 		<div *ngFor="let dataset of user?.datasets">
-			<span *ngIf="auth.getUsername() !== user?.username">{{ dataset.name }}, {{ dataset.sizeStr }}</span>
+			<span *ngIf="auth.getUsername() !== user?.username">{{ dataset.name }}</span>
 			<span *ngIf="auth.getUsername() === user?.username">
-				<a routerLink="/datasets/{{ dataset.name }}">{{ dataset.name }}</a>, {{ dataset.sizeStr }}
+				<a routerLink="/datasets/{{ dataset.name }}">{{ dataset.name }}</a>
 			</span>
 		</div>
 	</dd>
