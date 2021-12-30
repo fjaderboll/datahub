@@ -29,6 +29,11 @@ export class DatasetListComponent implements OnInit {
 		this.loadDatasets();
 	}
 
+	ngAfterViewInit() {
+		this.dataSource.paginator = this.paginator;
+		this.dataSource.sort = this.sort;
+	}
+
 	private loadDatasets() {
 		this.server.getDatasets().subscribe({
 			next: (v: any) => {
@@ -41,11 +46,6 @@ export class DatasetListComponent implements OnInit {
 				this.server.showHttpError(e);
 			}
 		});
-	}
-
-	ngAfterViewInit() {
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sort = this.sort;
 	}
 
 	public createDataset() {

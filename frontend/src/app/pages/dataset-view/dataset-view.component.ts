@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -11,6 +14,11 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class DatasetViewComponent implements OnInit {
 	public dataset: any;
 
+	public displayedColumns: string[] = ['name', 'desc'];
+	public dataSource = new MatTableDataSource<any>();
+	@ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild(MatSort) sort: MatSort;
+
 	constructor(
 		private utils: UtilsService,
 		private server: ServerService,
@@ -21,6 +29,11 @@ export class DatasetViewComponent implements OnInit {
 		this.loadDataset();
 	}
 
+	ngAfterViewInit() {
+		this.dataSource.paginator = this.paginator;
+		this.dataSource.sort = this.sort;
+	}
+
 	private loadDataset() {
 		let name = this.route.snapshot.paramMap.get('name') || 'this should never happen';
 
@@ -28,6 +41,7 @@ export class DatasetViewComponent implements OnInit {
 			next: (dataset: any) => {
 				this.dataset = dataset;
 				this.dataset.sizeStr = this.utils.printFilesize(this.dataset.size);
+				this.dataSource.data = this.dataset.nodes;
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
@@ -44,6 +58,10 @@ export class DatasetViewComponent implements OnInit {
 				this.server.showHttpError(e);
 			}
 		});
+	}
+
+	public createNode() {
+		
 	}
 
 }
