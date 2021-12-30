@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateDatasetDialogComponent } from 'src/app/dialogs/create-dataset-dialog/create-dataset-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -11,33 +13,35 @@ import { environment } from '../../../environments/environment';
 })
 export class DashboardComponent implements OnInit {
 	public swaggerUrl: string;
-	public user: any;
+	public datasets: any;
 	public totalDatasetSize: string;
 
 	constructor(
-		private auth: AuthenticationService,
 		private server: ServerService,
-		private utils: UtilsService
+		private dialog: MatDialog
 	) { }
 
 	ngOnInit(): void {
 		this.swaggerUrl = environment.apiUrl;
-		this.loadUser();
+		this.loadDatasets();
 	}
 
-	private loadUser() {
-		this.server.getUser(this.auth.getUsername() + "").subscribe({
-			next: (user: any) => {
-				this.user = user;
-
-				let size = 0;
-				this.user.datasets.forEach((dataset: any) => {
-					size += dataset.size;
-				});
-				this.totalDatasetSize = this.utils.printFilesize(size);
+	private loadDatasets() {
+		this.server.getDatasets().subscribe({
+			next: (datasets: any) => {
+				this.datasets = datasets;
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
+			}
+		});
+	}
+
+	public createDataset() {
+		const dialog = this.dialog.open(CreateDatasetDialogComponent);
+		dialog.afterClosed().subscribe(newName => {
+			if(newName) {
+				this.loadDatasets();
 			}
 		});
 	}

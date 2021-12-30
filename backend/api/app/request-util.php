@@ -40,7 +40,7 @@
 				$data = $_REQUEST;
 			}
 		}
-		if(isset($data[$var]) && $data[$var] !== null && (!is_string($data[$var]) || $data[$var] != "")) {
+		if(isset($data[$var]) && $data[$var] !== null) {
 			return $data[$var];
 		}
 		return $defaultValue;

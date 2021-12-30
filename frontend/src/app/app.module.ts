@@ -27,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
+import { CreateDatasetDialogComponent } from './dialogs/create-dataset-dialog/create-dataset-dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { InlineEditComponent } from './components/inline-edit/inline-edit.compon
     FooterComponent,
     DashboardComponent,
     CreateUserDialogComponent,
-    InlineEditComponent
+    InlineEditComponent,
+    CreateDatasetDialogComponent
   ],
   imports: [
     BrowserModule,

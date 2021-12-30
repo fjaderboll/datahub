@@ -222,7 +222,7 @@ registerEndpoint(Method::PUT, Authorization::USER, "users/{username}", function(
         $changes = 0;
 
         $email = getOptionalRequestValue("email", null);
-        if($email) {
+        if($email !== null) {
             $changes += dbUpdate("UPDATE users SET email = ? WHERE username = ?", $email, $username);
         }
 

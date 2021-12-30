@@ -68,4 +68,14 @@ export class ServerService {
 		return this.http.post(url, { username, password }, this.httpOptionsText);
 	}
 
+	public getDatasets() {
+		const url = this.apiUrl + "datasets/";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public createDataset(name: string, desc: string) {
+		const url = this.apiUrl + "datasets/";
+		return this.http.post(url, { name, desc }, this.httpOptionsText);
+	}
+
 }

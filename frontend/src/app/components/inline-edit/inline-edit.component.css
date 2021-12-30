@@ -9,9 +9,6 @@
 	cursor: pointer;
 	text-decoration: underline;
 }
-.view.not-set {
-	font-style: italic;
-}
 
 .edit-container {
 	position: relative;

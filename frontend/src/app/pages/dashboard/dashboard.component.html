@@ -4,7 +4,16 @@
 		<img class="icon" src="assets/img/logo/logo-black.min.svg" />
 	</div>
 	<div class="margin-left">
-		You have a <a routerLink="/datasets">{{ user?.datasets.length }} datasets</a> totaling {{ totalDatasetSize }}.
+		<span *ngIf="datasets?.length">
+			You have a <a routerLink="/datasets">{{ datasets?.length }} datasets</a>
+		</span>
+		<span *ngIf="!datasets?.length">
+			You have a no datasets
+			<button mat-raised-button color="primary" (click)="createDataset()">
+				<mat-icon>add</mat-icon>
+				<span>Create Dataset</span>
+			</button>
+		</span>
 	</div>
 </div>
 
@@ -13,7 +22,7 @@
 		<img class="icon" src="/assets/img/icons/swagger.min.svg" />
 	</div>
 	<div class="margin-left">
-		Swagger documentation:
+		Swagger API documentation:
 		<a href="{{ swaggerUrl }}">{{ swaggerUrl }}</a>
 	</div>
 </div>

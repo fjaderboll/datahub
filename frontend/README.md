@@ -14,7 +14,7 @@ Make sure `apiUrl` in `environments/environment.ts` points to your setup of the 
 npm start      # start server at http://localhost:4200
 ```
 
-## Development cheat-sheet
+## Development cheat sheet
 ```shell
 ng generate component components/InlineEdit    # create new component
 ng generate component pages/DatasetView        # create new page
@@ -28,5 +28,5 @@ ng build                                       # build for production
 * Icon library: https://fonts.google.com/icons?selected=Material+Icons
 
 ## Future improvements
-
 * Mobile friendly
+* Visualize readings in a generic graph
