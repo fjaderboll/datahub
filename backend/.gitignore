@@ -1,6 +1,6 @@
 /dist/
 vendor/
-/rest/swagger/
-/rest/swagger.json
-/rest/data/main.db
-/rest/data/datasets/
+/api/swagger/
+/api/swagger.json
+/api/data/main.db
+/api/data/datasets/
