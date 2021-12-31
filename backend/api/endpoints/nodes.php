@@ -128,10 +128,10 @@ function createNode() {
 }
 
 function getNodes() {
-    $dbNodes = dbQuery("SELECT * FROM node");
+    $dbNodes = dbQuery("SELECT * FROM e_node");
     $nodes = array();
     foreach($dbNodes as $dbNode) {
-		$node = convertFromDbObject($dbNode, array('name', 'desc'));
+		$node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'last_reading_timestamp'));
         array_push($nodes, $node);
 	}
     return $nodes;

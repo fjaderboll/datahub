@@ -68,15 +68,6 @@ registerEndpoint(Method::GET, Authorization::USER, "datasets/{name}", function($
     $dbDataset = findDataset($name);
     $dataset = convertFromDbObject($dbDataset, array('name', 'desc'));
     $dataset['size'] = filesize(getDatasetFilename($dbDataset['id']));
-
-    openDatabaseConnection($dbDataset['id']);
-
-    $dbNodes = dbQuery("SELECT * FROM e_node");
-    $dataset['nodes'] = array();
-    foreach($dbNodes as $dbNode) {
-        $node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'last_reading_timestamp'));
-        array_push($dataset['nodes'], $node);
-    }
     return $dataset;
 });
 

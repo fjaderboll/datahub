@@ -44,7 +44,33 @@ export class DatasetViewComponent implements OnInit {
 			next: (dataset: any) => {
 				this.dataset = dataset;
 				this.dataset.sizeStr = this.utils.printFilesize(this.dataset.size);
-				this.dataSource.data = this.dataset.nodes;
+
+				this.loadNodes();
+				this.loadTokens();
+			},
+			error: (e) => {
+				this.server.showHttpError(e);
+			}
+		});
+	}
+
+	private loadNodes() {
+		this.server.getDatasetNodes(this.dataset.name).subscribe({
+			next: (nodes: any) => {
+				this.dataset.nodes = nodes;
+				this.dataSource.data = nodes;
+			},
+			error: (e) => {
+				this.server.showHttpError(e);
+			}
+		});
+	}
+
+	private loadTokens() {
+		this.server.getDatasetTokens(this.dataset.name).subscribe({
+			next: (tokens: any) => {
+				this.dataset.tokens = tokens;
+				//this.dataSource.data = tokens;
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
@@ -71,9 +97,13 @@ export class DatasetViewComponent implements OnInit {
 		});
 		dialog.afterClosed().subscribe(newName => {
 			if(newName) {
-				this.loadDataset();
+				this.loadNodes();
 			}
 		});
+	}
+
+	public deleteDataset() {
+		this.utils.toastWarn("Not implemented yet");
 	}
 
 }

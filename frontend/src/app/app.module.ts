@@ -25,6 +25,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
 import { CreateDatasetDialogComponent } from './dialogs/create-dataset-dialog/create-dataset-dialog.component';
@@ -67,7 +68,8 @@ import { CreateNodeDialogComponent } from './dialogs/create-node-dialog/create-n
 	MatPaginatorModule,
 	MatSortModule,
 	MatDialogModule,
-	MatRadioModule
+	MatRadioModule,
+	MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

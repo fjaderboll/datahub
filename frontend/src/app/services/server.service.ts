@@ -93,4 +93,14 @@ export class ServerService {
 		return this.http.post(url, { name: nodeName, desc: nodeDesc }, this.httpOptionsText);
 	}
 
+	public getDatasetNodes(name: string) {
+		const url = this.apiUrl + "datasets/" + name + "/nodes";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public getDatasetTokens(name: string) {
+		const url = this.apiUrl + "datasets/" + name + "/tokens";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
 }
