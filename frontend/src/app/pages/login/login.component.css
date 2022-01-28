@@ -1,9 +1,9 @@
-.form .mat-form-field {
-	width: 100%;
+.login-container {
+	text-align: center;
 }
 
-.form > div {
-	text-align: center;
+.form .mat-form-field {
+	width: 100%;
 }
 
 .github {

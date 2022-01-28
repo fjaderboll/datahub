@@ -38,6 +38,11 @@ export class ServerService {
 		this.utils.toastError(error.message);
 	}
 
+	public getState() {
+		const url = this.apiUrl + "state/";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
 	public login(username: string, password: string) {
 		const url = this.apiUrl + "users/" + username + "/login";
 		return this.http.post(url, { password });

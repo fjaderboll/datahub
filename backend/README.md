@@ -15,7 +15,7 @@ There are two kinds of tokens:
 
 ## Development setup
 
-Swagger:
+Configure Swagger:
 
 ```shell
 sudo apt install composer
@@ -32,7 +32,30 @@ Install Apache (or Nginx or something else):
 
 ```shell
 sudo apt install apache2 php php-sqlite3
-ln -s `pwd`/api /var/www/html/datahub-api
+sudo ln -s `pwd`/api /var/www/html/datahub-api
+```
+
+Modify `/etc/apache2/sites-enabled/000-default.conf` and add below section within the `<VirtualHost *:80>` section. The `AllowOverride All` allows for the use of the `.htaccess` file.
+```
+<Directory /var/www/html>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+```
+
+Then enable the `RewriteEngine` module:
+```shell
+sudo a2enmod rewrite
+sudo service apache2 restart
+```
+
+Make sure the `api/data` directory is writeable by the PHP executor.
+```shell
+sudo chgrp www-data api/data/
+sudo chmod g+w api/data/
+ls -ld api/data/
+# drwxrwxr-x 3 fjaderboll www-data 4096 Jan 24 19:02 api/data/
 ```
 
 Now navigate to `http://localhost/datahub-api/`

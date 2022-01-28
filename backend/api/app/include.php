@@ -9,6 +9,7 @@
 	require_once(__DIR__."/request-util.php");
 	require_once(__DIR__."/request-handler.php");
 
+	require_once(__DIR__."/../endpoints/state.php");
 	require_once(__DIR__."/../endpoints/users.php");
 	require_once(__DIR__."/../endpoints/datasets.php");
 	require_once(__DIR__."/../endpoints/datasets-tokens.php");

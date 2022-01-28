@@ -26,7 +26,7 @@ function findRequestHandler($execute) {
     global $endpoints, $endpointAuth;
 
     $url = $_SERVER['REDIRECT_URL'];
-    $url = substr($url, strpos($url, '/api/') + 5);
+    $url = substr($url, strpos($url, 'api/') + 4);
     $url = rtrim($url, '/');
     $urlParts = explode('/', $url);
     $un = count($urlParts);

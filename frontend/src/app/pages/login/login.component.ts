@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CreateUserDialogComponent } from 'src/app/dialogs/create-user-dialog/create-user-dialog.component';
@@ -16,6 +15,8 @@ export class LoginComponent implements OnInit {
 	public showPassword: boolean = false;
 	public username: string = "";
 	public password: string = "";
+	public createFirstUserRequired = false;
+	public createUserAllowed = false;
 
 	constructor(
 		private router: Router,
@@ -26,6 +27,19 @@ export class LoginComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
+		this.loadState();
+	}
+
+	public loadState() {
+		this.server.getState().subscribe({
+			next: (v: any) => {
+				this.createFirstUserRequired = v.createFirstUserRequired;
+				this.createUserAllowed = v.createUserAllowed;
+			},
+			error: (e) => {
+				console.log(e);
+			}
+		});
 	}
 
 	public login() {
@@ -50,6 +64,7 @@ export class LoginComponent implements OnInit {
 			if(newUsername) {
 				this.username = newUsername;
 				this.password = "";
+				this.loadState();
 			}
 		});
 	}

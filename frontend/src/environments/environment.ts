@@ -4,7 +4,7 @@
 
 export const environment = {
 	production: false,
-	apiUrl: 'http://localhost/datahub2/backend/api/'
+	apiUrl: 'http://localhost/datahub-api/'
 };
 
 /*
