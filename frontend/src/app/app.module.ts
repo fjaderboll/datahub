@@ -36,6 +36,8 @@ import { NodeListComponent } from './pages/node-list/node-list.component';
 import { TokenListComponent } from './pages/token-list/token-list.component';
 import { ExportListComponent } from './pages/export-list/export-list.component';
 import { SensorViewComponent } from './pages/sensor-view/sensor-view.component';
+import { CreateSensorDialogComponent } from './dialogs/create-sensor-dialog/create-sensor-dialog.component';
+import { CreateTokenDialogComponent } from './dialogs/create-token-dialog/create-token-dialog.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import { SensorViewComponent } from './pages/sensor-view/sensor-view.component';
     NodeListComponent,
     TokenListComponent,
     ExportListComponent,
-    SensorViewComponent
+    SensorViewComponent,
+    CreateSensorDialogComponent,
+    CreateTokenDialogComponent
   ],
   imports: [
     BrowserModule,

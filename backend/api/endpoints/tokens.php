@@ -3,7 +3,7 @@
 /**
  * @OA\Post(
  *     path="/tokens",
- *     summary="Create new dataset token",
+ *     summary="Create new token",
  *     @OA\RequestBody(
  *         @OA\MediaType(
  *             mediaType="application/json",
@@ -16,8 +16,7 @@
  *             )
  *         )
  *     ),
- *     @OA\Response(response=200, description="OK"),
- *     @OA\Response(response=404, description="Dataset not found")
+ *     @OA\Response(response=200, description="OK")
  * )
  */
 registerEndpoint(Method::POST, Authorization::USER, Operation::WRITE, "tokens", function() {
@@ -27,7 +26,7 @@ registerEndpoint(Method::POST, Authorization::USER, Operation::WRITE, "tokens", 
     $desc = getOptionalRequestValue("desc", null);
 
     $token = createDeviceToken(getUserId());
-    dbUpdate("INSERT INTO token(token, enabled, read, write, desc) VALUES (?, ?, ?, ?, ?, ?)", $token, $enabled, $read, $write, $desc);
+    dbUpdate("INSERT INTO token(token, enabled, read, write, desc) VALUES (?, ?, ?, ?, ?)", $token, toDbBoolean($enabled), toDbBoolean($read), toDbBoolean($write), $desc);
 
     return "Token created";
 });

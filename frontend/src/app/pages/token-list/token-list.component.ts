@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { CreateNodeDialogComponent } from 'src/app/dialogs/create-node-dialog/create-node-dialog.component';
+import { CreateTokenDialogComponent } from 'src/app/dialogs/create-token-dialog/create-token-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -14,7 +15,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 	styleUrls: ['./token-list.component.css']
 })
 export class TokenListComponent implements OnInit, AfterViewInit {
-	public displayedColumns: string[] = ['name', 'sensorCount', 'lastReadingTimestamp', 'desc'];
+	public displayedColumns: string[] = ['desc', 'enabled', 'read', 'write', 'token'];
 	public dataSource = new MatTableDataSource<any>();
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
@@ -48,9 +49,9 @@ export class TokenListComponent implements OnInit, AfterViewInit {
 	}
 
 	public createToken() {
-		const dialog = this.dialog.open(CreateNodeDialogComponent);
-		dialog.afterClosed().subscribe(newUsername => {
-			if(newUsername) {
+		const dialog = this.dialog.open(CreateTokenDialogComponent);
+		dialog.afterClosed().subscribe(created => {
+			if(created) {
 				this.loadTokens();
 			}
 		});

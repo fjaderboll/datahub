@@ -8,30 +8,31 @@
 </div>
 
 <div class="mat-elevation-z8">
-	<table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
-
-		<ng-container matColumnDef="name">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-			<td mat-cell *matCellDef="let node">
-				<a routerLink="/nodes/{{ node.name }}">
-					{{ node.name }}
-				</a>
-			</td>
-		</ng-container>
-
-		<ng-container matColumnDef="sensorCount">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Sensor Count</th>
-			<td mat-cell *matCellDef="let node">{{ node.sensorCount }}</td>
-		</ng-container>
-
-		<ng-container matColumnDef="lastReadingTimestamp">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Last Reading</th>
-			<td mat-cell *matCellDef="let node" [class.not-set]="!node.lastReadingTimestamp">{{ utils.getRelativeTime(node.lastReadingTimestamp) || 'No readings' }}</td>
-		</ng-container>
+	<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDisableClear matSortDirection="asc">
 
 		<ng-container matColumnDef="desc">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
-			<td mat-cell *matCellDef="let node" [class.not-set]="!node.desc">{{ node.desc || 'Not set' }}</td>
+			<td mat-cell *matCellDef="let token" [class.not-set]="!token.desc">{{ token.desc || 'Not set' }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="enabled">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Enabled</th>
+			<td mat-cell *matCellDef="let token">{{ token.enabled }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="read">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Read</th>
+			<td mat-cell *matCellDef="let token">{{ token.read }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="write">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Write</th>
+			<td mat-cell *matCellDef="let token">{{ token.write }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="token">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Token</th>
+			<td mat-cell *matCellDef="let token">{{ token.token }}</td>
 		</ng-container>
 
 		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

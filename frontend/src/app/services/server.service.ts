@@ -94,7 +94,7 @@ export class ServerService {
 	}
 
 	public createToken(enabled: boolean, read: boolean, write: boolean, desc: string) {
-		const url = this.apiUrl + "datasets/";
+		const url = this.apiUrl + "tokens/";
 		return this.http.post(url, { enabled, read, write, desc }, this.httpOptionsText);
 	}
 
