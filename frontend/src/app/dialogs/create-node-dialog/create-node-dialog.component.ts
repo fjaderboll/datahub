@@ -30,7 +30,7 @@ export class CreateNodeDialogComponent implements OnInit {
 	}
 
 	public create() {
-		this.server.createNode(this.inputData.datasetName, this.name, this.description).subscribe({
+		this.server.createNode(this.name, this.description).subscribe({
 			next: (v: any) => {
 				this.utils.toastSuccess(v);
 				this.dialogRef.close(this.name);

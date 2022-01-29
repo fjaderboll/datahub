@@ -4,9 +4,19 @@
 		<span class="title">Datahub</span>
 	</a>
 
-	<a mat-button routerLink="/datasets" *ngIf="auth.isLoggedIn()">
-    	<mat-icon>inventory</mat-icon>
-		<span>Datasets</span>
+	<a mat-button routerLink="/nodes" *ngIf="auth.isLoggedIn()">
+    	<mat-icon>router</mat-icon>
+		<span>Nodes</span>
+	</a>
+
+	<a mat-button routerLink="/tokens" *ngIf="auth.isLoggedIn()">
+    	<mat-icon>key</mat-icon>
+		<span>Tokens</span>
+	</a>
+
+	<a mat-button routerLink="/exports" *ngIf="auth.isLoggedIn()">
+    	<mat-icon>forward_to_inbox</mat-icon>
+		<span>Exports</span>
 	</a>
 
 	<a mat-button routerLink="/users" *ngIf="auth.isAdmin()">
@@ -15,11 +25,6 @@
 	</a>
 
 	<span class="spacer"></span>
-
-	<!--<a mat-button routerLink="/login" *ngIf="showLoginLink()">
-    	<mat-icon>lock</mat-icon>
-		<span>Sign in</span>
-	</a>-->
 
 	<a mat-button routerLink="/users/{{ auth.getUsername() }}" *ngIf="auth.isLoggedIn()">
     	<mat-icon>person</mat-icon>

@@ -5,14 +5,14 @@
 		<img class="icon" src="assets/img/logo/logo-black.min.svg" />
 	</div>
 	<div class="margin-left">
-		<span *ngIf="datasets?.length">
-			You have a <a routerLink="/datasets">{{ datasets?.length }} datasets</a>
+		<span *ngIf="nodes?.length">
+			You have a <a routerLink="/nodes">{{ nodes?.length }} nodes</a>
 		</span>
-		<span *ngIf="!datasets?.length">
-			You have a no datasets
-			<button mat-raised-button color="primary" (click)="createDataset()">
+		<span *ngIf="!nodes?.length">
+			You have a no nodes
+			<button mat-raised-button color="primary" (click)="createNode()">
 				<mat-icon>add</mat-icon>
-				<span>Create Dataset</span>
+				<span>Create Node</span>
 			</button>
 		</span>
 	</div>

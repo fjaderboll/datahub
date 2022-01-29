@@ -73,38 +73,28 @@ export class ServerService {
 		return this.http.post(url, { username, password }, this.httpOptionsText);
 	}
 
-	public getDatasets() {
-		const url = this.apiUrl + "datasets/";
+	public getTokens() {
+		const url = this.apiUrl + "tokens/";
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
-	public getDataset(name: string) {
-		const url = this.apiUrl + "datasets/" + name;
-		return this.http.get(url, this.httpOptionsJson);
-	}
-
-	public updateDataset(name: string, property: string, value: any) {
-		const url = this.apiUrl + "datasets/" + name;
+	public updateToken(id: number, property: string, value: any) {
+		const url = this.apiUrl + "tokens/" + id;
 		return this.http.put(url, { [property]: value }, this.httpOptionsText);
 	}
 
-	public createDataset(name: string, desc: string) {
+	public createToken(enabled: boolean, read: boolean, write: boolean, desc: string) {
 		const url = this.apiUrl + "datasets/";
+		return this.http.post(url, { enabled, read, write, desc }, this.httpOptionsText);
+	}
+
+	public createNode(name: string, desc: string) {
+		const url = this.apiUrl + "/nodes";
 		return this.http.post(url, { name, desc }, this.httpOptionsText);
 	}
 
-	public createNode(datasetName: string, nodeName: string, nodeDesc: string) {
-		const url = this.apiUrl + "datasets/" + datasetName + "/nodes";
-		return this.http.post(url, { name: nodeName, desc: nodeDesc }, this.httpOptionsText);
-	}
-
-	public getDatasetNodes(name: string) {
-		const url = this.apiUrl + "datasets/" + name + "/nodes";
-		return this.http.get(url, this.httpOptionsJson);
-	}
-
-	public getDatasetTokens(name: string) {
-		const url = this.apiUrl + "datasets/" + name + "/tokens";
+	public getNodes() {
+		const url = this.apiUrl + "/nodes";
 		return this.http.get(url, this.httpOptionsJson);
 	}
 

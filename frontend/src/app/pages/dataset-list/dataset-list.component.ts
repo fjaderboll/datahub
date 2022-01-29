@@ -35,7 +35,7 @@ export class DatasetListComponent implements OnInit {
 	}
 
 	private loadDatasets() {
-		this.server.getDatasets().subscribe({
+		/*this.server.getDatasets().subscribe({
 			next: (v: any) => {
 				v.forEach((dataset: any) => {
 					dataset.sizeStr = this.utils.printFilesize(dataset.size);
@@ -45,7 +45,7 @@ export class DatasetListComponent implements OnInit {
 			error: (e) => {
 				this.server.showHttpError(e);
 			}
-		});
+		});*/
 	}
 
 	public createDataset() {

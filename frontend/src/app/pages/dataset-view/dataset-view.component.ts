@@ -40,7 +40,7 @@ export class DatasetViewComponent implements OnInit {
 	private loadDataset() {
 		let name = this.route.snapshot.paramMap.get('name') || 'this should never happen';
 
-		this.server.getDataset(name).subscribe({
+		/*this.server.getDataset(name).subscribe({
 			next: (dataset: any) => {
 				this.dataset = dataset;
 				this.dataset.sizeStr = this.utils.printFilesize(this.dataset.size);
@@ -51,11 +51,11 @@ export class DatasetViewComponent implements OnInit {
 			error: (e) => {
 				this.server.showHttpError(e);
 			}
-		});
+		});*/
 	}
 
 	private loadNodes() {
-		this.server.getDatasetNodes(this.dataset.name).subscribe({
+		/*this.server.getDatasetNodes(this.dataset.name).subscribe({
 			next: (nodes: any) => {
 				this.dataset.nodes = nodes;
 				this.dataSource.data = nodes;
@@ -63,11 +63,11 @@ export class DatasetViewComponent implements OnInit {
 			error: (e) => {
 				this.server.showHttpError(e);
 			}
-		});
+		});*/
 	}
 
 	private loadTokens() {
-		this.server.getDatasetTokens(this.dataset.name).subscribe({
+		/*this.server.getDatasetTokens(this.dataset.name).subscribe({
 			next: (tokens: any) => {
 				this.dataset.tokens = tokens;
 				//this.dataSource.data = tokens;
@@ -75,18 +75,18 @@ export class DatasetViewComponent implements OnInit {
 			error: (e) => {
 				this.server.showHttpError(e);
 			}
-		});
+		});*/
 	}
 
 	public changedValue(property: string, newValue: any) {
-		this.server.updateDataset(this.dataset.name, property, newValue).subscribe({
+		/*this.server.updateDataset(this.dataset.name, property, newValue).subscribe({
 			next: (response: any) => {
 				this.dataset[property] = newValue;
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
 			}
-		});
+		});*/
 	}
 
 	public createNode() {

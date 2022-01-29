@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateDatasetDialogComponent } from 'src/app/dialogs/create-dataset-dialog/create-dataset-dialog.component';
-import { AuthenticationService } from 'src/app/services/authentication.service';
+import { CreateNodeDialogComponent } from 'src/app/dialogs/create-node-dialog/create-node-dialog.component';
 import { ServerService } from 'src/app/services/server.service';
-import { UtilsService } from 'src/app/services/utils.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -13,7 +11,7 @@ import { environment } from '../../../environments/environment';
 })
 export class DashboardComponent implements OnInit {
 	public swaggerUrl: string;
-	public datasets: any;
+	public nodes: any;
 	public totalDatasetSize: string;
 
 	constructor(
@@ -23,13 +21,13 @@ export class DashboardComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.swaggerUrl = environment.apiUrl;
-		this.loadDatasets();
+		this.loadNodes();
 	}
 
-	private loadDatasets() {
-		this.server.getDatasets().subscribe({
-			next: (datasets: any) => {
-				this.datasets = datasets;
+	private loadNodes() {
+		this.server.getNodes().subscribe({
+			next: (nodes: any) => {
+				this.nodes = nodes;
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
@@ -37,11 +35,11 @@ export class DashboardComponent implements OnInit {
 		});
 	}
 
-	public createDataset() {
-		const dialog = this.dialog.open(CreateDatasetDialogComponent);
+	public createNode() {
+		const dialog = this.dialog.open(CreateNodeDialogComponent);
 		dialog.afterClosed().subscribe(newName => {
 			if(newName) {
-				this.loadDatasets();
+				this.loadNodes();
 			}
 		});
 	}
