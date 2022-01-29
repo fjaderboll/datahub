@@ -29,14 +29,9 @@
 			<td mat-cell *matCellDef="let user">{{ user.admin ? 'Yes' : 'No' }}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="datasetsCount">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Datasets</th>
-			<td mat-cell *matCellDef="let user">{{ user.datasetsCount }}</td>
-		</ng-container>
-
-		<ng-container matColumnDef="datasetsSize">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Datasets Size</th>
-			<td mat-cell *matCellDef="let user">{{ user.datasetsSizeStr }}</td>
+		<ng-container matColumnDef="databaseSize">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Database Size</th>
+			<td mat-cell *matCellDef="let user">{{ user.databaseSizeStr }}</td>
 		</ng-container>
 
 		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

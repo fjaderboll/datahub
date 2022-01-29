@@ -3,9 +3,6 @@
 $token_crypt_method = "aes128";
 $token_crypt_key = null;
 $token_crypt_iv = null;
-//$token_crypt_key = "eHke6jT6sZJhb1c0yI2JEgY6V9kQTYwZ";
-//$token_crypt_iv_length = openssl_cipher_iv_length($token_crypt_method);
-//$token_crypt_iv = hex2bin('3B2A7D2864211336363339432B2D1827'); //openssl_random_pseudo_bytes($token_crypt_iv_length);
 
 function loadCryptionKeys() {
 	global $CRYPT_KEY_FILE, $token_crypt_method, $token_crypt_key, $token_crypt_iv;

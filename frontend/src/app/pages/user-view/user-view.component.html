@@ -15,15 +15,9 @@
 		<app-inline-edit type="boolean" [value]="user?.admin" (onChange)="changedValue('admin', $event)" [disabled]="!auth.isAdmin()"></app-inline-edit>
 	</dd>
 
-	<dt>Datasets</dt>
+	<dt>Database Size</dt>
 	<dd>
-		<div>{{ user?.datasets.length }}</div>
-		<div *ngFor="let dataset of user?.datasets">
-			<span *ngIf="auth.getUsername() !== user?.username">{{ dataset.name }}</span>
-			<span *ngIf="auth.getUsername() === user?.username">
-				<a routerLink="/datasets/{{ dataset.name }}">{{ dataset.name }}</a>
-			</span>
-		</div>
+		{{ user?.databaseSizeStr }}
 	</dd>
 
 </dl>

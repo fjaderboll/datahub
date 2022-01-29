@@ -90,4 +90,3 @@ Make sure the `data` directory is writeable by the PHP executor.
 * Add Swagger authorization annotation
 * Group endpoints in Swagger (now everyone is in "default")
 * Use proper JWT for user tokens
-* Extract crypt key to separate none versioned file

@@ -29,10 +29,7 @@ export class UserViewComponent implements OnInit {
 		this.server.getUser(username).subscribe({
 			next: (user: any) => {
 				this.user = user;
-
-				this.user.datasets.forEach((dataset: any) => {
-					dataset.sizeStr = this.utils.printFilesize(dataset.size);
-				});
+				this.user.databaseSizeStr = this.utils.printFilesize(user.databaseSize);
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
