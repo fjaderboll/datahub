@@ -31,6 +31,11 @@ import { InlineEditComponent } from './components/inline-edit/inline-edit.compon
 import { CreateDatasetDialogComponent } from './dialogs/create-dataset-dialog/create-dataset-dialog.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { CreateNodeDialogComponent } from './dialogs/create-node-dialog/create-node-dialog.component';
+import { NodeViewComponent } from './pages/node-view/node-view.component';
+import { NodeListComponent } from './pages/node-list/node-list.component';
+import { TokenListComponent } from './pages/token-list/token-list.component';
+import { ExportListComponent } from './pages/export-list/export-list.component';
+import { SensorViewComponent } from './pages/sensor-view/sensor-view.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +52,12 @@ import { CreateNodeDialogComponent } from './dialogs/create-node-dialog/create-n
     InlineEditComponent,
     CreateDatasetDialogComponent,
     BreadcrumbComponent,
-    CreateNodeDialogComponent
+    CreateNodeDialogComponent,
+    NodeViewComponent,
+    NodeListComponent,
+    TokenListComponent,
+    ExportListComponent,
+    SensorViewComponent
   ],
   imports: [
     BrowserModule,

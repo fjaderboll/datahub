@@ -19,7 +19,6 @@
 	<dd>
 		{{ user?.databaseSizeStr }}
 	</dd>
-
 </dl>
 
 <div *ngIf="auth.isAdmin() && auth.getUsername() !== user?.username" class="margin-top">

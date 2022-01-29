@@ -3,7 +3,12 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DatasetListComponent } from './pages/dataset-list/dataset-list.component';
 import { DatasetViewComponent } from './pages/dataset-view/dataset-view.component';
+import { ExportListComponent } from './pages/export-list/export-list.component';
 import { LoginComponent } from './pages/login/login.component';
+import { NodeListComponent } from './pages/node-list/node-list.component';
+import { NodeViewComponent } from './pages/node-view/node-view.component';
+import { SensorViewComponent } from './pages/sensor-view/sensor-view.component';
+import { TokenListComponent } from './pages/token-list/token-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { UserViewComponent } from './pages/user-view/user-view.component';
 import { AuthGuardService } from './services/auth-guard.service';
@@ -12,6 +17,11 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'datasets', component: DatasetListComponent, canActivate: [AuthGuardService] },
   { path: 'datasets/:name', component: DatasetViewComponent, canActivate: [AuthGuardService] },
+  { path: 'nodes', component: NodeListComponent, canActivate: [AuthGuardService] },
+  { path: 'nodes/:name', component: NodeViewComponent, canActivate: [AuthGuardService] },
+  { path: 'nodes/:nodeName/sensors/:sensorName', component: SensorViewComponent, canActivate: [AuthGuardService] },
+  { path: 'tokens', component: TokenListComponent, canActivate: [AuthGuardService] },
+  { path: 'exports', component: ExportListComponent, canActivate: [AuthGuardService] },
   { path: 'users', component: UserListComponent, canActivate: [AuthGuardService] },
   { path: 'users/:username', component: UserViewComponent, canActivate: [AuthGuardService] },
   { path: '', component: DashboardComponent, canActivate: [AuthGuardService] },

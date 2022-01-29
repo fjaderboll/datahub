@@ -73,21 +73,6 @@ export class ServerService {
 		return this.http.post(url, { username, password }, this.httpOptionsText);
 	}
 
-	public getTokens() {
-		const url = this.apiUrl + "tokens/";
-		return this.http.get(url, this.httpOptionsJson);
-	}
-
-	public updateToken(id: number, property: string, value: any) {
-		const url = this.apiUrl + "tokens/" + id;
-		return this.http.put(url, { [property]: value }, this.httpOptionsText);
-	}
-
-	public createToken(enabled: boolean, read: boolean, write: boolean, desc: string) {
-		const url = this.apiUrl + "datasets/";
-		return this.http.post(url, { enabled, read, write, desc }, this.httpOptionsText);
-	}
-
 	public createNode(name: string, desc: string) {
 		const url = this.apiUrl + "/nodes";
 		return this.http.post(url, { name, desc }, this.httpOptionsText);
@@ -97,5 +82,30 @@ export class ServerService {
 		const url = this.apiUrl + "/nodes";
 		return this.http.get(url, this.httpOptionsJson);
 	}
+
+	public getNode(name: string) {
+		const url = this.apiUrl + "nodes/" + name;
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public updateNode(name: string, property: string, value: any) {
+		const url = this.apiUrl + "nodes/" + name;
+		return this.http.put(url, { [property]: value }, this.httpOptionsText);
+	}
+
+	public createToken(enabled: boolean, read: boolean, write: boolean, desc: string) {
+		const url = this.apiUrl + "datasets/";
+		return this.http.post(url, { enabled, read, write, desc }, this.httpOptionsText);
+	}
+
+	public getTokens() {
+		const url = this.apiUrl + "tokens/";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public updateToken(id: number, property: string, value: any) {
+		const url = this.apiUrl + "tokens/" + id;
+		return this.http.put(url, { [property]: value }, this.httpOptionsText);
+	}	
 
 }

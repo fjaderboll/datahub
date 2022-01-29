@@ -23,7 +23,7 @@ export class UtilsService {
 		this.toastr.error(message);
 	}
 
-	public printFilesize = function(bytes: number, decimals?: number) {
+	public printFilesize(bytes: number, decimals?: number) {
 		if(bytes == null) return '';
 		if(bytes === 0) return '0 Bytes';
 		if(bytes === 1) return '1 Byte';
@@ -35,6 +35,31 @@ export class UtilsService {
 		let i = Math.floor(Math.log(bytes) / Math.log(k));
 		let dm = decimals ? decimals : decimalArray[i];
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-	};
+	}
+
+	public toDate(timestamp: string) {
+		if(timestamp) {
+			return new Date(timestamp);
+		}
+		return null;
+	}
+
+	public getRelativeTime(timestamp: string) {
+		if(timestamp) {
+	        let time = Date.now() - new Date(timestamp).getTime();
+	        let futureDate = (time < 0);
+	        time = Math.abs(time);
+	        let multipliers = [1000, 60, 60, 24, 7, 4.32, 12, Infinity];
+	        let units = ["ms", "second", "minute", "hour", "day", "week", "month", "year"];
+
+	        for(let i = 0; i < multipliers.length; i++) {
+	            if(time < multipliers[i] || i == multipliers.length - 1) {
+	                return time + " " + units[i] + (time == 1 ? "" : "s") + " " + (futureDate ? "left" : "ago");
+	            }
+	            time /= multipliers[i];
+	        }
+		}
+		return "";
+    }
 
 }
