@@ -2,16 +2,19 @@
 
 $endpoints = array();
 $endpointAuth = array();
+$endpointOperation = array();
 
-function registerEndpoint($method, $auth, $url, $func) {
-    global $endpoints, $endpointAuth;
+function registerEndpoint($method, $auth, $operation, $url, $func) {
+    global $endpoints, $endpointAuth, $endpointOperation;
 
     if(!isset($endpoints[$method])) {
         $endpoints[$method] = array();
         $endpointAuth[$method] = array();
+        $endpointOperation[$method] = array();
     }
     $endpoints[$method][$url] = $func;
     $endpointAuth[$method][$url] = $auth;
+    $endpointOperation[$method][$url] = $operation;
 }
 
 function verifyEndpoint() {
@@ -23,7 +26,7 @@ function executeEndpoint() {
 }
 
 function findRequestHandler($execute) {
-    global $endpoints, $endpointAuth;
+    global $endpoints, $endpointAuth, $endpointOperation;
 
     $url = $_SERVER['REDIRECT_URL'];
     $url = substr($url, strpos($url, 'api/') + 4);
@@ -55,6 +58,9 @@ function findRequestHandler($execute) {
                     $auth = $endpointAuth[$method][$eUrl];
                     verifyAuthorized($auth);
 
+                    $operation = $endpointOperation[$method][$eUrl];
+                    verifyOperation($operation);
+
                     if($execute) {
                         return $eFunc(...$params);
                     } else {
@@ -67,19 +73,33 @@ function findRequestHandler($execute) {
     requestFail("Unknown request: $method $url", 404);
 }
 
-function verifyAuthorized($auth) {
-    $fail = false;
-    if($auth != Authorization::NONE) {
-        if($auth == Authorization::DATASET && !(isUser() || isDataset())) {
-            $fail = true;
-        } else if($auth == Authorization::USER && !isUser()) {
-            $fail = true;
-        } else if($auth == Authorization::ADMIN && !isAdmin()) {
-            $fail = true;
-        }
+function verifyAuthorized($endpointAuth) {
+    $ok = false;
+    $tokenAuth = getTokenAuth();
+
+    if($endpointAuth == Authorization::NONE) {
+        $ok = true;
+    } else if($endpointAuth == Authorization::DEVICE) {
+        $ok = $tokenAuth != Authorization::NONE;
+    } else {
+        $ok = $endpointAuth == $tokenAuth || $tokenAuth == Authorization::ADMIN;
     }
 
-    if($fail) {
+    if(!$ok) {
+        requestAuthFail("Not authorized");
+    }
+}
+
+function verifyOperation($operation) {
+    $ok = false;
+
+    if($operation == Operation::READ) {
+        $ok = getRead();
+    } else if($operation == Operation::WRITE) {
+        $ok = getWrite();
+    }
+
+    if(!$ok) {
         requestAuthFail("Not authorized");
     }
 }

@@ -16,9 +16,9 @@ function handleRequest() {
 
     http_response_code(500); // assume something fails, then change accordingly
 	try {
+		checkAuthAndConnectDb();
 		verifyEndpoint();
 
-		openDatabaseConnection();
 		$response = executeEndpoint();
         commitDatabaseConnection();
 

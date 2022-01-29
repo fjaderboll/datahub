@@ -1,29 +1,23 @@
 <?php
     $db = null;
-    $dbAttached = false;
 
-    function openDatabaseConnection($datasetId = null) {
-        global $DB_MAIN_FILE, $DB_SETUP_MAIN_SQL, $db, $dbAttached;
+    function openDatabaseConnection($openMain, $userId = null) {
+        global $DB_MAIN_FILE, $DB_SETUP_MAIN_SQL, $db;
 
         if(!file_exists($DB_MAIN_FILE)) {
             initBlankDatabase($DB_MAIN_FILE, $DB_SETUP_MAIN_SQL);
         }
 
         if($db == null) {
-            if(isUser()) {
+            if($openMain) {
                 $db = openDatabaseFile($DB_MAIN_FILE);
-                if($datasetId != null) {
-                    $db->exec("ATTACH DATABASE '".getDatasetFilename($datasetId)."' AS ds");
+                if($userId != null) {
+                    $db->exec("ATTACH DATABASE '".getUserDatabaseFilename($userId)."' AS ds");
                     $dbAttached = true;
                 }
-            } else if($datasetId != null || isDataset()) {
-                $db = openDatabaseFile(getDatasetFilename($datasetId));
-            } else {
-                $db = openDatabaseFile($DB_MAIN_FILE);
+            } else if($userId != null) {
+                $db = openDatabaseFile(getUserDatabaseFilename($userId));
             }
-        } else if(!$dbAttached && isUser() && $datasetId != null) {
-            $db->exec("ATTACH DATABASE '".getDatasetFilename($datasetId)."' AS ds");
-            $dbAttached = true;
         }
     }
 
@@ -46,21 +40,19 @@
         $newDb->close();
     }
 
-    function getDatasetFilename($datasetId = null) {
-        global $DB_DATASET_DIR;
-        if($datasetId == null) {
-            $datasetId = getDatasetId();
-        }
-        return $DB_DATASET_DIR.$datasetId.".db";
+    function getUserDatabaseFilename($userId = null) {
+        global $DB_USER_DIR;
+        return $DB_USER_DIR.$userId.".db";
     }
 
-    function initDatasetDatabase($datasetId) {
-        global $DB_SETUP_DATASET_SQL;
-        initBlankDatabase(getDatasetFilename($datasetId), $DB_SETUP_DATASET_SQL);
+    function initUserDatabase($userId) {
+        global $DB_USER_DIR, $DB_SETUP_USER_SQL;
+        mkdir($DB_USER_DIR);
+        initBlankDatabase(getUserDatabaseFilename($userId), $DB_SETUP_USER_SQL);
     }
 
-    function removeDatasetDatabase($datasetId) {
-        unlink(getDatasetFilename($datasetId));
+    function removeUserDatabase($userId) {
+        unlink(getUserDatabaseFilename($userId));
     }
 
     function rollbackDatabaseConnection() {

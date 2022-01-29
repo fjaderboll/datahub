@@ -212,7 +212,7 @@
 		if($intValue === null) {
 			return null;
 		} else {
-			return ($intValue != 0);
+			return boolval($intValue);
 		}
 	}
 

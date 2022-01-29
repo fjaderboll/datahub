@@ -2,5 +2,6 @@
 vendor/
 /api/swagger/
 /api/swagger.json
-/api/data/main.db
+/api/data/crypt.key
+/api/data/main.db*
 /api/data/datasets/

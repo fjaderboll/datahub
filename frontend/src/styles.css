@@ -81,3 +81,14 @@ dl.list > dd {
 dl.list > dd:empty::after {
 	content: "-";
 }
+
+.mat-icon.medium {
+	width: 48px;
+	height: 48px;
+	font-size: 48px;
+}
+.mat-icon.large {
+	width: 64px;
+	height: 64px;
+	font-size: 64px;
+}

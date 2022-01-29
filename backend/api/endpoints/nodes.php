@@ -19,8 +19,7 @@
  *     @OA\Response(response=403, description="Not authorized")
  * )
  */
-registerEndpoint(Method::POST, Authorization::DATASET, "nodes", function() {
-    verifyDatasetWrite();
+registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes", function() {
     return createNode();
 });
 
@@ -31,8 +30,7 @@ registerEndpoint(Method::POST, Authorization::DATASET, "nodes", function() {
  *     @OA\Response(response=200, description="OK")
  * )
  */
-registerEndpoint(Method::GET, Authorization::DATASET, "nodes", function() {
-    verifyDatasetRead();
+registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes", function() {
     return getNodes();
 });
 
@@ -51,8 +49,7 @@ registerEndpoint(Method::GET, Authorization::DATASET, "nodes", function() {
  *     @OA\Response(response=404, description="Node not found")
  * )
  */
-registerEndpoint(Method::GET, Authorization::DATASET, "nodes/{name}", function($name) {
-    verifyDatasetRead();
+registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{name}", function($name) {
     return getNode($name);
 });
 
@@ -80,8 +77,7 @@ registerEndpoint(Method::GET, Authorization::DATASET, "nodes/{name}", function($
  *     @OA\Response(response=404, description="Node not found")
  * )
  */
-registerEndpoint(Method::PUT, Authorization::DATASET, "nodes/{name}", function($name) {
-    verifyDatasetWrite();
+registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{name}", function($name) {
     return updateNode($name);
 });
 
@@ -100,8 +96,7 @@ registerEndpoint(Method::PUT, Authorization::DATASET, "nodes/{name}", function($
  *     @OA\Response(response=404, description="Node not found")
  * )
  */
-registerEndpoint(Method::DELETE, Authorization::DATASET, "nodes/{name}", function($name) {
-    verifyDatasetWrite();
+registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes/{name}", function($name) {
     return deleteNode($name);
 });
 

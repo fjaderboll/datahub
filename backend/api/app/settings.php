@@ -5,11 +5,13 @@
 
 	$FAIL_DELAY = 1; // seconds
 
-	$DB_MAIN_FILE  = __DIR__."/../data/main.db";
-	$DB_DATASET_DIR  = __DIR__."/../data/datasets/";
+	$DATA_DIR = __DIR__."/../data";
+	$CRYPT_KEY_FILE  = $DATA_DIR."/crypt.key";
+	$DB_MAIN_FILE  = $DATA_DIR."/main.db";
+	$DB_USER_DIR  = $DATA_DIR."/datasets/";
 
 	$DB_SETUP_MAIN_SQL  = __DIR__."/../db/setup-main.sql";
-	$DB_SETUP_DATASET_SQL  = __DIR__."/../db/setup-dataset.sql";
+	$DB_SETUP_USER_SQL  = __DIR__."/../db/setup-user.sql";
 
 	$TIMESTAMP_FORMAT_DB = "Y-m-d H:i:s";
 	$TIMESTAMP_FORMAT_JSON = "c";

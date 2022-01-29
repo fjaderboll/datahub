@@ -7,8 +7,8 @@
  *     @OA\Response(response=200, description="OK")
  * )
  */
-registerEndpoint(Method::GET, Authorization::NONE, "state", function() {
-    $userCount = dbQuerySingle("SELECT count(*) FROM users")[0];
+registerEndpoint(Method::GET, Authorization::NONE, Operation::READ, "state", function() {
+    $userCount = dbQuerySingle("SELECT count(*) FROM user")[0];
 
     return jsonEncode(array(
         "createFirstUserRequired" => ($userCount == 0),
