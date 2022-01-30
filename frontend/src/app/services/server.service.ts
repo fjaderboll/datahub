@@ -35,7 +35,11 @@ export class ServerService {
 
 	public showHttpError(error: any) {
 		console.log(error);
-		this.utils.toastError(error.message);
+		if(error.error && (typeof error.error === 'string' || error.error instanceof String)) {
+			this.utils.toastError(error.error);
+		} else {
+			this.utils.toastError(error.message);
+		}
 	}
 
 	public getState() {
@@ -74,12 +78,12 @@ export class ServerService {
 	}
 
 	public createNode(name: string, desc: string) {
-		const url = this.apiUrl + "/nodes";
+		const url = this.apiUrl + "nodes";
 		return this.http.post(url, { name, desc }, this.httpOptionsText);
 	}
 
 	public getNodes() {
-		const url = this.apiUrl + "/nodes";
+		const url = this.apiUrl + "nodes";
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
@@ -91,6 +95,11 @@ export class ServerService {
 	public updateNode(name: string, property: string, value: any) {
 		const url = this.apiUrl + "nodes/" + name;
 		return this.http.put(url, { [property]: value }, this.httpOptionsText);
+	}
+
+	public deleteNode(name: string) {
+		const url = this.apiUrl + "nodes/" + name;
+		return this.http.delete(url, this.httpOptionsText);
 	}
 
 	public createToken(enabled: boolean, read: boolean, write: boolean, desc: string) {

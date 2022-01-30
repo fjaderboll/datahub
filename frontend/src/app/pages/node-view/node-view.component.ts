@@ -1,8 +1,11 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/dialogs/confirm-dialog/confirm-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -24,7 +27,9 @@ export class NodeViewComponent implements OnInit, AfterViewInit {
 		public auth: AuthenticationService,
 		public utils: UtilsService,
 		private server: ServerService,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private dialog: MatDialog,
+		private router: Router
 	) { }
 
 	ngOnInit(): void {
@@ -51,9 +56,12 @@ export class NodeViewComponent implements OnInit, AfterViewInit {
 	}
 
 	public changedValue(property: string, newValue: any) {
-		this.server.updateNode(this.node.username, property, newValue).subscribe({
+		this.server.updateNode(this.node.name, property, newValue).subscribe({
 			next: (response: any) => {
 				this.node[property] = newValue;
+				if(property == "name") {
+					this.router.navigate(['/nodes/' + this.node.name]);
+				}
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
@@ -62,7 +70,37 @@ export class NodeViewComponent implements OnInit, AfterViewInit {
 	}
 
 	public deleteNode() {
+		let totalReadingCount = 0;
+		this.node.sensors.forEach((sensor: any) => {
+			totalReadingCount += sensor.readingCount;
+		});
 
+		const dialog = this.dialog.open(ConfirmDialogComponent, {
+			data: {
+				title: "Delete Node",
+				text: "This will remove this node and all its " + this.node.sensors.length + " sensors and all their " + totalReadingCount + " readings. Are you sure?",
+				action: new Observable(
+					observer => {
+						this.server.deleteNode(this.node.name).subscribe({
+							next: (v: any) => {
+								observer.next(v);
+							},
+							error: (e) => {
+								observer.error(e);
+							},
+							complete: () => {
+								observer.complete();
+							}
+						});
+					}
+				)
+			}
+		});
+		dialog.afterClosed().subscribe(confirmed => {
+			if(confirmed) {
+				this.router.navigate(['/nodes']);
+			}
+		});
 	}
 
 	public createSensor() {
