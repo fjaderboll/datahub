@@ -106,6 +106,11 @@ export class ServerService {
 	public updateToken(id: number, property: string, value: any) {
 		const url = this.apiUrl + "tokens/" + id;
 		return this.http.put(url, { [property]: value }, this.httpOptionsText);
-	}	
+	}
+
+	public deleteToken(id: number) {
+		const url = this.apiUrl + "tokens/" + id;
+		return this.http.delete(url, this.httpOptionsText);
+	}
 
 }

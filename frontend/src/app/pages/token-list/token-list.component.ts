@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Observable } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/dialogs/confirm-dialog/confirm-dialog.component';
 import { CreateNodeDialogComponent } from 'src/app/dialogs/create-node-dialog/create-node-dialog.component';
 import { CreateTokenDialogComponent } from 'src/app/dialogs/create-token-dialog/create-token-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
@@ -15,7 +17,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 	styleUrls: ['./token-list.component.css']
 })
 export class TokenListComponent implements OnInit, AfterViewInit {
-	public displayedColumns: string[] = ['desc', 'enabled', 'read', 'write', 'token'];
+	public displayedColumns: string[] = ['desc', 'enabled', 'read', 'write', 'token', 'actions'];
 	public dataSource = new MatTableDataSource<any>();
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
@@ -48,6 +50,17 @@ export class TokenListComponent implements OnInit, AfterViewInit {
 		});
 	}
 
+	public changedValue(token: any, property: string, newValue: any) {
+		this.server.updateToken(token.id, property, newValue).subscribe({
+			next: (response: any) => {
+				token[property] = newValue;
+			},
+			error: (e) => {
+				this.server.showHttpError(e);
+			}
+		});
+	}
+
 	public createToken() {
 		const dialog = this.dialog.open(CreateTokenDialogComponent);
 		dialog.afterClosed().subscribe(created => {
@@ -56,4 +69,34 @@ export class TokenListComponent implements OnInit, AfterViewInit {
 			}
 		});
 	}
+
+	public deleteToken(token: any) {
+		const dialog = this.dialog.open(ConfirmDialogComponent, {
+			data: {
+				title: "Delete Token",
+				text: "All devices using this token to read and write will no longer function.",
+				action: new Observable(
+					observer => {
+						this.server.deleteToken(token.id).subscribe({
+							next: (v: any) => {
+								observer.next(v);
+							},
+							error: (e) => {
+								observer.error(e);
+							},
+							complete: () => {
+								observer.complete();
+							}
+						});
+					}
+				)
+			}
+		});
+		dialog.afterClosed().subscribe(confirmed => {
+			if(confirmed) {
+				this.loadTokens();
+			}
+		});
+	}
+	
 }

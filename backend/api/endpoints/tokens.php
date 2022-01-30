@@ -79,7 +79,7 @@ registerEndpoint(Method::GET, Authorization::USER, Operation::READ, "tokens", fu
  *         )
  *     ),
  *     @OA\Response(response=200, description="OK"),
- *     @OA\Response(response=404, description="Dataset not found")
+ *     @OA\Response(response=404, description="Token not found")
  * )
  */
 registerEndpoint(Method::PUT, Authorization::USER, Operation::WRITE, "tokens/{id}", function($id) {
@@ -88,22 +88,22 @@ registerEndpoint(Method::PUT, Authorization::USER, Operation::WRITE, "tokens/{id
     $changes = 0;
 
     $enabled = getOptionalRequestValue("enabled", null);
-    if($enabled) {
+    if($enabled !== null) {
         $changes += dbUpdate("UPDATE token SET enabled = ? WHERE id = ?", toDbBoolean($enabled), $id);
     }
 
     $read = getOptionalRequestValue("read", null);
-    if($read) {
+    if($read !== null) {
         $changes += dbUpdate("UPDATE token SET read = ? WHERE id = ?", toDbBoolean($read), $id);
     }
 
     $write = getOptionalRequestValue("write", null);
-    if($write) {
+    if($write !== null) {
         $changes += dbUpdate("UPDATE token SET write = ? WHERE id = ?", toDbBoolean($write), $id);
     }
 
     $desc = getOptionalRequestValue("desc", null);
-    if($desc) {
+    if($desc !== null) {
         $changes += dbUpdate("UPDATE token SET desc = ? WHERE id = ?", $desc, $id);
     }
 
@@ -113,28 +113,28 @@ registerEndpoint(Method::PUT, Authorization::USER, Operation::WRITE, "tokens/{id
 /**
  * @OA\Delete(
  *     path="/tokens/{id}",
- *     summary="Delete dataset token",
+ *     summary="Delete token",
  *     @OA\Parameter(
- *         description="Name of dataset.",
+ *         description="Id of token.",
  *         in="path",
- *         name="name",
+ *         name="id",
  *         required=true,
  *         @OA\Schema(type="string")
  *     ),
  *     @OA\Response(response=200, description="OK"),
- *     @OA\Response(response=404, description="Dataset not found")
+ *     @OA\Response(response=404, description="Token not found")
  * )
  */
 registerEndpoint(Method::DELETE, Authorization::USER, Operation::WRITE, "tokens/{id}", function($id) {
-    $dbToken = findToken($name, $id);
+    $dbToken = findToken($id);
 
     dbUpdate("DELETE FROM token WHERE id = ?", $id);
 
-    return "Deleted dataset token";
+    return "Token deleted";
 });
 
 // ----------------------
-function findToken($datasetName, $tokenId) {
+function findToken($tokenId) {
     $dbTokens = dbQuery("SELECT * FROM token WHERE id = ?", $tokenId);
     if(count($dbTokens) == 0) {
         requestFail("Token not found", 404);

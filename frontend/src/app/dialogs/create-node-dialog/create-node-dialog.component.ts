@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -11,16 +11,12 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class CreateNodeDialogComponent implements OnInit {
 	public name: string = "";
 	public description: string = "";
-	private inputData: any;
 
 	constructor(
 		public dialogRef: MatDialogRef<CreateNodeDialogComponent>,
 		private server: ServerService,
-		private utils: UtilsService,
-		@Inject(MAT_DIALOG_DATA) public data: any
-	) {
-		this.inputData = data;
-	}
+		private utils: UtilsService
+	) { }
 
 	ngOnInit(): void {
 	}

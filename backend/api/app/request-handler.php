@@ -9,7 +9,7 @@ function handleRequest() {
 	header('Access-Control-Allow-Origin: http://localhost:4200');
 	if($method == "OPTIONS") {
 		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
-		header('Access-Control-Allow-Methods: OPTIONS, GET, POST, PUT');
+		header('Access-Control-Allow-Methods: OPTIONS, GET, POST, PUT, DELETE');
 		http_response_code(204);
 		return;
 	}
