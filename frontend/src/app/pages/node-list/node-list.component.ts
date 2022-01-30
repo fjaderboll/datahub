@@ -52,8 +52,8 @@ export class NodeListComponent implements OnInit, AfterViewInit {
 
 	public createNode() {
 		const dialog = this.dialog.open(CreateNodeDialogComponent);
-		dialog.afterClosed().subscribe(newUsername => {
-			if(newUsername) {
+		dialog.afterClosed().subscribe(newNodeName => {
+			if(newNodeName) {
 				this.loadNodes();
 			}
 		});

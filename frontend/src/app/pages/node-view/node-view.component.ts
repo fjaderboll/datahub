@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/dialogs/confirm-dialog/confirm-dialog.component';
+import { CreateSensorDialogComponent } from 'src/app/dialogs/create-sensor-dialog/create-sensor-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -104,6 +105,15 @@ export class NodeViewComponent implements OnInit, AfterViewInit {
 	}
 
 	public createSensor() {
-		
+		const dialog = this.dialog.open(CreateSensorDialogComponent, {
+			data: {
+				nodeName: this.node.name
+			}
+		});
+		dialog.afterClosed().subscribe(newSensorName => {
+			if(newSensorName) {
+				this.loadNode();
+			}
+		});
 	}
 }

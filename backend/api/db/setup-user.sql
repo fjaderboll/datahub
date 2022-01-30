@@ -70,3 +70,15 @@ SELECT n.*,
                             WHERE node_id = n.id)
        ) AS last_reading_timestamp
 FROM node n;
+
+CREATE VIEW e_sensor AS
+SELECT s.*,
+       (SELECT count(*)
+        FROM reading
+        WHERE sensor_id = s.id
+       ) AS reading_count,
+       (SELECT max(timestamp)
+        FROM reading
+        WHERE sensor_id = s.id
+       ) AS last_reading_timestamp
+FROM sensor s;

@@ -4,9 +4,9 @@ import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
-  selector: 'app-create-node-dialog',
-  templateUrl: './create-node-dialog.component.html',
-  styleUrls: ['./create-node-dialog.component.css']
+	selector: 'app-create-node-dialog',
+	templateUrl: './create-node-dialog.component.html',
+	styleUrls: ['./create-node-dialog.component.css']
 })
 export class CreateNodeDialogComponent implements OnInit {
 	public name: string = "";

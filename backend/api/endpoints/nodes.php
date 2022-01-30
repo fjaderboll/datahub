@@ -20,7 +20,14 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes", function() {
-    return createNode();
+    $name = strtolower(getMandatoryRequestValue("name"));
+    $desc = getOptionalRequestValue("desc", null);
+
+    verifyValidName($name);
+
+    dbUpdate("INSERT INTO node(name, desc) VALUES (?, ?)", $name, $desc);
+
+    return "Node $name created";
 });
 
 /**
@@ -31,7 +38,13 @@ registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes",
  * )
  */
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes", function() {
-    return getNodes();
+    $dbNodes = dbQuery("SELECT * FROM e_node");
+    $nodes = array();
+    foreach($dbNodes as $dbNode) {
+		$node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'last_reading_timestamp'));
+        array_push($nodes, $node);
+	}
+    return $nodes;
 });
 
 /**
@@ -50,7 +63,10 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes", f
  * )
  */
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{name}", function($name) {
-    return getNode($name);
+    $dbNode = findNode($name);
+    $node = convertFromDbObject($dbNode, array('name', 'desc'));
+    $node['sensors'] = getSensors($dbNode['name']);
+    return $node;
 });
 
 /**
@@ -78,7 +94,21 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{na
  * )
  */
 registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{name}", function($name) {
-    return updateNode($name);
+    $dbNode = findNode($name);
+
+    $changes = 0;
+
+    $desc = getOptionalRequestValue("desc", null);
+    if($desc) {
+        $changes += dbUpdate("UPDATE node SET desc = ? WHERE id = ?", $desc, $dbNode['id']);
+    }
+
+    $newName = getOptionalRequestValue("name", null);
+    if($newName) {
+        $changes += dbUpdate("UPDATE node SET name = ? WHERE id = ?", $newName, $dbNode['id']);
+    }
+
+    return ($changes > 0 ? "Node updated" : "Node not updated");
 });
 
 /**
@@ -97,7 +127,12 @@ registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{n
  * )
  */
 registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes/{name}", function($name) {
-    return deleteNode($name);
+    $dbNode = findNode($name);
+    dbUpdate("DELETE FROM reading WHERE sensor_id IN (SELECT id FROM sensor WHERE node_id = ?)", $dbNode['id']);
+    dbUpdate("DELETE FROM sensor WHERE node_id = ?", $dbNode['id']);
+    dbUpdate("DELETE FROM node WHERE id = ?", $dbNode['id']);
+
+    return "Deleted node ".$dbNode['name'];
 });
 
 // ----------------------
@@ -109,65 +144,4 @@ function findNode($name) {
     } else {
         return $nodes[0];
     }
-}
-
-function createNode() {
-    $name = strtolower(getMandatoryRequestValue("name"));
-    $desc = getOptionalRequestValue("desc", null);
-
-    verifyValidName($name);
-
-    dbUpdate("INSERT INTO node(name, desc) VALUES (?, ?)", $name, $desc);
-
-    return "Node $name created";
-}
-
-function getNodes() {
-    $dbNodes = dbQuery("SELECT * FROM e_node");
-    $nodes = array();
-    foreach($dbNodes as $dbNode) {
-		$node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'last_reading_timestamp'));
-        array_push($nodes, $node);
-	}
-    return $nodes;
-}
-
-function getNode($name) {
-    $dbNode = findNode($name);
-    $node = convertFromDbObject($dbNode, array('name', 'desc'));
-
-    $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ?", $dbNode['id']);
-    $node['sensors'] = array();
-    foreach($dbSensors as $dbSensor) {
-        $sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit'));
-        array_push($node['sensors'], $sensor);
-    }
-    return $node;
-}
-
-function updateNode($name) {
-    $dbNode = findNode($name);
-
-    $changes = 0;
-
-    $desc = getOptionalRequestValue("desc", null);
-    if($desc) {
-        $changes += dbUpdate("UPDATE node SET desc = ? WHERE id = ?", $desc, $dbNode['id']);
-    }
-
-    $newName = getOptionalRequestValue("name", null);
-    if($newName) {
-        $changes += dbUpdate("UPDATE node SET name = ? WHERE id = ?", $newName, $dbNode['id']);
-    }
-
-    return ($changes > 0 ? "Node updated" : "Node not updated");
-}
-
-function deleteNode($name) {
-    $dbNode = findNode($name);
-    dbUpdate("DELETE FROM reading WHERE sensor_id IN (SELECT id FROM sensor WHERE node_id = ?)", $dbNode['id']);
-    dbUpdate("DELETE FROM sensor WHERE node_id = ?", $dbNode['id']);
-    dbUpdate("DELETE FROM node WHERE id = ?", $dbNode['id']);
-
-    return "Deleted node ".$dbNode['name'];
 }

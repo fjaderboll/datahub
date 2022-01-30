@@ -122,4 +122,9 @@ export class ServerService {
 		return this.http.delete(url, this.httpOptionsText);
 	}
 
+	public createSensor(nodeName: string, name: string, desc: string) {
+		const url = this.apiUrl + "nodes/" + nodeName + "/sensors";
+		return this.http.post(url, { name, desc }, this.httpOptionsText);
+	}
+
 }
