@@ -8,7 +8,7 @@
 	$DATA_DIR = __DIR__."/../data";
 	$CRYPT_KEY_FILE  = $DATA_DIR."/crypt.key";
 	$DB_MAIN_FILE  = $DATA_DIR."/main.db";
-	$DB_USER_DIR  = $DATA_DIR."/datasets/";
+	$DB_USER_DIR  = $DATA_DIR."/users/";
 
 	$DB_SETUP_MAIN_SQL  = __DIR__."/../db/setup-main.sql";
 	$DB_SETUP_USER_SQL  = __DIR__."/../db/setup-user.sql";

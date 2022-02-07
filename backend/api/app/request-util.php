@@ -45,10 +45,3 @@
 		}
 		return $defaultValue;
 	}
-
-	function verifyDatasetModify() {
-		$dbDataset = dbQuerySingle("SELECT permission_admin FROM e_dataset WHERE id = ? AND user_id = ?", getDatasetId(), getUserId());
-		if($dbDataset['permission_admin'] == 0) {
-			requestAuthFail("Unauthorized action");
-		}
-	}

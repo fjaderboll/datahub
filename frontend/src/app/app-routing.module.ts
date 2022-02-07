@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { DatasetListComponent } from './pages/dataset-list/dataset-list.component';
-import { DatasetViewComponent } from './pages/dataset-view/dataset-view.component';
 import { ExportListComponent } from './pages/export-list/export-list.component';
 import { LoginComponent } from './pages/login/login.component';
 import { NodeListComponent } from './pages/node-list/node-list.component';
@@ -15,8 +13,6 @@ import { AuthGuardService } from './services/auth-guard.service';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'datasets', component: DatasetListComponent, canActivate: [AuthGuardService] },
-  { path: 'datasets/:name', component: DatasetViewComponent, canActivate: [AuthGuardService] },
   { path: 'nodes', component: NodeListComponent, canActivate: [AuthGuardService] },
   { path: 'nodes/:name', component: NodeViewComponent, canActivate: [AuthGuardService] },
   { path: 'nodes/:nodeName/sensors/:sensorName', component: SensorViewComponent, canActivate: [AuthGuardService] },

@@ -34,7 +34,7 @@ registerEndpoint(Method::POST, Authorization::USER, Operation::WRITE, "tokens", 
 /**
  * @OA\Get(
  *     path="/tokens",
- *     summary="List all dataset tokens",
+ *     summary="List all tokens",
  *     @OA\Response(response=200, description="OK")
  * )
  */
@@ -54,14 +54,7 @@ registerEndpoint(Method::GET, Authorization::USER, Operation::READ, "tokens", fu
 /**
  * @OA\Put(
  *     path="/token/{id}",
- *     summary="Update dataset token",
- *     @OA\Parameter(
- *         description="Name of dataset.",
- *         in="path",
- *         name="name",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
+ *     summary="Update token",
  *     @OA\Parameter(
  *         description="Id of token.",
  *         in="path",

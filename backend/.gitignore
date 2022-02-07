@@ -4,4 +4,4 @@ vendor/
 /api/swagger.json
 /api/data/crypt.key
 /api/data/main.db*
-/api/data/datasets/
+/api/data/users/

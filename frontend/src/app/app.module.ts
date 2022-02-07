@@ -4,8 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './pages/login/login.component';
-import { DatasetViewComponent } from './pages/dataset-view/dataset-view.component';
-import { DatasetListComponent } from './pages/dataset-list/dataset-list.component';
 import { UserViewComponent } from './pages/user-view/user-view.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -28,7 +26,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
-import { CreateDatasetDialogComponent } from './dialogs/create-dataset-dialog/create-dataset-dialog.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { CreateNodeDialogComponent } from './dialogs/create-node-dialog/create-node-dialog.component';
 import { NodeViewComponent } from './pages/node-view/node-view.component';
@@ -44,8 +41,6 @@ import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.
   declarations: [
     AppComponent,
     LoginComponent,
-    DatasetViewComponent,
-    DatasetListComponent,
     UserViewComponent,
     UserListComponent,
     HeaderComponent,
@@ -53,7 +48,6 @@ import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.
     DashboardComponent,
     CreateUserDialogComponent,
     InlineEditComponent,
-    CreateDatasetDialogComponent,
     BreadcrumbComponent,
     CreateNodeDialogComponent,
     NodeViewComponent,

@@ -52,7 +52,7 @@ Automatic export to another system can also be set up.
 ## File structure
 This project consist of two separate parts:
 
-* The frontend (see [frontend/README.md](frontend/README.md)) is only for convenient management of users and datasets and for viewing data
+* The frontend (see [frontend/README.md](frontend/README.md)) is only for convenient management of users and tokens and for viewing data
 * The backend (see [backend/README.md](backend/README.md)) is where it all happens
 
 ## Future improvements

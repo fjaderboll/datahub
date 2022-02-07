@@ -4,14 +4,14 @@ documentation and a `.htaccess` file for redirecting all
 non-Swagger requests to `main.php`.
 
 ## Data storage and separation
-All user and setup data is stored in an SQLite3 database named `main.db`.
+List of users and generic stuff is stored in an SQLite3 database named `main.db`.
 
-The dataset's data is stored in individual databases, improving
-concurrent read and write since one dataset is never locking another dataset.
+The user's data (nodes, sensors, readings) is stored in individual databases, improving
+concurrent read and write since different user's actions are never accessing the same database.
 
 There are two kinds of tokens:
-* *user token* - will give full access to all the user's datasets, but do expire. Mainly for administration.
-* *dataset tokens* - can only read and/or write in the dataset they belong to, and do not expire, hence this is the token to be used in your IoT devices.
+* *user token* - will give full access to all the user's data, but do expire. Mainly for administration.
+* *device tokens* - can only read and/or write in their user's data, and do not expire, hence this is the token to be used in your IoT devices.
 
 ## Development setup
 
@@ -82,7 +82,7 @@ Make sure the `data` directory is writeable by the PHP executor.
 
 ## Future improvements
 * Retention policy:
-    * Per dataset
+    * Per user database
     * Maximum 1.000.000 entries (configurable)
     * Entry = nodes, sensors, readings, tokens
     * Every X:th (on average) POST request, delete readings to get below maximum

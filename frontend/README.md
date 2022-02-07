@@ -17,7 +17,7 @@ npm start      # start server at http://localhost:4200
 ## Development cheat sheet
 ```shell
 ng generate component components/InlineEdit    # create new component
-ng generate component pages/DatasetView        # create new page
+ng generate component pages/SensorView         # create new page
 ng generate component dialogs/CreateUserDialog # create new dialog
 ng generate service services/Authentication    # create new service
 ng add @angular/material                       # add Angular Material
