@@ -50,6 +50,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 	color: gray;
 }
 
+.relative-time {
+	padding-left: 5px;
+	padding-right: 5px;
+	font-style: italic;
+	color: gray;
+}
+
 a {
 	color: blue;
 	text-decoration: none;

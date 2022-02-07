@@ -34,10 +34,7 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings", function($nodeName, $sensorName) {
-    $value = getMandatoryRequestValue("value");
-    $timestamp = getOptionalRequestValue("timestamp", null);
-
-    createReading($nodeName, $sensorName, $value, $timestamp);
+    createReading($nodeName, $sensorName);
     return "Reading created";
 });
 
@@ -103,10 +100,24 @@ registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes
 });
 
 // ----------------------
-function createReading($nodeName, $sensorName, $value, $timestamp) {
+function createReading($nodeName, $sensorName) {
+    $value = getMandatoryRequestValue("value");
+    $timestamp = getOptionalRequestValue("timestamp", date('c', time()));
+    $offset = getOptionalRequestValue("offset", 0); // seconds
+
     $dbSensor = findSensor($nodeName, $sensorName);
 
-    dbUpdate("INSERT INTO reading(sensor_id, value, timestamp) VALUES (?, ?, ?)", $dbSensor['id'], $value, $timestamp);
+    $unixTime = strtotime($timestamp);
+    if($unixTime === false) {
+        requestParameterFail("Invalid timestamp: $timestamp");
+    }
+    if(!is_numeric($offset)) {
+        requestParameterFail("Invalid offset: $offset");
+    }
+    $unixTime += $offset;
+    $validatedTimestamp = date('c', $unixTime);
+
+    dbUpdate("INSERT INTO reading(sensor_id, value, timestamp) VALUES (?, ?, ?)", $dbSensor['id'], $value, $validatedTimestamp);
     return dbGetLastId();
 }
 

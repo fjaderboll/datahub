@@ -118,6 +118,7 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 	public deleteReading(reading: any) {
 		this.server.deleteReading(this.nodeName, this.sensorName, reading.id).subscribe({
 			next: (response: any) => {
+				this.loadSensor();
 				this.loadReadings();
 			},
 			error: (e) => {

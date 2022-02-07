@@ -161,13 +161,13 @@
 		$newObject = array();
 		foreach($attrToKeep as $attr) {
 			$newAttr = underscoreToCamelCase($attr);
-			if(strpos($attr, "timestamp") !== false && $dbObject[$attr] != null) {
-				// 2017-12-02 08:00:21 -> 2017-12-02T08:00:21.0Z
-				$date = DateTime::createFromFormat($TIMESTAMP_FORMAT_DB, $dbObject[$attr]);
-				$newObject[$newAttr] = $date->format($TIMESTAMP_FORMAT_JSON);
-			} else {
+			//if(strpos($attr, "timestamp") !== false && $dbObject[$attr] != null) {
+			//	// 2017-12-02 08:00:21 -> 2017-12-02T08:00:21.0Z
+			//	$date = DateTime::createFromFormat($TIMESTAMP_FORMAT_DB, $dbObject[$attr]);
+			//	$newObject[$newAttr] = $date->format($TIMESTAMP_FORMAT_JSON);
+			//} else {
 				$newObject[$newAttr] = $dbObject[$attr];
-			}
+			//}
 		}
 		return $newObject;
 	}

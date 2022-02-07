@@ -44,6 +44,14 @@ export class UtilsService {
 		return null;
 	}
 
+	public printTimestamp(timestamp: string) {
+		let date = this.toDate(timestamp);
+		if(date) {
+			return date.toLocaleString("sv-SE");
+		}
+		return null;
+	}
+
 	public getRelativeTime(timestamp: string) {
 		if(timestamp) {
 	        let time = Date.now() - new Date(timestamp).getTime();
@@ -53,8 +61,9 @@ export class UtilsService {
 	        let units = ["ms", "second", "minute", "hour", "day", "week", "month", "year"];
 
 	        for(let i = 0; i < multipliers.length; i++) {
-	            if(time < multipliers[i] || i == multipliers.length - 1) {
-	                return time + " " + units[i] + (time == 1 ? "" : "s") + " " + (futureDate ? "left" : "ago");
+				let t = Math.floor(time);
+	            if(t < multipliers[i] || i == multipliers.length - 1) {
+	                return t + " " + units[i] + (t == 1 ? "" : "s") + " " + (futureDate ? "left" : "ago");
 	            }
 	            time /= multipliers[i];
 	        }
