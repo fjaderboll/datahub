@@ -23,7 +23,7 @@
  *     ),
  *     @OA\Response(response=200, description="OK"),
  *     @OA\Response(response=400, description="Invalid name"),
- *     @OA\Response(response=403, description="Not authorized")
+ *     @OA\Response(response=403, description="Not authorized"),
  *     @OA\Response(response=404, description="Node not found")
  * )
  */
@@ -50,7 +50,7 @@ registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{
  *         required=true,
  *         @OA\Schema(type="string")
  *     ),
- *     @OA\Response(response=200, description="OK")
+ *     @OA\Response(response=200, description="OK"),
  *     @OA\Response(response=404, description="Node not found")
  * )
  */
@@ -82,7 +82,7 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{no
  */
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{nodeName}/sensors/{sensorName}", function($nodeName, $sensorName) {
     $dbSensor = findSensor($nodeName, $sensorName);
-    $sensor = convertFromDbObject($dbSensor, array('name', 'desc'));
+    $sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'reading_count', 'last_reading_timestamp'));
     return $sensor;
 });
 
@@ -171,7 +171,7 @@ function findSensor($nodeName, $sensorName) {
     $sensorName = strtolower($sensorName);
 
     $dbNode = findNode($nodeName);
-    $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ? AND name = ?", $dbNode['id'], $sensorName);
+    $dbSensors = dbQuery("SELECT * FROM e_sensor WHERE node_id = ? AND name = ?", $dbNode['id'], $sensorName);
     if(count($dbSensors) == 0) {
         requestFail("Sensor not found", 404);
     } else {

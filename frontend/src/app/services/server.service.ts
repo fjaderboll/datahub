@@ -127,4 +127,29 @@ export class ServerService {
 		return this.http.post(url, { name, desc }, this.httpOptionsText);
 	}
 
+	public getSensor(nodeName: string, sensorName: string) {
+		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName;
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public updateSensor(nodeName: string, sensorName: string, property: string, value: any) {
+		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName;
+		return this.http.put(url, { [property]: value }, this.httpOptionsText);
+	}
+
+	public deleteSensor(nodeName: string, sensorName: string) {
+		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName;
+		return this.http.delete(url, this.httpOptionsText);
+	}
+
+	public getReadings(nodeName: string, sensorName: string) {
+		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName + "/readings";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public deleteReading(nodeName: string, sensorName: string, readingId: number) {
+		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName + "/readings/" + readingId;
+		return this.http.delete(url, this.httpOptionsText);
+	}
+
 }

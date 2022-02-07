@@ -17,3 +17,4 @@
 	//require_once(__DIR__."/../endpoints/datasets-nodes.php");
 	require_once(__DIR__."/../endpoints/nodes.php");
 	require_once(__DIR__."/../endpoints/sensors.php");
+	require_once(__DIR__."/../endpoints/readings.php");

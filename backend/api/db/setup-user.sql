@@ -82,3 +82,12 @@ SELECT s.*,
         WHERE sensor_id = s.id
        ) AS last_reading_timestamp
 FROM sensor s;
+
+CREATE VIEW e_reading AS
+SELECT n.name AS node_name,
+       s.node_id,
+       s.name AS sensor_name,
+       r.*
+FROM reading r
+JOIN sensor s ON s.id = r.sensor_id
+JOIN node n ON n.id = s.node_id;
