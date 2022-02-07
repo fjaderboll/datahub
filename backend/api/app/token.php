@@ -182,8 +182,8 @@ function getUserExpire() {
 }
 
 function getUserId() {
-	global $tokenId;
-	return $tokenId;
+	global $tokenUserId;
+	return $tokenUserId;
 }
 
 function getRead() {

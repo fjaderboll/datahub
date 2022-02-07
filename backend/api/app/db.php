@@ -10,18 +10,21 @@
 
         if($db == null) {
             if($openMain) {
-                $db = openDatabaseFile($DB_MAIN_FILE);
+                $db = openDatabaseFile($DB_MAIN_FILE, true);
                 if($userId != null) {
                     $db->exec("ATTACH DATABASE '".getUserDatabaseFilename($userId)."' AS ds");
                     $dbAttached = true;
                 }
-            } else if($userId != null) {
-                $db = openDatabaseFile(getUserDatabaseFilename($userId));
+            } else if($userId !== null) {
+                $db = openDatabaseFile(getUserDatabaseFilename($userId), true);
             }
         }
     }
 
-    function openDatabaseFile($file) {
+    function openDatabaseFile($file, $existingDatabase) {
+        if($existingDatabase && !file_exists($file)) {
+            throw new Exception("Cannot open non-existing database: $file");
+        }
         $localDb = new SQLite3($file);
         $localDb->enableExceptions(true);
         $localDb->busyTimeout(3000);
@@ -34,7 +37,7 @@
     function initBlankDatabase($dbFile, $setupSqlFile) {
         $sql = file_get_contents($setupSqlFile);
 
-        $newDb = openDatabaseFile($dbFile);
+        $newDb = openDatabaseFile($dbFile, false);
         $newDb->exec($sql);
         $newDb->exec("COMMIT");
         $newDb->close();
