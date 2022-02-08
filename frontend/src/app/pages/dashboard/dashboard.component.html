@@ -19,7 +19,7 @@
 
 		<ng-container matColumnDef="nodeName">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Node</th>
-			<td mat-cell *matCellDef="let reading">
+			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
 				<a routerLink="/nodes/{{ reading.nodeName }}">
 					{{ reading.nodeName }}
 				</a>
@@ -28,7 +28,7 @@
 
 		<ng-container matColumnDef="sensorName">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Sensor</th>
-			<td mat-cell *matCellDef="let reading">
+			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
 				<a routerLink="/nodes/{{ reading.nodeName }}/sensors/{{ reading.sensorName }}">
 					{{ reading.sensorName }}
 				</a>
@@ -37,7 +37,7 @@
 
 		<ng-container matColumnDef="timestamp">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
-			<td mat-cell *matCellDef="let reading">
+			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
 				<span>{{ utils.printTimestamp(reading.timestamp) }}</span>
 				<span class="relative-time">{{ utils.getRelativeTime(reading.timestamp) }}</span>
 			</td>
@@ -45,7 +45,7 @@
 
         <ng-container matColumnDef="value">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
-			<td mat-cell *matCellDef="let reading">
+			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
 				{{ reading.value }}
 			</td>
 		</ng-container>

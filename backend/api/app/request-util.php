@@ -26,22 +26,29 @@
 	}
 
 	function getOptionalRequestValue($var, $defaultValue) {
+		$datas = array();
+
 		if(isset($_SERVER["CONTENT_TYPE"]) && $_SERVER["CONTENT_TYPE"] == "application/json") {
-			$data = jsonDecode(file_get_contents('php://input'));
-		} else { // application/x-www-form-urlencoded
-			$method = $_SERVER['REQUEST_METHOD'];
-			if($method == Method::GET) {
-				$data = $_GET;
-			} else if($method == Method::POST) {
-				$data = $_POST;
-			} else if($method == Method::PUT) {
-				parse_str(file_get_contents("php://input"), $data);
-			} else {
-				$data = $_REQUEST;
-			}
+			array_push($datas, jsonDecode(file_get_contents('php://input')));
 		}
-		if(isset($data[$var]) && $data[$var] !== null) {
-			return $data[$var];
+		
+		// application/x-www-form-urlencoded
+		$method = $_SERVER['REQUEST_METHOD'];
+		if($method == Method::GET) {
+			array_push($datas, $_GET);
+		} else if($method == Method::POST) {
+			array_push($datas, $_POST);
+		} else if($method == Method::PUT) {
+			parse_str(file_get_contents("php://input"), $data);
+			array_push($datas, $data);
+		} else {
+			array_push($datas, $_REQUEST);
+		}
+		
+		foreach($datas as $data) {
+			if(isset($data[$var]) && $data[$var] !== null) {
+				return $data[$var];
+			}
 		}
 		return $defaultValue;
 	}

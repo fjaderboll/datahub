@@ -100,3 +100,11 @@ dl.list > dd:empty::after {
 	height: 64px;
 	font-size: 64px;
 }
+
+.animate-new-item {
+	animation: fade-out-bg 10s;
+}
+@keyframes fade-out-bg {
+    from { background-color: #3cd350; }
+    to   { background-color: white; }
+}

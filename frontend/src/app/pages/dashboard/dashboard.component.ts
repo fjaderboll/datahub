@@ -16,6 +16,7 @@ import { environment } from '../../../environments/environment';
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	public swaggerUrl: string;
 	public nodes: any;
+	private readings: any;
 	public sensorCount: number;
 	
 	public autoReload = true;
@@ -84,12 +85,21 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private loadReadings() {
 		this.server.getReadings(10).subscribe({
-			next: (readings: any) => {
-				this.dataSource.data = readings;
+			next: (newReadings: any) => {
+				if(this.readings) {
+					newReadings.forEach((nr: any) => {
+						nr.new = !this.readings.some((r: any) => {
+							return nr.id == r.id;
+						});
+					});
+				}
+				this.dataSource.data = newReadings;
+				this.readings = newReadings;
 				this.startReadingsTimer();
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
+				this.autoReload = false;
 			}
 		});
 	}

@@ -157,7 +157,10 @@ function createDeviceToken($userId) {
 }
 
 function obfuscateId($id) {
-	$mask = 10101;
+	if(!is_numeric($id)) {
+		throw new Exception("Invalid number to obfuscate: $id");
+	}
+	$mask = 1010;
 	return $id ^ $mask; // will always be unique for every input number (and reversible using same method)
 }
 
