@@ -24,6 +24,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatCheckboxModule } from '@angular/material/checkbox'; 
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
@@ -79,7 +80,8 @@ import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.
 	MatSortModule,
 	MatDialogModule,
 	MatRadioModule,
-	MatTabsModule
+	MatTabsModule,
+  MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

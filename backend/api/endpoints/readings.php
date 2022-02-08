@@ -56,12 +56,63 @@ registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{
  *         required=true,
  *         @OA\Schema(type="string")
  *     ),
+ *     @OA\Parameter(
+ *         description="Limit result to this number of readings (or use 'none' for all readings)",
+ *         in="query",
+ *         name="limit",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
  *     @OA\Response(response=200, description="OK"),
  *     @OA\Response(response=404, description="Sensor not found")
  * )
  */
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{nodeName}/sensors/{sensorName}/readings", function($nodeName, $sensorName) {
     return getReadings($nodeName, $sensorName);
+});
+
+/**
+ * @OA\Get(
+ *     path="/nodes/{nodeName}/readings",
+ *     summary="List all readings from all sensors on the node",
+ *     @OA\Parameter(
+ *         description="Name of node.",
+ *         in="path",
+ *         name="nodeName",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         description="Limit result to this number of readings (or use 'none' for all readings)",
+ *         in="query",
+ *         name="limit",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=404, description="Node not found")
+ * )
+ */
+registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{nodeName}/readings", function($nodeName) {
+    return getReadings($nodeName, null);
+});
+
+/**
+ * @OA\Get(
+ *     path="/readings",
+ *     summary="List all readings from all sensors on all nodes",
+ *     @OA\Parameter(
+ *         description="Limit result to this number of readings (or use 'none' for all readings)",
+ *         in="query",
+ *         name="limit",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(response=200, description="OK")
+ * )
+ */
+registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "readings", function() {
+    return getReadings(null, null);
 });
 
 /**
@@ -112,7 +163,7 @@ function createReading($nodeName, $sensorName) {
         requestParameterFail("Invalid timestamp: $timestamp");
     }
     if(!is_numeric($offset)) {
-        requestParameterFail("Invalid offset: $offset");
+        requestParameterFail("Invalid offset: $offset (not a valid number)");
     }
     $unixTime += $offset;
     $validatedTimestamp = date('c', $unixTime);
@@ -124,13 +175,15 @@ function createReading($nodeName, $sensorName) {
 function getReadings($nodeName, $sensorName) {
     $additionalSql = ' ORDER BY "timestamp" DESC ';
 
-    $limit = getOptionalRequestValue("limit", "none");
-    if($limit === "none") {
+    $limit = getOptionalRequestValue("limit", null);
+    if($limit === null) {
+        $additionalSql .= "LIMIT 100";
+    } else if($limit === "none") {
         $additionalSql .= "LIMIT -1";
     } else if(ctype_digit($limit)) {
         $additionalSql .= "LIMIT $limit";
     } else {
-        $additionalSql .= "LIMIT 10";
+        requestParameterFail("Invalid offset: $offset (must be an integer or 'none'");
     }
 
     if($sensorName != null) {

@@ -21,7 +21,6 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 	public sensorName: string;
 	public sensor: any;
 
-
 	public displayedColumns: string[] = ['timestamp', 'value', 'actions'];
 	public dataSource = new MatTableDataSource<any>();
 	@ViewChild(MatPaginator) paginator: MatPaginator;
@@ -61,7 +60,7 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 	}
 
 	private loadReadings() {
-		this.server.getReadings(this.nodeName, this.sensorName).subscribe({
+		this.server.getSensorReadings(this.nodeName, this.sensorName).subscribe({
 			next: (readings: any) => {
 				this.dataSource.data = readings;
 			},
