@@ -32,11 +32,7 @@ registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{
     $name = strtolower(getMandatoryRequestValue("name"));
     $desc = getOptionalRequestValue("desc", null);
 
-    verifyValidName($name);
-
-    dbUpdate("INSERT INTO sensor(node_id, name, desc) VALUES (?, ?, ?)", $dbNode['id'], $name, $desc);
-
-    return "Sensor $name created";
+	return createSensor($dbNode['id'], $name, $desc);
 });
 
 /**
@@ -166,6 +162,15 @@ registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes
 });
 
 // ----------------------
+function createSensor($nodeId, $name, $desc) {
+	$name = strtolower($name);
+	verifyValidName($name);
+
+    dbUpdate("INSERT INTO sensor(node_id, name, desc) VALUES (?, ?, ?)", $nodeId, $name, $desc);
+
+    return "Sensor $name created";
+}
+
 function findSensor($nodeName, $sensorName) {
     $nodeName = strtolower($nodeName);
     $sensorName = strtolower($sensorName);
@@ -177,6 +182,19 @@ function findSensor($nodeName, $sensorName) {
     } else {
         return $dbSensors[0];
     }
+}
+
+function findOrCreateSensor($nodeName, $sensorName) {
+    $nodeName = strtolower($nodeName);
+    $sensorName = strtolower($sensorName);
+
+    $dbNode = findOrCreateNode($nodeName);
+    $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ? AND name = ?", $dbNode['id'], $sensorName);
+    if(count($dbSensors) == 0) {
+        createSensor($dbNode['id'], $sensorName, null);
+		$dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ? AND name = ?", $dbNode['id'], $sensorName);
+    }
+    return $dbSensors[0];
 }
 
 function getSensors($nodeName) {

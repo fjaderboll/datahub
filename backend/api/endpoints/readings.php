@@ -156,7 +156,7 @@ function createReading($nodeName, $sensorName) {
     $timestamp = getOptionalRequestValue("timestamp", date('c', time()));
     $offset = getOptionalRequestValue("offset", 0); // seconds
 
-    $dbSensor = findSensor($nodeName, $sensorName);
+    $dbSensor = findOrCreateSensor($nodeName, $sensorName);
 
     $unixTime = strtotime($timestamp);
     if($unixTime === false) {

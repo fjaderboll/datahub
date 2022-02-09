@@ -113,7 +113,7 @@ dl.list > dd:empty::after {
 	animation: fade-out-bg 10s;
 }
 @keyframes fade-out-bg {
-    from { background-color: #3cd350; }
+    from { background-color: #8ba0d8; }
     to   { background-color: white; }
 }
 

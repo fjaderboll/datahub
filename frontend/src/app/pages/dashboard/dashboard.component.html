@@ -37,8 +37,7 @@
 			<span>
 				You can push a new reading like this:<br/>
 				<pre class="shell">curl -X POST \
-    -H "Authorization: <b [class.fail]="!tokens?.length">{{ tokens?.length ? tokens[0].token : 'your.token' }}</b>" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
+    -H "Authorization: Bearer <b [class.fail]="!tokens?.length">{{ tokens?.length ? tokens[0].token : 'your.token' }}</b>" \
     -d "value=<b>123</b>" \
     {{ swaggerUrl }}nodes/<b [class.fail]="!nodes?.length">{{ nodes?.length ? nodes[0].name : 'bedroom' }}</b>/sensors/<b [class.fail]="!sensorCount">{{ node?.sensors.length ? node.sensors[0].name : 'temperature' }}</b>/readings</pre>
 			</span>

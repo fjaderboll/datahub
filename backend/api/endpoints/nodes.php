@@ -20,14 +20,9 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes", function() {
-    $name = strtolower(getMandatoryRequestValue("name"));
+	$name = strtolower(getMandatoryRequestValue("name"));
     $desc = getOptionalRequestValue("desc", null);
-
-    verifyValidName($name);
-
-    dbUpdate("INSERT INTO node(name, desc) VALUES (?, ?)", $name, $desc);
-
-    return "Node $name created";
+    return createNode($name, $desc);
 });
 
 /**
@@ -136,6 +131,15 @@ registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes
 });
 
 // ----------------------
+function createNode($name, $desc) {
+    $name = strtolower($name);
+    verifyValidName($name);
+
+    dbUpdate("INSERT INTO node(name, desc) VALUES (?, ?)", $name, $desc);
+
+    return "Node $name created";
+}
+
 function findNode($name) {
     $name = strtolower($name);
     $nodes = dbQuery("SELECT * FROM node WHERE name = ?", $name);
@@ -144,4 +148,14 @@ function findNode($name) {
     } else {
         return $nodes[0];
     }
+}
+
+function findOrCreateNode($name) {
+    $name = strtolower($name);
+    $nodes = dbQuery("SELECT * FROM node WHERE name = ?", $name);
+    if(count($nodes) == 0) {
+        createNode($name, null);
+        $nodes = dbQuery("SELECT * FROM node WHERE name = ?", $name);
+    }
+	return $nodes[0];
 }
