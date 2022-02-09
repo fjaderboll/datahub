@@ -4,6 +4,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { CreateNodeDialogComponent } from 'src/app/dialogs/create-node-dialog/create-node-dialog.component';
+import { CreateSensorDialogComponent } from 'src/app/dialogs/create-sensor-dialog/create-sensor-dialog.component';
+import { CreateTokenDialogComponent } from 'src/app/dialogs/create-token-dialog/create-token-dialog.component';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { environment } from '../../../environments/environment';
@@ -16,7 +18,9 @@ import { environment } from '../../../environments/environment';
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	public swaggerUrl: string;
 	public nodes: any;
-	private readings: any;
+	public node: any;
+	public tokens: any;
+	public readings: any = [];
 	public sensorCount: number;
 	
 	public autoReload = true;
@@ -40,6 +44,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	ngOnInit(): void {
 		this.swaggerUrl = environment.apiUrl;
 		this.loadNodes();
+		this.loadTokens();
 
 		this.updateTimer = setInterval(() => {
 			this.secondsLeft = Math.ceil(this.getTimeLeft() / 1000);
@@ -75,7 +80,33 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.sensorCount = 0;
 				nodes.forEach((node: any) => {
 					this.sensorCount += node.sensorCount;
+					if(node.sensorCount > 0 && !this.node) {
+						this.loadNode(node.name);
+					}
 				});
+			},
+			error: (e) => {
+				this.server.showHttpError(e);
+			}
+		});
+	}
+
+	private loadNode(name: string) {
+		this.server.getNode(name).subscribe({
+			next: (node: any) => {
+				this.node = node;
+				this.dataSource.data = node.sensors;
+			},
+			error: (e) => {
+				this.server.showHttpError(e);
+			}
+		});
+	}
+
+	private loadTokens() {
+		this.server.getTokens().subscribe({
+			next: (tokens: any) => {
+				this.tokens = tokens;
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
@@ -86,7 +117,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	private loadReadings() {
 		this.server.getReadings(10).subscribe({
 			next: (newReadings: any) => {
-				if(this.readings) {
+				if(this.readings.length) {
 					newReadings.forEach((nr: any) => {
 						nr.new = !this.readings.some((r: any) => {
 							return nr.id == r.id;
@@ -128,6 +159,28 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 		dialog.afterClosed().subscribe(newName => {
 			if(newName) {
 				this.loadNodes();
+			}
+		});
+	}
+
+	public createSensor() {
+		const dialog = this.dialog.open(CreateSensorDialogComponent, {
+			data: {
+				nodeName: this.nodes[0].name
+			}
+		});
+		dialog.afterClosed().subscribe(newSensorName => {
+			if(newSensorName) {
+				this.loadNodes();
+			}
+		});
+	}
+
+	public createToken() {
+		const dialog = this.dialog.open(CreateTokenDialogComponent);
+		dialog.afterClosed().subscribe(created => {
+			if(created) {
+				this.loadTokens();
 			}
 		});
 	}

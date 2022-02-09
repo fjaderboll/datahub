@@ -90,6 +90,11 @@ dl.list > dd:empty::after {
 	content: "-";
 }
 
+.mat-icon.small {
+	width: 32px;
+	height: 32px;
+	font-size: 32px;
+}
 .mat-icon.medium {
 	width: 48px;
 	height: 48px;
@@ -100,6 +105,9 @@ dl.list > dd:empty::after {
 	height: 64px;
 	font-size: 64px;
 }
+.mat-icon.success {
+	color: #268132;
+}
 
 .animate-new-item {
 	animation: fade-out-bg 10s;
@@ -107,4 +115,14 @@ dl.list > dd:empty::after {
 @keyframes fade-out-bg {
     from { background-color: #3cd350; }
     to   { background-color: white; }
+}
+
+pre.shell {
+	background-color: #444;
+	color: white;
+	padding: 5px;
+	border-radius: 4px;
+}
+pre.shell .fail {
+	color: #ec7c7c;
 }

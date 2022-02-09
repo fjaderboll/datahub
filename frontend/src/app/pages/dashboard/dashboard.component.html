@@ -1,66 +1,100 @@
 <app-breadcrumb [links]="[]" [names]="[]"></app-breadcrumb>
 
-<div>
-	<span *ngIf="nodes?.length">
-		You have a <a routerLink="/nodes">{{ nodes?.length }} nodes</a>
-		and {{ sensorCount }} sensors
-	</span>
-	<span *ngIf="!nodes?.length">
-		You have a no nodes
-		<button mat-raised-button color="primary" (click)="createNode()">
-			<mat-icon>add</mat-icon>
-			<span>Create Node</span>
-		</button>
-	</span>
+<div *ngIf="!readings?.length">
+	<h2>Getting started</h2>
+	<ol>
+		<li>
+			<span *ngIf="tokens?.length">
+				You have <a routerLink="/tokens">{{ tokens?.length }} token{{ tokens?.length == 1 ? '': 's' }}</a>
+				<mat-icon class="small success">done</mat-icon>
+			</span>
+			<span *ngIf="!tokens?.length">
+				Create a token for your devices
+				<button mat-raised-button color="primary" (click)="createToken()">
+					<mat-icon>add</mat-icon>
+					<span>Create Token</span>
+				</button>
+			</span>
+		</li>
+		<li>
+			<span *ngIf="nodes?.length">
+				You have <a routerLink="/nodes">{{ nodes?.length }} node{{ nodes?.length == 1 ? '': 's' }}</a> and {{ sensorCount }} sensor{{ sensorCount == 1 ? '': 's' }}
+				<mat-icon *ngIf="sensorCount" class="small success">done</mat-icon>
+				<button *ngIf="!sensorCount" mat-raised-button color="primary" (click)="createSensor()">
+					<mat-icon>add</mat-icon>
+					<span>Create Sensor</span>
+				</button>
+			</span>
+			<span *ngIf="!nodes?.length">
+				Optionally your can pre-configure your nodes and sensors
+				<button mat-raised-button color="primary" (click)="createNode()">
+					<mat-icon>add</mat-icon>
+					<span>Create Node</span>
+				</button>
+			</span>
+		</li>
+		<li class="margin-top">
+			<span>
+				You can push a new reading like this:<br/>
+				<pre class="shell">curl -X POST \
+    -H "Authorization: <b [class.fail]="!tokens?.length">{{ tokens?.length ? tokens[0].token : 'your.token' }}</b>" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "value=<b>123</b>" \
+    {{ swaggerUrl }}nodes/<b [class.fail]="!nodes?.length">{{ nodes?.length ? nodes[0].name : 'bedroom' }}</b>/sensors/<b [class.fail]="!sensorCount">{{ node?.sensors.length ? node.sensors[0].name : 'temperature' }}</b>/readings</pre>
+			</span>
+		</li>
+	</ol>
 </div>
 
-<div class="mat-elevation-z8 margin-top">
-	<table mat-table [dataSource]="dataSource" matSort matSortActive="timestamp" matSortDisableClear matSortDirection="desc">
+<div *ngIf="readings.length">
+	<div class="mat-elevation-z8 margin-top">
+		<table mat-table [dataSource]="dataSource" matSort matSortActive="timestamp" matSortDisableClear matSortDirection="desc">
 
-		<ng-container matColumnDef="nodeName">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Node</th>
-			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
-				<a routerLink="/nodes/{{ reading.nodeName }}">
-					{{ reading.nodeName }}
-				</a>
-			</td>
-		</ng-container>
+			<ng-container matColumnDef="nodeName">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Node</th>
+				<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
+					<a routerLink="/nodes/{{ reading.nodeName }}">
+						{{ reading.nodeName }}
+					</a>
+				</td>
+			</ng-container>
 
-		<ng-container matColumnDef="sensorName">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Sensor</th>
-			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
-				<a routerLink="/nodes/{{ reading.nodeName }}/sensors/{{ reading.sensorName }}">
-					{{ reading.sensorName }}
-				</a>
-			</td>
-		</ng-container>
+			<ng-container matColumnDef="sensorName">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Sensor</th>
+				<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
+					<a routerLink="/nodes/{{ reading.nodeName }}/sensors/{{ reading.sensorName }}">
+						{{ reading.sensorName }}
+					</a>
+				</td>
+			</ng-container>
 
-		<ng-container matColumnDef="timestamp">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
-			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
-				<span>{{ utils.printTimestamp(reading.timestamp) }}</span>
-				<span class="relative-time">{{ utils.getRelativeTime(reading.timestamp) }}</span>
-			</td>
-		</ng-container>
+			<ng-container matColumnDef="timestamp">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
+				<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
+					<span>{{ utils.printTimestamp(reading.timestamp) }}</span>
+					<span class="relative-time">{{ utils.getRelativeTime(reading.timestamp) }}</span>
+				</td>
+			</ng-container>
 
-        <ng-container matColumnDef="value">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
-			<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
-				{{ reading.value }}
-			</td>
-		</ng-container>
+			<ng-container matColumnDef="value">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
+				<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
+					{{ reading.value }}
+				</td>
+			</ng-container>
 
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-		<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-	</table>
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+		</table>
 
-	<div [hidden]="dataSource.data.length <= 10">
-		<mat-paginator [pageSizeOptions]="[10, 100]"></mat-paginator>
+		<div [hidden]="dataSource.data.length <= 10">
+			<mat-paginator [pageSizeOptions]="[10, 100]"></mat-paginator>
+		</div>
 	</div>
-</div>
 
-<div class="margin-top">
-	<mat-checkbox [(ngModel)]="autoReload">Automatically reload readings {{ (autoReload ? 'in ' + secondsLeft + ' seconds' : '') }}</mat-checkbox>
+	<div class="margin-top">
+		<mat-checkbox [(ngModel)]="autoReload">Automatically reload readings {{ (autoReload ? 'in ' + secondsLeft + ' seconds' : '') }}</mat-checkbox>
+	</div>
 </div>
 
 <div class="links row align-vertically margin-top">
