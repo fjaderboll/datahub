@@ -2,6 +2,10 @@
 	margin-bottom: 0.5em;
 }
 .links .icon {
-	width: 64px;
-	height: 64px;
+	width: 58px;
+	text-align: center;
+	padding-right: 10px;
+}
+.links .icon img {
+	height: 48px;
 }

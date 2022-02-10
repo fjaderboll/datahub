@@ -1,7 +1,5 @@
 # Datahub
 
-**NOTE!** Project is still under development and not yet fully functional
-
 ## About
 
 ### Background
