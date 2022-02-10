@@ -84,6 +84,7 @@ export class UserViewComponent implements OnInit {
 		dialog.afterClosed().subscribe(confirmed => {
 			if(confirmed) {
 				if(this.auth.getUsername() == this.user.username) {
+					this.auth.logout();
 					this.router.navigate(['/login']);
 				} else {
 					this.router.navigate(['/users']);

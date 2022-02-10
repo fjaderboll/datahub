@@ -46,6 +46,8 @@ function checkAuthAndConnectDb() {
 					$expire = strtotime($userData['expire']);
 					$now = strtotime("now");
 					if($expire > $now) {
+						openDatabaseConnection(true, $userData['id']);
+
 						$tokenUsername = $userData['username'];
 						$tokenUserId = $userData['id'];
 						$tokenExpire = $userData['expire'];
@@ -57,7 +59,6 @@ function checkAuthAndConnectDb() {
 						$tokenRead = true;
 						$tokenWrite = true;
 						$tokenOk = true;
-						openDatabaseConnection(true, $userData['id']);
 					}
 				}
 			} catch(Exception $e) { }
