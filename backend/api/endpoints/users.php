@@ -88,16 +88,12 @@ registerEndpoint(Method::GET, Authorization::ADMIN, Operation::READ, "users", fu
 registerEndpoint(Method::GET, Authorization::USER, Operation::READ, "users/{username}", function($username) {
     $username = strtolower($username);
     if($username == getUsername() || isAdmin()) {
-        $dbUsers = dbQuery("SELECT * FROM user WHERE username = ?", $username);
-        if(count($dbUsers) !== 0) {
-            $dbUser = $dbUsers[0];
-        	$user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
-            $user['admin'] = toBoolean($user['admin']);
-            $user['databaseSize'] = filesize(getUserDatabaseFilename($dbUser['id']));;
+        $dbUser = findUser($username);
+        $user = convertFromDbObject($dbUser, array('username', 'email', 'admin'));
+        $user['admin'] = toBoolean($user['admin']);
+        $user['databaseSize'] = filesize(getUserDatabaseFilename($dbUser['id']));;
             
-            return $user;
-        }
-        requestFail("User not found", 404);
+        return $user;
     }
     requestAuthFail("Not authorized");
 });
@@ -129,6 +125,7 @@ registerEndpoint(Method::GET, Authorization::USER, Operation::READ, "users/{user
 registerEndpoint(Method::POST, Authorization::NONE, Operation::READ, "users/{username}/login", function($username) {
     $username = strtolower($username);
     $password = getMandatoryRequestValue("password");
+
     $users = dbQuery("SELECT * FROM user WHERE username = ?", $username);
     if(count($users) == 1) {
         $user = $users[0];
@@ -164,18 +161,15 @@ registerEndpoint(Method::POST, Authorization::NONE, Operation::READ, "users/{use
  */
 registerEndpoint(Method::GET, Authorization::ADMIN, Operation::READ, "users/{username}/impersonate", function($username) {
     $username = strtolower($username);
-    $users = dbQuery("SELECT * FROM user WHERE username = ?", $username);
-    if(count($users) == 1) {
-        $user = $users[0];
-        $token = createUserToken($username, $user['id'], $user['admin'] > 0);
-        return jsonEncode(array(
-            "username" => $username,
-            "admin" => $user['admin'] > 0,
-            "token" => $token,
-            "expire" => getUserExpire()
-        ));
-    }
-    requestFail("User not found", 404);
+    $dbUser = findUser($username);
+
+    $token = createUserToken($username, $dbUser['id'], $dbUser['admin'] > 0);
+    return jsonEncode(array(
+        "username" => $username,
+        "admin" => $dbUser['admin'] > 0,
+        "token" => $token,
+        "expire" => getUserExpire()
+    ));
 });
 
 /**
@@ -231,3 +225,46 @@ registerEndpoint(Method::PUT, Authorization::USER, Operation::WRITE, "users/{use
     }
     requestAuthFail("Not authorized");
 });
+
+/**
+ * @OA\Delete(
+ *     path="/users/{username}",
+ *     summary="Delete user",
+ *     @OA\Parameter(
+ *         description="Username of user.",
+ *         in="path",
+ *         name="username",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=403, description="Not authorized"),
+ *     @OA\Response(response=404, description="User not found")
+ * )
+ */
+registerEndpoint(Method::DELETE, Authorization::USER, Operation::WRITE, "users/{username}", function($username) {
+    $dbUser = findUser($username);
+
+	if($username == getUsername() || isAdmin()) {
+		dbUpdate("DELETE FROM user WHERE id = ?", $dbUser['id']);
+
+		if($username == getUsername()) {
+			closeUserDatabase();
+		}
+		removeUserDatabase($dbUser['id']);
+
+        return "Deleted user ".$dbUser['username'];
+    }
+    requestAuthFail("Not authorized");
+});
+
+// ----------------------
+function findUser($username) {
+    $username = strtolower($username);
+    $users = dbQuery("SELECT * FROM user WHERE username = ?", $username);
+    if(count($users) == 0) {
+        requestFail("User not found", 404);
+    } else {
+        return $users[0];
+    }
+}

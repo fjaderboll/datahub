@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/dialogs/confirm-dialog/confirm-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -16,6 +19,8 @@ export class UserViewComponent implements OnInit {
 		public auth: AuthenticationService,
 		private utils: UtilsService,
 		private server: ServerService,
+		private dialog: MatDialog,
+		private router: Router,
 		private route: ActivatedRoute
 	) { }
 
@@ -44,6 +49,45 @@ export class UserViewComponent implements OnInit {
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
+			}
+		});
+	}
+
+	public deleteUser() {
+		let text = "This will remove user '" + this.user.username + "'";
+		if(this.auth.getUsername() == this.user.username) {
+			text += " (yourself!!!)"
+		}
+		text += " and all nodes, sensors, readings and tokens related to this user. This action is not reversible. Are you really sure?";
+
+		const dialog = this.dialog.open(ConfirmDialogComponent, {
+			data: {
+				title: "Delete User",
+				text: text,
+				action: new Observable(
+					observer => {
+						this.server.deleteUser(this.user.username).subscribe({
+							next: (v: any) => {
+								observer.next(v);
+							},
+							error: (e) => {
+								observer.error(e);
+							},
+							complete: () => {
+								observer.complete();
+							}
+						});
+					}
+				)
+			}
+		});
+		dialog.afterClosed().subscribe(confirmed => {
+			if(confirmed) {
+				if(this.auth.getUsername() == this.user.username) {
+					this.router.navigate(['/login']);
+				} else {
+					this.router.navigate(['/users']);
+				}
 			}
 		});
 	}

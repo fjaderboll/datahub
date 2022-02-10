@@ -12,13 +12,22 @@
             if($openMain) {
                 $db = openDatabaseFile($DB_MAIN_FILE, true);
                 if($userId != null) {
-                    $db->exec("ATTACH DATABASE '".getUserDatabaseFilename($userId)."' AS ds");
+                    $userDbFile = getUserDatabaseFilename($userId);
+                    if(!file_exists($userDbFile)) {
+                        throw new Exception("Database for userId = $userId does not exists");
+                    }
+                    $db->exec("ATTACH DATABASE '".$userDbFile."' AS ds");
                     $dbAttached = true;
                 }
             } else if($userId !== null) {
                 $db = openDatabaseFile(getUserDatabaseFilename($userId), true);
             }
         }
+    }
+
+    function closeUserDatabase() {
+        global $db;
+        $db->exec("DETACH DATABASE ds");
     }
 
     function openDatabaseFile($file, $existingDatabase) {
@@ -43,14 +52,16 @@
         $newDb->close();
     }
 
-    function getUserDatabaseFilename($userId = null) {
+    function getUserDatabaseFilename($userId) {
         global $DB_USER_DIR;
         return $DB_USER_DIR.$userId.".db";
     }
 
     function initUserDatabase($userId) {
         global $DB_USER_DIR, $DB_SETUP_USER_SQL;
-        mkdir($DB_USER_DIR);
+        if(!file_exists($DB_USER_DIR)) {
+            mkdir($DB_USER_DIR);
+        }
         initBlankDatabase(getUserDatabaseFilename($userId), $DB_SETUP_USER_SQL);
     }
 
@@ -74,11 +85,11 @@
         global $db;
 
         if(isset($db)) {
-            if($db != null) {
+            if($db) {
                 rollbackDatabaseConnection();
                 $db->close();
             }
-            unset($db);
+            $db = null;
         }
     }
 

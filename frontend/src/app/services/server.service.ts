@@ -77,6 +77,11 @@ export class ServerService {
 		return this.http.post(url, { username, password }, this.httpOptionsText);
 	}
 
+	public deleteUser(username: string) {
+		const url = this.apiUrl + "users/" + username;
+		return this.http.delete(url, this.httpOptionsText);
+	}
+
 	public createNode(name: string, desc: string) {
 		const url = this.apiUrl + "nodes";
 		return this.http.post(url, { name, desc }, this.httpOptionsText);
