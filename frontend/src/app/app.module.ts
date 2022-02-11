@@ -37,6 +37,7 @@ import { SensorViewComponent } from './pages/sensor-view/sensor-view.component';
 import { CreateSensorDialogComponent } from './dialogs/create-sensor-dialog/create-sensor-dialog.component';
 import { CreateTokenDialogComponent } from './dialogs/create-token-dialog/create-token-dialog.component';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
+import { VisualizeReadingDialogComponent } from './dialogs/visualize-reading-dialog/visualize-reading-dialog.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.
     SensorViewComponent,
     CreateSensorDialogComponent,
     CreateTokenDialogComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    VisualizeReadingDialogComponent
   ],
   imports: [
     BrowserModule,

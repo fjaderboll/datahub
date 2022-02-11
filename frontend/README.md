@@ -29,4 +29,3 @@ ng build                                       # build for production
 
 ## Future improvements
 * Mobile friendly
-* Visualize readings in a generic graph

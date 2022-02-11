@@ -10,6 +10,11 @@
     <dd>
         <app-inline-edit type="text" [value]="sensor?.desc" (onChange)="changedValue('desc', $event)"></app-inline-edit>
     </dd>
+
+	<dt>Unit</dt>
+    <dd>
+        <app-inline-edit type="text" [value]="sensor?.unit" (onChange)="changedValue('unit', $event)"></app-inline-edit>
+    </dd>
 </dl>
 
 <div class="row margin-top align-right">
@@ -23,10 +28,20 @@
 
 <div class="margin-top">
 	Loaded {{ readings?.length }} of {{ sensor?.readingCount }} readings
-	<button *ngIf="readings?.length < sensor?.readingCount" mat-raised-button color="primary" (click)="loadMore()">
-		<mat-icon>downloading</mat-icon>
-		<span>Load More</span>
-	</button>
+
+	<span *ngIf="readings?.length < sensor?.readingCount" class="margin-left">
+		<button mat-raised-button color="primary" (click)="loadMore()">
+			<mat-icon>downloading</mat-icon>
+			<span>Load More</span>
+		</button>
+	</span>
+
+	<span *ngIf="readings?.length > 0" class="margin-left">
+		<button mat-raised-button color="primary" (click)="visualizeReadings()">
+			<mat-icon>show_chart</mat-icon>
+			<span>Visualize</span>
+		</button>
+	</span>
 </div>
 
 <div class="mat-elevation-z8 margin-top margin-bottom">
