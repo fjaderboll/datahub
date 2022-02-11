@@ -15,11 +15,12 @@ build() {
 }
 
 rm -fr dist/tmp
-build frontend web .
 build backend api api
+build frontend web .
 
 cd dist/tmp
 tar czf ../datahub.tar.gz *
-cd ..
+cd ../..
 
+rm -r dist/tmp
 echo "Done, created file dist/datahub.tar.gz"

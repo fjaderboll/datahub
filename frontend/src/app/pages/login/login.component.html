@@ -1,4 +1,9 @@
-<div class="login-container">
+<div class="login-container error" *ngIf="setupError">
+	Cannot access backend at <a href="{{ apiUrl }}">{{ apiUrl }}</a><br/>
+	Setup error?
+</div>
+
+<div class="login-container" *ngIf="!setupError">
 	<div *ngIf="createFirstUserRequired" class="row align-vertically">
 		<div>
 			<mat-icon class="medium">warning_amber</mat-icon>

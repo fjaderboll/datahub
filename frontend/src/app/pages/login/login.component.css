@@ -12,3 +12,6 @@
 .github img {
 	height: 48px;
 }
+.error {
+	color: red;
+}

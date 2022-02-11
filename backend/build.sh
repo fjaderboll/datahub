@@ -11,7 +11,9 @@ tar czf ../dist/api.tar.gz \
     --exclude=composer.json \
     --exclude=composer.lock \
     --exclude=data/main.db \
-    --exclude=data/datasets \
+    --exclude=data/crypt.key \
+    --exclude=data/.gitkeep \
+    --exclude=data/users \
     .
 
 cd ..

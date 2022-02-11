@@ -5,6 +5,7 @@ import { CreateUserDialogComponent } from 'src/app/dialogs/create-user-dialog/cr
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,8 @@ export class LoginComponent implements OnInit {
 	public password: string = "";
 	public createFirstUserRequired = false;
 	public createUserAllowed = false;
+	public setupError = false;
+	public apiUrl: string;
 
 	constructor(
 		private router: Router,
@@ -27,6 +30,7 @@ export class LoginComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
+		this.apiUrl = environment.apiUrl;
 		this.loadState();
 	}
 
@@ -38,6 +42,7 @@ export class LoginComponent implements OnInit {
 			},
 			error: (e) => {
 				console.log(e);
+				this.setupError = true;
 			}
 		});
 	}

@@ -28,7 +28,7 @@ popd
 ./build-swagger.sh
 ```
 
-Install Apache (or Nginx or something else):
+Install Apache:
 
 ```shell
 sudo apt install apache2 php php-sqlite3
