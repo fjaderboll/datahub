@@ -169,7 +169,9 @@ function createReading($nodeName, $sensorName) {
     $validatedTimestamp = date('c', $unixTime);
 
     dbUpdate("INSERT INTO reading(sensor_id, value, timestamp) VALUES (?, ?, ?)", $dbSensor['id'], $value, $validatedTimestamp);
-    return dbGetLastId();
+    $readingId = dbGetLastId();
+    cleanup();
+    return $readingId;
 }
 
 function getReadings($nodeName, $sensorName) {
@@ -202,4 +204,16 @@ function getReadings($nodeName, $sensorName) {
         array_push($readings, $reading);
 	}
     return $readings;
+}
+
+function cleanup() {
+    global $MAX_READINGS;
+
+    if(isRandom(1000)) {
+        $removed = dbUpdate('DELETE FROM reading WHERE id IN (SELECT id FROM reading ORDER BY "timestamp" DESC LIMIT -1 OFFSET ?)', $MAX_READINGS);
+
+        if($removed > 0 && isRandom(10)) {
+            vacuum();
+        }
+    }
 }

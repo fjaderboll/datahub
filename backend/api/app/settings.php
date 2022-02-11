@@ -13,6 +13,8 @@
 	$DB_SETUP_MAIN_SQL  = __DIR__."/../db/setup-main.sql";
 	$DB_SETUP_USER_SQL  = __DIR__."/../db/setup-user.sql";
 
+	$MAX_READINGS = 1_000_000;
+
 	$TIMESTAMP_FORMAT_DB = "Y-m-d H:i:s";
 	$TIMESTAMP_FORMAT_JSON = "c";
 	$TIMESTAMP_FORMAT_POST = "Y-m-d\TH:i:sO";

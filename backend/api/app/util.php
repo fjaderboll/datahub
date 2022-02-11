@@ -234,3 +234,11 @@
 			requestParameterFail("Name does not match $regex");
 		}
 	}
+
+	function isRandom($n) {
+		if($n < 1) {
+			return false;
+		} else {
+			return rand(1, $n) === 1;
+		}
+	}

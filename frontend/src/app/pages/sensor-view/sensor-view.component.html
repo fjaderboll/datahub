@@ -21,7 +21,15 @@
 	</div>
 </div>
 
-<div class="mat-elevation-z8 margin-top">
+<div class="margin-top">
+	Loaded {{ readings?.length }} of {{ sensor?.readingCount }} readings
+	<button *ngIf="readings?.length < sensor?.readingCount" mat-raised-button color="primary" (click)="loadMore()">
+		<mat-icon>downloading</mat-icon>
+		<span>Load More</span>
+	</button>
+</div>
+
+<div class="mat-elevation-z8 margin-top margin-bottom">
 	<table mat-table [dataSource]="dataSource" matSort matSortActive="timestamp" matSortDisableClear matSortDirection="desc">
 
 		<ng-container matColumnDef="timestamp">

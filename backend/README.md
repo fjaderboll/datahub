@@ -81,12 +81,6 @@ Unzip the resulting `dist/api.tar.gz` on your PHP enabled web server.
 Make sure the `data` directory is writeable by the PHP executor.
 
 ## Future improvements
-* Retention policy:
-    * Per user database
-    * Maximum 1.000.000 entries (configurable)
-    * Entry = nodes, sensors, readings, tokens
-    * Every X:th (on average) POST request, delete readings to get below maximum
-* Vacuum (every X:th request or something smarter)
 * Add Swagger authorization annotation
 * Group endpoints in Swagger (now everyone is in "default")
 * Use proper JWT for user tokens

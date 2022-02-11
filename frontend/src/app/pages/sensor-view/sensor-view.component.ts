@@ -6,7 +6,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/dialogs/confirm-dialog/confirm-dialog.component';
-import { CreateSensorDialogComponent } from 'src/app/dialogs/create-sensor-dialog/create-sensor-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -20,6 +19,8 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 	public nodeName: string;
 	public sensorName: string;
 	public sensor: any;
+	public readings: any;
+	private readingsLimit = 1000;
 
 	public displayedColumns: string[] = ['timestamp', 'value', 'actions'];
 	public dataSource = new MatTableDataSource<any>();
@@ -60,14 +61,20 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 	}
 
 	private loadReadings() {
-		this.server.getSensorReadings(this.nodeName, this.sensorName).subscribe({
+		this.server.getSensorReadings(this.nodeName, this.sensorName, this.readingsLimit).subscribe({
 			next: (readings: any) => {
+				this.readings = readings;
 				this.dataSource.data = readings;
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
 			}
 		});
+	}
+
+	public loadMore() {
+		this.readingsLimit *= 2;
+		this.loadReadings();
 	}
 
 	public changedValue(property: string, newValue: any) {

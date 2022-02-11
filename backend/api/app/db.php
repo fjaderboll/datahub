@@ -69,6 +69,17 @@
         unlink(getUserDatabaseFilename($userId));
     }
 
+    function vacuum($commit) {
+        global $db;
+        if($commit) {
+            $db->exec("COMMIT");
+        } else {
+            $db->exec("ROLLBACK");
+        }
+        $db->exec("VACUUM");
+        $db->exec("BEGIN");
+    }
+
     function rollbackDatabaseConnection() {
         global $db;
         $db->exec("ROLLBACK");

@@ -147,8 +147,11 @@ export class ServerService {
 		return this.http.delete(url, this.httpOptionsText);
 	}
 
-	public getSensorReadings(nodeName: string, sensorName: string) {
-		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName + "/readings";
+	public getSensorReadings(nodeName: string, sensorName: string, limit: number) {
+		let url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName + "/readings";
+		if(limit) {
+			url += "?limit=" + limit;
+		}
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
