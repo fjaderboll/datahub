@@ -79,7 +79,8 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{no
  */
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{nodeName}/sensors/{sensorName}", function($nodeName, $sensorName) {
     $dbSensor = findSensor($nodeName, $sensorName);
-    $sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit', 'reading_count', 'last_reading_timestamp'));
+    $dbESensor = dbQuerySingle("SELECT * FROM e_sensor WHERE id = ?", $dbSensor['id']);
+    $sensor = convertFromDbObject($dbESensor, array('name', 'desc', 'unit', 'reading_count', 'last_reading_timestamp', 'last_reading_value'));
     return $sensor;
 });
 
@@ -172,7 +173,7 @@ function createSensor($nodeId, $name, $desc, $unit) {
 	$name = strtolower($name);
 	verifyValidName($name);
 
-    dbUpdate("INSERT INTO sensor(node_id, name, desc, unit) VALUES (?, ?, ?)", $nodeId, $name, $desc, $unit);
+    dbUpdate("INSERT INTO sensor(node_id, name, desc, unit) VALUES (?, ?, ?, ?)", $nodeId, $name, $desc, $unit);
 
     return "Sensor $name created";
 }
@@ -182,7 +183,7 @@ function findSensor($nodeName, $sensorName) {
     $sensorName = strtolower($sensorName);
 
     $dbNode = findNode($nodeName);
-    $dbSensors = dbQuery("SELECT * FROM e_sensor WHERE node_id = ? AND name = ?", $dbNode['id'], $sensorName);
+    $dbSensors = dbQuery("SELECT * FROM sensor WHERE node_id = ? AND name = ?", $dbNode['id'], $sensorName);
     if(count($dbSensors) == 0) {
         requestFail("Sensor not found", 404);
     } else {

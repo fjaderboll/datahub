@@ -47,6 +47,11 @@ export class ServerService {
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
+	public getOverview() {
+		const url = this.apiUrl + "overview/";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
 	public login(username: string, password: string) {
 		const url = this.apiUrl + "users/" + username + "/login";
 		return this.http.post(url, { password });

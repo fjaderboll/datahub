@@ -81,6 +81,7 @@ Unzip the resulting `dist/api.tar.gz` on your PHP enabled web server.
 Make sure the `data` directory is writeable by the PHP executor.
 
 ## Future improvements
+* Allow changing password
 * Add Swagger authorization annotation
 * Group endpoints in Swagger (now everyone is in "default")
 * Use proper JWT for user tokens

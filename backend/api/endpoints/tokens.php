@@ -39,16 +39,7 @@ registerEndpoint(Method::POST, Authorization::USER, Operation::WRITE, "tokens", 
  * )
  */
 registerEndpoint(Method::GET, Authorization::USER, Operation::READ, "tokens", function() {
-    $dbTokens = dbQuery("SELECT * FROM token");
-    $tokens = array();
-    foreach($dbTokens as $dbToken) {
-		$token = convertFromDbObject($dbToken, array('id', 'token', 'enabled', 'read', 'write', 'desc'));
-        $token['enabled'] = toBoolean($token['enabled']);
-        $token['read'] = toBoolean($token['read']);
-        $token['write'] = toBoolean($token['write']);
-        array_push($tokens, $token);
-	}
-    return $tokens;
+    return getTokens();
 });
 
 /**
@@ -134,4 +125,17 @@ function findToken($tokenId) {
     } else {
         return $dbTokens[0];
     }
+}
+
+function getTokens() {
+    $dbTokens = dbQuery("SELECT * FROM token");
+    $tokens = array();
+    foreach($dbTokens as $dbToken) {
+		$token = convertFromDbObject($dbToken, array('id', 'token', 'enabled', 'read', 'write', 'desc'));
+        $token['enabled'] = toBoolean($token['enabled']);
+        $token['read'] = toBoolean($token['read']);
+        $token['write'] = toBoolean($token['write']);
+        array_push($tokens, $token);
+	}
+    return $tokens;
 }

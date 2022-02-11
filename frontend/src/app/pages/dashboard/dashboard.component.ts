@@ -17,11 +17,8 @@ import { environment } from '../../../environments/environment';
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	public swaggerUrl: string;
-	public nodes: any;
-	public node: any;
-	public tokens: any;
-	public readings: any = [];
-	public sensorCount: number;
+	public totalReadingCount: number;
+	public overview: any;
 	
 	public autoReload = true;
 	private nextReloadTime = new Date();
@@ -43,18 +40,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.swaggerUrl = environment.apiUrl;
-		this.loadNodes();
-		this.loadTokens();
+		this.loadOverview();
 
 		this.updateTimer = setInterval(() => {
 			this.secondsLeft = Math.ceil(this.getTimeLeft() / 1000);
 			if(!this.autoReload && this.reloadTimer) {
-				clearTimeout(this.reloadTimer);
-				this.reloadTimer = null;
+				this.stopTimer();
 			} else if(this.autoReload && !this.reloadTimer) {
-				this.nextReloadTime = new Date();
-				this.reloadCounter = 1;
-				this.startReadingsTimer();
+				this.startTimer();
 			}
 		}, 250);
 	}
@@ -73,60 +66,25 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	private loadNodes() {
-		this.server.getNodes().subscribe({
-			next: (nodes: any) => {
-				this.nodes = nodes;
-				this.sensorCount = 0;
-				nodes.forEach((node: any) => {
-					this.sensorCount += node.sensorCount;
-					if(node.sensorCount > 0 && !this.node) {
-						this.loadNode(node.name);
-					}
-				});
-			},
-			error: (e) => {
-				this.server.showHttpError(e);
-			}
-		});
-	}
-
-	private loadNode(name: string) {
-		this.server.getNode(name).subscribe({
-			next: (node: any) => {
-				this.node = node;
-				this.dataSource.data = node.sensors;
-			},
-			error: (e) => {
-				this.server.showHttpError(e);
-			}
-		});
-	}
-
-	private loadTokens() {
-		this.server.getTokens().subscribe({
-			next: (tokens: any) => {
-				this.tokens = tokens;
-			},
-			error: (e) => {
-				this.server.showHttpError(e);
-			}
-		});
-	}
-
-	private loadReadings() {
-		this.server.getReadings(10).subscribe({
-			next: (newReadings: any) => {
-				if(this.readings.length) {
-					newReadings.forEach((nr: any) => {
-						nr.new = !this.readings.some((r: any) => {
+	private loadOverview() {
+		this.server.getOverview().subscribe({
+			next: (overview: any) => {
+				if(this.overview) {
+					overview.lastReadings.forEach((nr: any) => {
+						nr.new = !this.overview.lastReadings.some((r: any) => {
 							return nr.id == r.id;
 						});
 					});
 				}
-				this.dataSource.data = newReadings;
-				this.readings = newReadings;
-				this.startReadingsTimer();
+
+				this.totalReadingCount = 0;
+				overview.sensors.forEach((sensor: any) => {
+					this.totalReadingCount += sensor.readingCount;
+				});
+
+				this.dataSource.data = overview.lastReadings;
+				this.overview = overview;
+				this.startTimer();
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
@@ -135,14 +93,28 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 		});
 	}
 
-	private startReadingsTimer() {
+	private startTimer() {
 		this.reloadTimer = setTimeout(() => {
 			if(this.getTimeLeft() <= 0) {
 				this.reloadCounter++;
 				this.nextReloadTime = new Date(new Date().getTime() + this.getNextReloadDelay())
-				this.loadReadings();
+				this.loadOverview();
 			}
 		}, this.getTimeLeft());
+	}
+
+	private stopTimer() {
+		if(this.reloadTimer) {
+			clearTimeout(this.reloadTimer);
+		}
+		this.reloadTimer = null;
+		this.nextReloadTime = new Date();
+		this.reloadCounter = 1;
+	}
+
+	private forceReload() {
+		this.stopTimer();
+		this.loadOverview();
 	}
 
 	private getTimeLeft() {
@@ -158,7 +130,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 		const dialog = this.dialog.open(CreateNodeDialogComponent);
 		dialog.afterClosed().subscribe(newName => {
 			if(newName) {
-				this.loadNodes();
+				this.forceReload();
 			}
 		});
 	}
@@ -166,12 +138,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	public createSensor() {
 		const dialog = this.dialog.open(CreateSensorDialogComponent, {
 			data: {
-				nodeName: this.nodes[0].name
+				nodeName: this.overview.nodes[0].name
 			}
 		});
 		dialog.afterClosed().subscribe(newSensorName => {
 			if(newSensorName) {
-				this.loadNodes();
+				this.forceReload();
 			}
 		});
 	}
@@ -180,7 +152,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 		const dialog = this.dialog.open(CreateTokenDialogComponent);
 		dialog.afterClosed().subscribe(created => {
 			if(created) {
-				this.loadTokens();
+				this.forceReload();
 			}
 		});
 	}

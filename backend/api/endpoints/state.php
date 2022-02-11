@@ -10,8 +10,8 @@
 registerEndpoint(Method::GET, Authorization::NONE, Operation::READ, "state", function() {
     $userCount = dbQuerySingle("SELECT count(*) FROM user")[0];
 
-    return jsonEncode(array(
+    return array(
         "createFirstUserRequired" => ($userCount == 0),
         "createUserAllowed" => true
-    ));
+    );
 });

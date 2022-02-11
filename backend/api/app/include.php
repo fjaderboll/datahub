@@ -10,6 +10,7 @@
 	require_once(__DIR__."/request-handler.php");
 
 	require_once(__DIR__."/../endpoints/state.php");
+	require_once(__DIR__."/../endpoints/overview.php");
 	require_once(__DIR__."/../endpoints/users.php");
 	require_once(__DIR__."/../endpoints/tokens.php");
 	require_once(__DIR__."/../endpoints/nodes.php");
