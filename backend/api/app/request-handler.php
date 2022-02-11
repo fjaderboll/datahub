@@ -15,6 +15,7 @@ function handleRequest() {
 	}
 
     http_response_code(500); // assume something fails, then change accordingly
+	$failed = true;
 	try {
 		checkAuthAndConnectDb();
 		verifyEndpoint();
@@ -29,15 +30,18 @@ function handleRequest() {
         } else {
             echo $response;
         }
+		$failed = false;
 	} catch(RequestException $e) {
 		http_response_code($e->getStatus());
         echo $e->getMessage();
-		sleep($FAIL_DELAY);
 	} catch(Exception $e) {
 		http_response_code(500);
         echo $e->getMessage();
-		sleep($FAIL_DELAY);
 	} finally {
 		closeDatabaseConnection();
+	}
+
+	if($failed) {
+		sleep($FAIL_DELAY); // sleep AFTER closing DB connection
 	}
 }
