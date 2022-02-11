@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -27,10 +27,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	private updateTimer: any;
 	public secondsLeft = 0;
 
-	public displayedColumns: string[] = ['nodeName', 'sensorName', 'timestamp', 'value'];
-	public dataSource = new MatTableDataSource<any>();
-	@ViewChild(MatPaginator) paginator: MatPaginator;
-	@ViewChild(MatSort) sort: MatSort;
+	public displayedColumns1: string[] = ['nodeName', 'sensorName', 'timestamp', 'value'];
+	public displayedColumns2: string[] = ['nodeName', 'name', 'readingCount', 'lastReadingTimestamp', 'lastReadingValue'];
+	public dataSource1 = new MatTableDataSource<any>();
+	public dataSource2 = new MatTableDataSource<any>();
+	@ViewChildren(MatPaginator) paginators = new QueryList<MatPaginator>();
+	@ViewChildren(MatSort) sorts = new QueryList<MatSort>();
 
 	constructor(
 		private server: ServerService,
@@ -53,8 +55,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	ngAfterViewInit() {
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sort = this.sort;
+		this.dataSource1.paginator = this.paginators.toArray()[0];
+		this.dataSource1.sort = this.sorts.toArray()[0];
+		this.dataSource2.paginator = this.paginators.toArray()[1];
+		this.dataSource2.sort = this.sorts.toArray()[1];
 	}
 
 	ngOnDestroy(): void {
@@ -75,6 +79,15 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 							return nr.id == r.id;
 						});
 					});
+
+					overview.sensors.forEach((sensor: any) => {
+						sensor.new = !this.overview.sensors.some((s: any) => {
+							return sensor.name == s.name;
+						});
+						sensor.newReading = this.overview.sensors.some((s: any) => {
+							return sensor.name == s.name && sensor.lastReadingTimestamp !== s.lastReadingTimestamp;
+						});
+					});
 				}
 
 				this.totalReadingCount = 0;
@@ -82,7 +95,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 					this.totalReadingCount += sensor.readingCount;
 				});
 
-				this.dataSource.data = overview.lastReadings;
+				this.dataSource1.data = overview.lastReadings;
+				this.dataSource2.data = overview.sensors;
 				this.overview = overview;
 				this.startTimer();
 			},
