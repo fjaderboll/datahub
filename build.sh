@@ -19,7 +19,7 @@ build backend api api
 build frontend web .
 
 cd dist/tmp
-tar czf ../datahub.tar.gz *
+tar czf ../datahub.tar.gz .
 cd ../..
 
 rm -r dist/tmp
