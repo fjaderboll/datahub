@@ -210,10 +210,6 @@ function cleanup() {
     global $MAX_READINGS;
 
     if(isRandom(1000)) {
-        $removed = dbUpdate('DELETE FROM reading WHERE id IN (SELECT id FROM reading ORDER BY "timestamp" DESC LIMIT -1 OFFSET ?)', $MAX_READINGS);
-
-        if($removed > 0 && isRandom(10)) {
-            vacuum();
-        }
+        dbUpdate('DELETE FROM reading WHERE id IN (SELECT id FROM reading ORDER BY "timestamp" DESC LIMIT -1 OFFSET ?)', $MAX_READINGS);
     }
 }

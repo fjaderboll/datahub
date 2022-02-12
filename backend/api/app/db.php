@@ -1,5 +1,6 @@
 <?php
     $db = null;
+    $dbWrites = 0;
 
     function openDatabaseConnection($openMain, $userId = null) {
         global $DB_MAIN_FILE, $DB_SETUP_MAIN_SQL, $db;
@@ -69,15 +70,14 @@
         unlink(getUserDatabaseFilename($userId));
     }
 
-    function vacuum($commit) {
-        global $db;
-        if($commit) {
+    function vacuum($force) {
+        global $db, $dbWrites;
+
+        if($force || ($dbWrites > 0 && isRandom(20_000))) {
             $db->exec("COMMIT");
-        } else {
-            $db->exec("ROLLBACK");
+            $db->exec("VACUUM");
+            $db->exec("BEGIN");
         }
-        $db->exec("VACUUM");
-        $db->exec("BEGIN");
     }
 
     function rollbackDatabaseConnection() {
@@ -98,6 +98,7 @@
         if(isset($db)) {
             if($db) {
                 rollbackDatabaseConnection();
+                vacuum(false);
                 $db->close();
             }
             $db = null;
@@ -105,7 +106,7 @@
     }
 
     function dbUpdate($sql /* [arg1 [,arg2[,...]]] */) {
-        global $db;
+        global $db, $dbWrites;
 
         $stmt = $db->prepare($sql);
         if($stmt) {
@@ -119,7 +120,9 @@
 			}
 			$success = $stmt->execute();
 			if($success) {
-				return $db->changes();
+                $changes = $db->changes();
+                $dbWrites += $changes;
+                return $changes;
 			}
             throw new Exception("Error executing statement");
 		}
