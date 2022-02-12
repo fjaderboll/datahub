@@ -87,11 +87,11 @@ registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{
  *         @OA\Schema(type="string")
  *     ),
  *     @OA\Parameter(
- *         description="Limit result to this number of readings (or use 'none' for all readings)",
+ *         description="Limit result to this number of readings (or use 0 for all readings)",
  *         in="query",
  *         name="limit",
  *         required=false,
- *         @OA\Schema(type="string")
+ *         @OA\Schema(type="number")
  *     ),
  *     @OA\Response(response=200, description="OK"),
  *     @OA\Response(response=404, description="Sensor not found")
@@ -113,11 +113,11 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{no
  *         @OA\Schema(type="string")
  *     ),
  *     @OA\Parameter(
- *         description="Limit result to this number of readings (or use 'none' for all readings)",
+ *         description="Limit result to this number of readings (or use 0 for all readings)",
  *         in="query",
  *         name="limit",
  *         required=false,
- *         @OA\Schema(type="string")
+ *         @OA\Schema(type="number")
  *     ),
  *     @OA\Response(response=200, description="OK"),
  *     @OA\Response(response=404, description="Node not found")
@@ -132,11 +132,11 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{no
  *     path="/readings",
  *     summary="List all readings from all sensors on all nodes",
  *     @OA\Parameter(
- *         description="Limit result to this number of readings (or use 'none' for all readings)",
+ *         description="Limit result to this number of readings (or use 0 for all readings)",
  *         in="query",
  *         name="limit",
  *         required=false,
- *         @OA\Schema(type="string")
+ *         @OA\Schema(type="number")
  *     ),
  *     @OA\Response(response=200, description="OK")
  * )
@@ -189,10 +189,10 @@ function createReading($nodeName, $sensorName, $value) {
 
     $unixTime = strtotime($timestamp);
     if($unixTime === false) {
-        requestParameterFail("Invalid timestamp: $timestamp");
+        requestParameterFail("Invalid timestamp 'timestamp': $timestamp");
     }
     if(!is_numeric($offset)) {
-        requestParameterFail("Invalid offset: $offset (not a valid number)");
+        requestParameterFail("Invalid integer 'offset': $offset");
     }
     $unixTime += $offset;
     $validatedTimestamp = date('c', $unixTime);
@@ -204,31 +204,72 @@ function createReading($nodeName, $sensorName, $value) {
 }
 
 function getReadings($nodeName, $sensorName) {
-    $additionalSql = '';
-
-    $additionalSql .= ' ORDER BY "timestamp" DESC ';
-
-    $limit = getOptionalQueryValue("limit", null);
-    if($limit === null || $limit === "") {
-        $additionalSql .= "LIMIT 100";
-    } else if($limit === "none") {
-        $additionalSql .= "LIMIT -1";
-    } else if(ctype_digit($limit)) {
-        $additionalSql .= "LIMIT $limit";
-    } else {
-        requestParameterFail("Invalid limit: $limit (must be a positive integer or 'none')");
-    }
+    $sql = 'SELECT * FROM e_reading';
+    $params = array();
 
     if($sensorName != null) {
         $dbSensor = findSensor($nodeName, $sensorName);
-        $dbReadings = dbQuery("SELECT * FROM e_reading WHERE sensor_id = ?".$additionalSql, $dbSensor['id']);
+        $sql .= " WHERE sensor_id = ?";
+        array_push($params, $dbSensor['id']);
     } else if($nodeName != null) {
         $dbNode = findNode($nodeName);
-        $dbReadings = dbQuery("SELECT * FROM e_reading WHERE node_id = ?".$additionalSql, $dbNode['id']);
+        $sql .= " WHERE node_id = ?";
+        array_push($params, $dbNode['id']);
     } else {
-        $dbReadings = dbQuery("SELECT * FROM e_reading WHERE 1 = 1".$additionalSql);
+        $sql .= " WHERE 1 = 1";
     }
 
+    $maxAge = getOptionalQueryValue("maxAge", null);
+    if($maxAge !== null && $maxAge !== "") {
+        if(ctype_digit($maxAge)) {
+            $timestamp = date('c', time() - $maxAge);
+            $sql .= ' AND "timestamp" > ? ';
+            array_push($params, $timestamp);
+        } else {
+            requestParameterFail("Invalid positive integer 'maxAge': $maxAge");
+        }
+    }
+
+    $after = getOptionalQueryValue("after", null);
+    if($after !== null && $after !== "") {
+        $unixTime = strtotime($after);
+        if($unixTime === false) {
+            requestParameterFail("Invalid timestamp 'after': $after");
+        }
+        $timestamp = date('c', $unixTime);
+
+        $sql .= ' AND "timestamp" > ? ';
+        array_push($params, $timestamp);
+    }
+
+    $before = getOptionalQueryValue("before", null);
+    if($before !== null && $before !== "") {
+        $unixTime = strtotime($before);
+        if($unixTime === false) {
+            requestParameterFail("Invalid timestamp 'before': $before");
+        }
+        $timestamp = date('c', $unixTime);
+
+        $sql .= ' AND "timestamp" < ? ';
+        array_push($params, $timestamp);
+    }
+
+    $sql .= ' ORDER BY "timestamp" DESC ';
+
+    $limit = getOptionalQueryValue("limit", null);
+    if($limit === null || $limit === "") {
+        $sql .= "LIMIT 100";
+    } else if(ctype_digit($limit)) {
+        if($limit == 0) {
+            $sql .= "LIMIT -1";
+        } else {
+            $sql .= "LIMIT $limit";
+        }
+    } else {
+        requestParameterFail("Invalid positive integer 'limit': $limit");
+    }
+
+    $dbReadings = dbQuery($sql, ...$params);
     $readings = array();
     foreach($dbReadings as $dbReading) {
 		$reading = convertFromDbObject($dbReading, array('id', 'node_name', 'sensor_name', 'timestamp', 'value'));

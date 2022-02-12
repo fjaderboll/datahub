@@ -11,18 +11,7 @@ with this data (depending on preferred Content-type):
 value=22.5           # Content-type: application/x-www-form-urlencoded
 ```
 
-Historical data can then be retrieved with:
-```
-GET /api/nodes/my-house/sensors/temperature/readings
-```
-returning as JSON array:
-```json
-[
-    { "value": 22.5, "timestamp": "2021-09-10T14:30:07Z" },
-    { "value": 22.3, "timestamp": "2021-09-10T13:30:03Z" },
-    { "value": 22.1, "timestamp": "2021-09-10T12:30:01Z" }
-]
-```
+If the node and/or sensor does not exist they will be created.
 
 ## Pushing multiple values in same request
 
@@ -38,28 +27,11 @@ electric-meter=123456
 door-state=1
 ```
 
-Data can then be retrieved for a single sensor with:
-```
-GET /api/nodes/my-house/sensors/electric-meter/readings
-```
-or for a the entire node:
-```
-GET /api/nodes/my-house/readings
-```
+This will create a new reading for the 4 sensors 'temperature', 'humidity', 'electric-meter' and 'door-state'. If the node or sensors don't exist they will be created.
 
-returning:
-```json
-[
-    { "sensor": "temperature", "value": 22.5, "timestamp": "2021-12-01T15:01:14Z" },
-    { "sensor": "humidity", "value": 34.0, "timestamp": "2021-12-01T15:01:14Z" },
-    { "sensor": "electric-meter", "value": 123456, "timestamp": "2021-12-01T15:01:14Z" },
-    { "sensor": "door-state", "value": 1, "timestamp": "2021-12-01T15:01:14Z" }
-]
-```
-
-## Additional parameters when pushing readings
-* `timestamp` - ISO formatted timestamp that will be used for this reading, defaults to now.
-* `offset` - Adds this number of seconds to the timestamp (may be negative)
+## Additional query parameters when pushing readings
+* `timestamp` - ISO formatted timestamp that will be used for this reading. Defaults to now.
+* `offset` - Adds this number of seconds to the timestamp. Defaults to `0`
 
 ```
 POST /api/nodes/my-house/sensors/temperature/readings?offset=-30
@@ -67,5 +39,54 @@ POST /api/nodes/my-house/sensors/temperature/readings?timestamp=2021-12-01
 POST /api/nodes/my-house/sensors/temperature/readings?timestamp=2021-12-01T15:01:14Z&offset=3600
 ```
 
-## TODO
-* Examples of filtering readings, like getting the last X values or last values within X time units
+## Retrieving readings
+The readings can then be retrieved for a single sensor, an entire node or just all of them:
+```
+GET /api/nodes/my-house/sensors/temperature/readings
+GET /api/nodes/my-house/readings
+GET /api/readings
+```
+
+Returned as JSON array:
+```json
+[
+    {
+        "id": 238,
+        "nodeName": "my-house",
+        "sensorName": "temperature",
+        "timestamp": "2022-02-12T21:41:47+01:00",
+        "value": 21
+    },
+    {
+        "id": 237,
+        "nodeName": "my-house",
+        "sensorName": "humidity",
+        "timestamp": "2022-02-12T21:41:47+01:00",
+        "value": 34
+    },
+    {
+        "id": 236,
+        "nodeName": "my-house",
+        "sensorName": "temperature",
+        "timestamp": "2022-02-12T19:39:40+01:00",
+        "value": 20
+    }
+]
+```
+
+## Additional query parameters when pushing readings
+* `limit` - Limits the number of returned readings to this number. Use `0` to get all. Defaults to `100`.
+* `maxAge` - Return all readings younger than this number of seconds.
+* `before` - Only return readings before this ISO date.
+* `after` - Only return readings after this ISO date.
+
+```php
+// get last temperature
+GET /api/nodes/my-house/sensors/temperature/readings?limit=1
+// get all temperatures
+GET /api/nodes/my-house/sensors/temperature/readings?limit=0
+// get all in the past 10 minutes for 'my-house'
+GET /api/nodes/my-house/readings?maxAge=600
+// get all in January
+GET /api/readings?after=2022-01-01&before=2022-02-01
+```
