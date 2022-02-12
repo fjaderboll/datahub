@@ -19,8 +19,8 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::NONE, Operation::WRITE, "users", function() {
-    $username = strtolower(getMandatoryRequestValue("username"));
-	$password = getMandatoryRequestValue("password");
+    $username = strtolower(getMandatoryBodyValue("username"));
+	$password = getMandatoryBodyValue("password");
 
     verifyValidName($username);
 
@@ -124,7 +124,7 @@ registerEndpoint(Method::GET, Authorization::USER, Operation::READ, "users/{user
  */
 registerEndpoint(Method::POST, Authorization::NONE, Operation::READ, "users/{username}/login", function($username) {
     $username = strtolower($username);
-    $password = getMandatoryRequestValue("password");
+    $password = getMandatoryBodyValue("password");
 
     $users = dbQuery("SELECT * FROM user WHERE username = ?", $username);
     if(count($users) == 1) {
@@ -207,12 +207,12 @@ registerEndpoint(Method::PUT, Authorization::USER, Operation::WRITE, "users/{use
 
         $changes = 0;
 
-        $email = getOptionalRequestValue("email", null);
+        $email = getOptionalBodyValue("email", null);
         if($email !== null) {
             $changes += dbUpdate("UPDATE user SET email = ? WHERE username = ?", $email, $username);
         }
 
-        $admin = getOptionalRequestValue("admin", null);
+        $admin = getOptionalBodyValue("admin", null);
         if($admin !== null) {
             if(isAdmin()) {
                 $changes += dbUpdate("UPDATE user SET admin = ? WHERE username = ?", toDbBoolean($admin), $username);

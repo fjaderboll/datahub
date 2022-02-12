@@ -29,9 +29,9 @@
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors", function($nodeName) {
     $dbNode = findNode($nodeName);
-    $name = strtolower(getMandatoryRequestValue("name"));
-    $desc = getOptionalRequestValue("desc", null);
-    $unit = getOptionalRequestValue("unit", null);
+    $name = strtolower(getMandatoryBodyValue("name"));
+    $desc = getOptionalBodyValue("desc", null);
+    $unit = getOptionalBodyValue("unit", null);
 
 	return createSensor($dbNode['id'], $name, $desc, $unit);
 });
@@ -120,17 +120,17 @@ registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{n
 
     $changes = 0;
 
-    $desc = getOptionalRequestValue("desc", null);
+    $desc = getOptionalBodyValue("desc", null);
     if($desc !== null) {
         $changes += dbUpdate("UPDATE sensor SET desc = ? WHERE id = ?", $desc, $dbSensor['id']);
     }
 
-    $unit = getOptionalRequestValue("unit", null);
+    $unit = getOptionalBodyValue("unit", null);
     if($unit !== null) {
         $changes += dbUpdate("UPDATE sensor SET unit = ? WHERE id = ?", $unit, $dbSensor['id']);
     }
 
-    $newName = getOptionalRequestValue("name", null);
+    $newName = getOptionalBodyValue("name", null);
     if($newName !== null) {
         $changes += dbUpdate("UPDATE sensor SET name = ? WHERE id = ?", $newName, $dbSensor['id']);
     }

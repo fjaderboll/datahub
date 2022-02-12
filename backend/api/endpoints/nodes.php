@@ -20,8 +20,8 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes", function() {
-	$name = strtolower(getMandatoryRequestValue("name"));
-    $desc = getOptionalRequestValue("desc", null);
+	$name = strtolower(getMandatoryBodyValue("name"));
+    $desc = getOptionalBodyValue("desc", null);
     return createNode($name, $desc);
 });
 
@@ -93,12 +93,12 @@ registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{n
 
     $changes = 0;
 
-    $desc = getOptionalRequestValue("desc", null);
+    $desc = getOptionalBodyValue("desc", null);
     if($desc) {
         $changes += dbUpdate("UPDATE node SET desc = ? WHERE id = ?", $desc, $dbNode['id']);
     }
 
-    $newName = getOptionalRequestValue("name", null);
+    $newName = getOptionalBodyValue("name", null);
     if($newName) {
         $changes += dbUpdate("UPDATE node SET name = ? WHERE id = ?", $newName, $dbNode['id']);
     }

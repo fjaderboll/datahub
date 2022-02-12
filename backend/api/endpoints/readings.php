@@ -31,7 +31,7 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings", function($nodeName, $sensorName) {
-    $value = getMandatoryRequestValue("value");
+    $value = getMandatoryBodyValue("value");
     createReading($nodeName, $sensorName, $value);
     return "Reading created";
 });
@@ -61,15 +61,11 @@ registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{
  * )
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/readings", function($nodeName) {
-    $values = getAllRequestValues();
-    $n = 0;
+    $values = getAllBodyValues();
     foreach($values as $name => $value) {
-        if($name !== "timestamp" && $name !== "offset") {
-            createReading($nodeName, $name, $value);
-            $n++;
-        }
+        createReading($nodeName, $name, $value);
     }
-    return "$n reading created";
+    return count($values)." readings created";
 });
 
 /**
@@ -186,8 +182,8 @@ registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes
 
 // ----------------------
 function createReading($nodeName, $sensorName, $value) {
-    $timestamp = getOptionalRequestValue("timestamp", date('c', time()));
-    $offset = getOptionalRequestValue("offset", 0); // seconds
+    $timestamp = getOptionalQueryValue("timestamp", date('c', time()));
+    $offset = getOptionalQueryValue("offset", 0); // seconds
 
     $dbSensor = findOrCreateSensor($nodeName, $sensorName);
 
@@ -208,17 +204,19 @@ function createReading($nodeName, $sensorName, $value) {
 }
 
 function getReadings($nodeName, $sensorName) {
-    $additionalSql = ' ORDER BY "timestamp" DESC ';
+    $additionalSql = '';
 
-    $limit = getOptionalRequestValue("limit", null);
-    if($limit === null) {
+    $additionalSql .= ' ORDER BY "timestamp" DESC ';
+
+    $limit = getOptionalQueryValue("limit", null);
+    if($limit === null || $limit === "") {
         $additionalSql .= "LIMIT 100";
     } else if($limit === "none") {
         $additionalSql .= "LIMIT -1";
     } else if(ctype_digit($limit)) {
         $additionalSql .= "LIMIT $limit";
     } else {
-        requestParameterFail("Invalid offset: $offset (must be an integer or 'none'");
+        requestParameterFail("Invalid limit: $limit (must be a positive integer or 'none')");
     }
 
     if($sensorName != null) {
@@ -228,7 +226,7 @@ function getReadings($nodeName, $sensorName) {
         $dbNode = findNode($nodeName);
         $dbReadings = dbQuery("SELECT * FROM e_reading WHERE node_id = ?".$additionalSql, $dbNode['id']);
     } else {
-        $dbReadings = dbQuery("SELECT * FROM e_reading".$additionalSql);
+        $dbReadings = dbQuery("SELECT * FROM e_reading WHERE 1 = 1".$additionalSql);
     }
 
     $readings = array();

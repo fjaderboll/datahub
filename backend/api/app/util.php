@@ -114,13 +114,13 @@
 	}
 
 	function jsonEncode($assArray) {
-		$debug = getOptionalRequestValue("debug", false);
+		$debug = getOptionalQueryValue("debug", false);
 		$options = ($debug === false ? 0 : JSON_PRETTY_PRINT);
 		return json_encode($assArray, $options);
 	}
 
 	function jsonRecode($jsonStr) {
-		$debug = getOptionalRequestValue("debug", false);
+		$debug = getOptionalQueryValue("debug", false);
 		if($debug === false) {
 			return $jsonStr;
 		}

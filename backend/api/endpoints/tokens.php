@@ -20,10 +20,10 @@
  * )
  */
 registerEndpoint(Method::POST, Authorization::USER, Operation::WRITE, "tokens", function() {
-    $enabled = getOptionalRequestValue("enabled", 1);
-    $read = getOptionalRequestValue("read", 1);
-    $write = getOptionalRequestValue("write", 1);
-    $desc = getOptionalRequestValue("desc", null);
+    $enabled = getOptionalBodyValue("enabled", 1);
+    $read = getOptionalBodyValue("read", 1);
+    $write = getOptionalBodyValue("write", 1);
+    $desc = getOptionalBodyValue("desc", null);
 
     $token = createDeviceToken(getUserId());
     dbUpdate("INSERT INTO token(token, enabled, read, write, desc) VALUES (?, ?, ?, ?, ?)", $token, toDbBoolean($enabled), toDbBoolean($read), toDbBoolean($write), $desc);
@@ -71,22 +71,22 @@ registerEndpoint(Method::PUT, Authorization::USER, Operation::WRITE, "tokens/{id
 
     $changes = 0;
 
-    $enabled = getOptionalRequestValue("enabled", null);
+    $enabled = getOptionalBodyValue("enabled", null);
     if($enabled !== null) {
         $changes += dbUpdate("UPDATE token SET enabled = ? WHERE id = ?", toDbBoolean($enabled), $id);
     }
 
-    $read = getOptionalRequestValue("read", null);
+    $read = getOptionalBodyValue("read", null);
     if($read !== null) {
         $changes += dbUpdate("UPDATE token SET read = ? WHERE id = ?", toDbBoolean($read), $id);
     }
 
-    $write = getOptionalRequestValue("write", null);
+    $write = getOptionalBodyValue("write", null);
     if($write !== null) {
         $changes += dbUpdate("UPDATE token SET write = ? WHERE id = ?", toDbBoolean($write), $id);
     }
 
-    $desc = getOptionalRequestValue("desc", null);
+    $desc = getOptionalBodyValue("desc", null);
     if($desc !== null) {
         $changes += dbUpdate("UPDATE token SET desc = ? WHERE id = ?", $desc, $id);
     }
