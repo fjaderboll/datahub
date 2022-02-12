@@ -229,7 +229,7 @@
 	}
 
 	function verifyValidName($name) {
-		$regex = "[a-z][a-z0-9_\-]*[^_-]";
+		$regex = "[a-z][a-z0-9_\-]*[a-z0-9]";
 		if(!preg_match("/^$regex$/", $name)) {
 			requestParameterFail("Name does not match $regex");
 		}
