@@ -20,22 +20,56 @@
  *     ),
  *     @OA\RequestBody(
  *         @OA\MediaType(
- *             mediaType="application/json",
+ *             mediaType="application/x-www-form-urlencoded",
  *             @OA\Schema(
- *                 @OA\Property(property="name", type="string"),
- *                 @OA\Property(property="desc", type="string"),
- *                 example={"name": "temperature", "desc": "in Celsius degrees"}
+ *                 @OA\Property(property="value", type="string")
  *             )
  *         )
  *     ),
  *     @OA\Response(response=200, description="OK"),
- *     @OA\Response(response=403, description="Not authorized"),
- *     @OA\Response(response=404, description="Sensor not found")
+ *     @OA\Response(response=403, description="Not authorized")
  * )
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings", function($nodeName, $sensorName) {
-    createReading($nodeName, $sensorName);
+    $value = getMandatoryRequestValue("value");
+    createReading($nodeName, $sensorName, $value);
     return "Reading created";
+});
+
+/**
+ * @OA\Post(
+ *     path="/nodes/{nodeName}/readings",
+ *     summary="Create new readings for severals sensors at once.",
+ *     @OA\Parameter(
+ *         description="Name of node.",
+ *         in="path",
+ *         name="nodeName",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\RequestBody(
+ *         @OA\MediaType(
+ *             mediaType="application/x-www-form-urlencoded",
+ *             @OA\Schema(
+ *                 @OA\Property(property="sensor1", type="string"),
+ *                 @OA\Property(property="sensor2", type="string")
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=403, description="Not authorized")
+ * )
+ */
+registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/readings", function($nodeName) {
+    $values = getAllRequestValues();
+    $n = 0;
+    foreach($values as $name => $value) {
+        if($name !== "timestamp" && $name !== "offset") {
+            createReading($nodeName, $name, $value);
+            $n++;
+        }
+    }
+    return "$n reading created";
 });
 
 /**
@@ -151,8 +185,7 @@ registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes
 });
 
 // ----------------------
-function createReading($nodeName, $sensorName) {
-    $value = getMandatoryRequestValue("value");
+function createReading($nodeName, $sensorName, $value) {
     $timestamp = getOptionalRequestValue("timestamp", date('c', time()));
     $offset = getOptionalRequestValue("offset", 0); // seconds
 

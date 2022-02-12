@@ -57,5 +57,15 @@ returning:
 ]
 ```
 
+## Additional parameters when pushing readings
+* `timestamp` - ISO formatted timestamp that will be used for this reading, default to now.
+* `offset` - Adds this number of seconds to the timestamp (may be negative)
+
+```
+POST /api/nodes/my-house/sensors/temperature/readings?offset=-30
+POST /api/nodes/my-house/sensors/temperature/readings?timestamp=2021-12-01
+POST /api/nodes/my-house/sensors/temperature/readings?timestamp=2021-12-01T15:01:14Z&offset=3600
+```
+
 ## TODO
 * Examples of filtering readings, like getting the last X values or last values within X time units

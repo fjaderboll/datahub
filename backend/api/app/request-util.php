@@ -26,6 +26,32 @@
 	}
 
 	function getOptionalRequestValue($var, $defaultValue) {
+		$datas = getRequestDatas();
+
+		foreach($datas as $data) {
+			if(isset($data[$var]) && $data[$var] !== null) {
+				return $data[$var];
+			}
+		}
+		return $defaultValue;
+	}
+
+	function getAllRequestValues() {
+		$datas = getRequestDatas();
+
+		$values = array();
+		foreach($datas as $data) {
+			$dataKeys = array_keys($data);
+			foreach($dataKeys as $key) {
+				if($data[$key] !== null) {
+					$values[$key] = $data[$key];
+				}
+			}
+		}
+		return $values;
+	}
+
+	function getRequestDatas() {
 		$datas = array();
 
 		if(isset($_SERVER["CONTENT_TYPE"]) && $_SERVER["CONTENT_TYPE"] == "application/json") {
@@ -44,11 +70,6 @@
 		} else {
 			array_push($datas, $_REQUEST);
 		}
-		
-		foreach($datas as $data) {
-			if(isset($data[$var]) && $data[$var] !== null) {
-				return $data[$var];
-			}
-		}
-		return $defaultValue;
+		return $datas;
 	}
+
