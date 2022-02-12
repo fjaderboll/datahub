@@ -82,10 +82,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
 					overview.sensors.forEach((sensor: any) => {
 						sensor.new = !this.overview.sensors.some((s: any) => {
-							return sensor.name == s.name;
+							return sensor.nodeName == s.nodeName && sensor.name == s.name;
 						});
 						sensor.newReading = this.overview.sensors.some((s: any) => {
-							return sensor.name == s.name && sensor.lastReadingTimestamp !== s.lastReadingTimestamp;
+							return sensor.nodeName == s.nodeName && sensor.name == s.name && sensor.lastReadingTimestamp != s.lastReadingTimestamp;
 						});
 					});
 				}

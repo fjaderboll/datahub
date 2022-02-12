@@ -146,7 +146,7 @@
 					<ng-container matColumnDef="lastReadingValue">
 						<th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
 						<td mat-cell *matCellDef="let sensor" [class.animate-new-item]="sensor.newReading">
-							{{ sensor.lastReadingValue }}
+							{{ sensor.lastReadingValue }} {{ sensor.unit }}
 						</td>
 					</ng-container>
 		
