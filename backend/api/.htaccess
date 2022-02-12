@@ -1,4 +1,5 @@
 RewriteEngine On
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
 RewriteRule "^$" - [L]
 RewriteRule "index.html" - [L]
 RewriteRule "swagger.json" - [L]
