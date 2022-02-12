@@ -61,15 +61,17 @@
 		// application/x-www-form-urlencoded
 		$method = $_SERVER['REQUEST_METHOD'];
 		if($method == Method::GET) {
-			array_push($datas, $_GET);
+			//array_push($datas, $_GET);
 		} else if($method == Method::POST) {
-			array_push($datas, $_POST);
+			//array_push($datas, $_POST);
 		} else if($method == Method::PUT) {
 			parse_str(file_get_contents("php://input"), $data);
 			array_push($datas, $data);
 		} else {
-			array_push($datas, $_REQUEST);
+			//array_push($datas, $_REQUEST);
 		}
+
+		array_push($datas, $_REQUEST);
 		return $datas;
 	}
 

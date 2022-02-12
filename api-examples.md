@@ -58,7 +58,7 @@ returning:
 ```
 
 ## Additional parameters when pushing readings
-* `timestamp` - ISO formatted timestamp that will be used for this reading, default to now.
+* `timestamp` - ISO formatted timestamp that will be used for this reading, defaults to now.
 * `offset` - Adds this number of seconds to the timestamp (may be negative)
 
 ```
