@@ -272,7 +272,7 @@ function getReadings($nodeName, $sensorName) {
     $dbReadings = dbQuery($sql, ...$params);
     $readings = array();
     foreach($dbReadings as $dbReading) {
-		$reading = convertFromDbObject($dbReading, array('id', 'node_name', 'sensor_name', 'timestamp', 'value'));
+		$reading = convertFromDbObject($dbReading, array('id', 'node_name', 'sensor_name', 'timestamp', 'value', 'unit'));
         array_push($readings, $reading);
 	}
     return $readings;

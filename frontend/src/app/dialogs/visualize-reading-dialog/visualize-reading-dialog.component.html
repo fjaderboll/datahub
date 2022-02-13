@@ -1,4 +1,4 @@
-<h1 mat-dialog-title></h1>
+<h1 mat-dialog-title>Visualize {{ data.sensorName || data.nodeName }}</h1>
 <div mat-dialog-content>
 	
 	<div id="chart"></div>
@@ -8,5 +8,10 @@
 	<button mat-stroked-button color="primary" [mat-dialog-close]="false">
 		<mat-icon>close</mat-icon>
 		<span>Close</span>
+	</button>
+
+	<button mat-raised-button color="primary" (click)="loadMore()" *ngIf="data.readings?.length == readingsLimit">
+		<mat-icon>downloading</mat-icon>
+		<span>Load More</span>
 	</button>
 </div>

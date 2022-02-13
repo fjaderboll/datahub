@@ -94,6 +94,7 @@ CREATE VIEW e_reading AS
 SELECT n.name AS node_name,
        s.node_id,
        s.name AS sensor_name,
+       s.unit,
        r.*
 FROM reading r
 JOIN sensor s ON s.id = r.sensor_id

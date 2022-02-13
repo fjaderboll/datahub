@@ -26,6 +26,13 @@
 			<span>Create Sensor</span>
 		</button>
 	</div>
+
+	<div *ngIf="totalReadingCount > 0" class="margin-left">
+		<button mat-raised-button color="primary" (click)="visualizeReadings()">
+			<mat-icon>show_chart</mat-icon>
+			<span>Visualize</span>
+		</button>
+	</div>
 </div>
 
 <div class="mat-elevation-z8 margin-top">

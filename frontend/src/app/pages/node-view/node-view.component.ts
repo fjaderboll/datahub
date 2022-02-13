@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/dialogs/confirm-dialog/confirm-dialog.component';
 import { CreateSensorDialogComponent } from 'src/app/dialogs/create-sensor-dialog/create-sensor-dialog.component';
+import { VisualizeReadingDialogComponent } from 'src/app/dialogs/visualize-reading-dialog/visualize-reading-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -18,6 +19,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 })
 export class NodeViewComponent implements OnInit, AfterViewInit {
 	public node: any;
+	public totalReadingCount = 0;
 
 	public displayedColumns: string[] = ['name', 'readingCount', 'lastReadingTimestamp', 'desc'];
 	public dataSource = new MatTableDataSource<any>();
@@ -49,6 +51,11 @@ export class NodeViewComponent implements OnInit, AfterViewInit {
 			next: (node: any) => {
 				this.node = node;
 				this.dataSource.data = node.sensors;
+
+				this.totalReadingCount = 0;
+				node.sensors.forEach((sensor: any) => {
+					this.totalReadingCount += sensor.readingCount;
+				});
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
@@ -116,4 +123,15 @@ export class NodeViewComponent implements OnInit, AfterViewInit {
 			}
 		});
 	}
+
+	public visualizeReadings() {
+		this.dialog.open(VisualizeReadingDialogComponent, {
+			data: {
+				nodeName: this.node.name,
+				sensorName: null,
+				readings: null
+			}
+		});
+	}
+	
 }

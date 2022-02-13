@@ -160,8 +160,11 @@ export class ServerService {
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
-	public getNodeReadings(nodeName: string) {
-		const url = this.apiUrl + "nodes/" + nodeName + "/readings";
+	public getNodeReadings(nodeName: string, limit: number) {
+		let url = this.apiUrl + "nodes/" + nodeName + "/readings";
+		if(limit) {
+			url += "?limit=" + limit;
+		}
 		return this.http.get(url, this.httpOptionsJson);
 	}
 

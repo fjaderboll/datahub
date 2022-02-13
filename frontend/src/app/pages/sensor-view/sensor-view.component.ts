@@ -138,7 +138,7 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 		this.dialog.open(VisualizeReadingDialogComponent, {
 			data: {
 				nodeName: this.nodeName,
-				sensor: this.sensor,
+				sensorName: this.sensor.name,
 				readings: this.readings
 			}
 		});
