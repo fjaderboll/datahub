@@ -230,6 +230,17 @@ function getReadings($nodeName, $sensorName) {
         }
     }
 
+    $minAge = getOptionalQueryValue("minAge", null);
+    if($minAge !== null && $minAge !== "") {
+        if(ctype_digit($minAge)) {
+            $timestamp = date('c', time() - $minAge);
+            $sql .= ' AND "timestamp" < ? ';
+            array_push($params, $timestamp);
+        } else {
+            requestParameterFail("Invalid positive integer 'minAge': $minAge");
+        }
+    }
+
     $after = getOptionalQueryValue("after", null);
     if($after !== null && $after !== "") {
         $unixTime = strtotime($after);
@@ -254,7 +265,11 @@ function getReadings($nodeName, $sensorName) {
         array_push($params, $timestamp);
     }
 
-    $sql .= ' ORDER BY "timestamp" DESC ';
+    $sort = strtolower(getOptionalQueryValue("sort", "desc"));
+    if($sort !== "asc" && $sort !== "desc") {
+        requestParameterFail("Invalid sort, must be 'asc' or 'desc' but is: $sort");
+    }
+    $sql .= ' ORDER BY "timestamp" '.$sort.' ';
 
     $limit = getOptionalQueryValue("limit", null);
     if($limit === null || $limit === "") {

@@ -76,13 +76,17 @@ Returned as JSON array:
 
 ## Additional query parameters when pushing readings
 * `limit` - Limits the number of returned readings to this number. Use `0` to get all. Defaults to `100`.
+* `sort` - Sort readings before applying `limit`. Must be `asc` or `desc`. Defaults to `desc`.
 * `maxAge` - Return all readings younger than this number of seconds.
-* `before` - Only return readings before this ISO date.
-* `after` - Only return readings after this ISO date.
+* `minAge` - Return all readings older than this number of seconds.
+* `before` - Only return readings before this ISO timestamp.
+* `after` - Only return readings after this ISO timestamp.
 
 ```php
 // get last temperature
 GET /api/nodes/my-house/sensors/temperature/readings?limit=1
+// get first temperature
+GET /api/nodes/my-house/sensors/temperature/readings?limit=1&sort=asc
 // get all temperatures
 GET /api/nodes/my-house/sensors/temperature/readings?limit=0
 // get all in the past 10 minutes for 'my-house'
