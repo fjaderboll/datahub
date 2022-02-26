@@ -33,7 +33,7 @@ export class VisualizeReadingDialogComponent implements OnInit {
 		this.data.readings.forEach((reading: any) => {
 			if(this.isValueValid(reading.value)) {
 				let serie: any = series.find((s: any) => {
-					return s.name == reading.sensorName;
+					return s.name == (!this.data.nodeName ? reading.nodeName + ' - ' : '') + reading.sensorName;
 				});
 				if(!serie) {
 					let i: any = yAxis.findIndex((ya: any) => {
@@ -49,8 +49,11 @@ export class VisualizeReadingDialogComponent implements OnInit {
 					}
 
 					serie = {
-						name: reading.sensorName,
+						name: (!this.data.nodeName ? reading.nodeName + ' - ' : '') + reading.sensorName,
 						yAxis: i,
+						tooltip: {
+							valueSuffix: ' ' + reading.unit
+						},
 						data: []
 					};
 					series.push(serie);
@@ -71,10 +74,11 @@ export class VisualizeReadingDialogComponent implements OnInit {
 
 		const options: any = {
 			chart: {
+				type: 'line',
                 zoomType: 'x'
             },
 			title: {
-				text: this.data.nodeName + (this.data.sensorName ? ' - ' + this.data.sensorName : '') + ' - ' + this.data.readings.length + ' readings'
+				text: (this.data.nodeName ? this.data.nodeName + ' - ' : '') + (this.data.sensorName ? this.data.sensorName + ' - ': '') + this.data.readings.length + ' readings'
 			},
 			subtitle: {
 				text: (invalidValueCount ? invalidValueCount + ' non-numeric value' + (invalidValueCount == 1 ? '' : 's') + ' ignored' : null)
@@ -86,6 +90,9 @@ export class VisualizeReadingDialogComponent implements OnInit {
             legend: {
                 enabled: true
             },
+			time: {
+				useUTC: false
+			},
 			series: series
 		};
 		Highcharts.chart('chart', options);
@@ -96,26 +103,22 @@ export class VisualizeReadingDialogComponent implements OnInit {
 	}
 
 	private loadReadings() {
+		const observer = {
+			next: (readings: any) => {
+				this.data.readings = readings;
+				this.drawChart();
+			},
+			error: (e: any) => {
+				this.server.showHttpError(e);
+			}
+		};
+
 		if(this.data.sensorName) {
-			this.server.getSensorReadings(this.data.nodeName, this.data.sensorName, this.readingsLimit).subscribe({
-				next: (readings: any) => {
-					this.data.readings = readings;
-					this.drawChart();
-				},
-				error: (e) => {
-					this.server.showHttpError(e);
-				}
-			});
+			this.server.getSensorReadings(this.data.nodeName, this.data.sensorName, this.readingsLimit).subscribe(observer);
+		} else if(this.data.nodeName) {
+			this.server.getNodeReadings(this.data.nodeName, this.readingsLimit).subscribe(observer);
 		} else {
-			this.server.getNodeReadings(this.data.nodeName, this.readingsLimit).subscribe({
-				next: (readings: any) => {
-					this.data.readings = readings;
-					this.drawChart();
-				},
-				error: (e) => {
-					this.server.showHttpError(e);
-				}
-			});
+			this.server.getReadings(this.readingsLimit).subscribe(observer);
 		}
 	}
 

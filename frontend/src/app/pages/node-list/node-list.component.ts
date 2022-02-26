@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { CreateNodeDialogComponent } from 'src/app/dialogs/create-node-dialog/create-node-dialog.component';
+import { VisualizeReadingDialogComponent } from 'src/app/dialogs/visualize-reading-dialog/visualize-reading-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -16,6 +17,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class NodeListComponent implements OnInit, AfterViewInit {
 	public displayedColumns: string[] = ['name', 'sensorCount', 'lastReadingTimestamp', 'desc'];
 	public dataSource = new MatTableDataSource<any>();
+	public totalSensorCount = 0;
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
@@ -39,8 +41,9 @@ export class NodeListComponent implements OnInit, AfterViewInit {
 	private loadNodes() {
 		this.server.getNodes().subscribe({
 			next: (v: any) => {
+				this.totalSensorCount = 0;
 				v.forEach((node: any) => {
-					//user.databaseSizeStr = this.utils.printFilesize(user.databaseSize);
+					this.totalSensorCount += node.sensorCount;
 				});
 				this.dataSource.data = v;
 			},
@@ -58,4 +61,15 @@ export class NodeListComponent implements OnInit, AfterViewInit {
 			}
 		});
 	}
+
+	public visualizeReadings() {
+		this.dialog.open(VisualizeReadingDialogComponent, {
+			data: {
+				nodeName: null,
+				sensorName: null,
+				readings: null
+			}
+		});
+	}
+	
 }

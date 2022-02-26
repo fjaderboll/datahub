@@ -1,13 +1,22 @@
 <app-breadcrumb [links]="['/nodes']" [names]="['Nodes']"></app-breadcrumb>
 
-<div class="align-right margin-bottom">
-	<button mat-raised-button color="primary" (click)="createNode()">
-		<mat-icon>add</mat-icon>
-		<span>Create Node</span>
-	</button>
+<div class="row margin-top align-right">
+	<div>
+		<button mat-raised-button color="primary" (click)="createNode()">
+			<mat-icon>add</mat-icon>
+			<span>Create Node</span>
+		</button>
+	</div>
+
+	<div *ngIf="totalSensorCount > 0" class="margin-left">
+		<button mat-raised-button color="primary" (click)="visualizeReadings()">
+			<mat-icon>show_chart</mat-icon>
+			<span>Visualize</span>
+		</button>
+	</div>
 </div>
 
-<div class="mat-elevation-z8">
+<div class="mat-elevation-z8 margin-top">
 	<table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
 
 		<ng-container matColumnDef="name">
