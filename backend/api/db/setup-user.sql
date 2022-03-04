@@ -46,6 +46,7 @@ CREATE TABLE sensor (
     UNIQUE(node_id, name),
 	FOREIGN KEY(node_id) REFERENCES node(id)
 );
+CREATE INDEX sensor_ix_node_id ON sensor(node_id);
 
 CREATE TABLE reading (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,6 +56,8 @@ CREATE TABLE reading (
 
     FOREIGN KEY(sensor_id) REFERENCES sensor(id)
 );
+CREATE INDEX reading_ix_sensor_id ON reading(sensor_id);
+CREATE INDEX reading_ix_timestamp ON reading(timestamp DESC);
 
 ---------------- views ----------------
 CREATE VIEW e_node AS
