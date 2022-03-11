@@ -21,7 +21,7 @@ export class NodeViewComponent implements OnInit, AfterViewInit {
 	public node: any;
 	public totalReadingCount = 0;
 
-	public displayedColumns: string[] = ['name', 'readingCount', 'lastReadingTimestamp', 'desc'];
+	public displayedColumns: string[] = ['name', 'readingCount', 'lastReading', 'desc'];
 	public dataSource = new MatTableDataSource<any>();
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;

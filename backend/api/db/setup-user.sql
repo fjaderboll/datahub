@@ -66,12 +66,14 @@ SELECT n.*,
         FROM sensor
         WHERE node_id = n.id
        ) AS sensor_count,
-       (SELECT max(timestamp)
+       (SELECT id
         FROM reading
         WHERE sensor_id IN (SELECT id
                             FROM sensor
                             WHERE node_id = n.id)
-       ) AS last_reading_timestamp
+        ORDER BY "timestamp" DESC
+        LIMIT 1
+       ) AS last_reading_id
 FROM node n;
 
 CREATE VIEW e_sensor AS
@@ -81,17 +83,14 @@ SELECT n.name AS node_name,
         FROM reading
         WHERE sensor_id = s.id
        ) AS reading_count,
-       r."timestamp" AS last_reading_timestamp,
-       r.value AS last_reading_value
+       (SELECT id
+	    FROM reading
+	    WHERE sensor_id = s.id
+	    ORDER BY "timestamp" DESC
+	    LIMIT 1
+	   ) AS last_reading_id
 FROM sensor s
-INNER JOIN node n ON n.id = s.node_id
-LEFT OUTER JOIN reading r ON r.sensor_id = s.id AND r.id = (
-	SELECT r2.id
-	FROM reading r2
-	WHERE r2.sensor_id = s.id
-	ORDER BY r2."timestamp" DESC
-	LIMIT 1
-);
+INNER JOIN node n ON n.id = s.node_id;
 
 CREATE VIEW e_reading AS
 SELECT n.name AS node_name,

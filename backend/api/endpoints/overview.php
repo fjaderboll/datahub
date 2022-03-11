@@ -20,14 +20,15 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "overview"
     $dbSensors = dbQuery("SELECT * FROM e_sensor");
     $sensors = array();
     foreach($dbSensors as $dbSensor) {
-		$sensor = convertFromDbObject($dbSensor, array('node_name', 'name', 'desc', 'unit', 'reading_count', 'last_reading_timestamp', 'last_reading_value'));
+		$sensor = convertFromDbObject($dbSensor, array('node_name', 'name', 'desc', 'unit', 'reading_count'));
+        $sensor['lastReading'] = getReading($dbSensor['last_reading_id']);
         array_push($sensors, $sensor);
 	}
 
     $dbReadings = dbQuery('SELECT * FROM e_reading ORDER BY "timestamp" DESC LIMIT 10');
     $lastReadings = array();
     foreach($dbReadings as $dbReading) {
-		$reading = convertFromDbObject($dbReading, array('id', 'node_name', 'sensor_name', 'timestamp', 'value'));
+		$reading = convertFromDbObject($dbReading, array('id', 'node_name', 'sensor_name', 'timestamp', 'value', 'unit'));
         array_push($lastReadings, $reading);
 	}
 

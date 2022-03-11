@@ -36,7 +36,8 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes", f
     $dbNodes = dbQuery("SELECT * FROM e_node");
     $nodes = array();
     foreach($dbNodes as $dbNode) {
-		$node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'last_reading_timestamp'));
+		$node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count'));
+        $node['lastReading'] = getReading($dbNode['last_reading_id']);
         array_push($nodes, $node);
 	}
     return $nodes;

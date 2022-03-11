@@ -85,7 +85,7 @@
 					<ng-container matColumnDef="value">
 						<th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
 						<td mat-cell *matCellDef="let reading" [class.animate-new-item]="reading.new">
-							{{ reading.value }}
+							{{ reading.value }} {{ reading.unit }}
 						</td>
 					</ng-container>
 		
@@ -135,18 +135,18 @@
 					<ng-container matColumnDef="lastReadingTimestamp">
 						<th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
 						<td mat-cell *matCellDef="let sensor" [class.animate-new-item]="sensor.newReading">
-							<span *ngIf="sensor.lastReadingTimestamp">
-								<span>{{ utils.printTimestamp(sensor.lastReadingTimestamp) }}</span>
-								<span class="relative-time">{{ utils.getRelativeTime(sensor.lastReadingTimestamp) }}</span>
+							<span *ngIf="sensor.lastReading">
+								<span>{{ utils.printTimestamp(sensor.lastReading.timestamp) }}</span>
+								<span class="relative-time">{{ utils.getRelativeTime(sensor.lastReading.timestamp) }}</span>
 							</span>
-							<span *ngIf="!sensor.lastReadingTimestamp" class="not-set">No readings</span>
+							<span *ngIf="!sensor.lastReading" class="not-set">No readings</span>
 						</td>
 					</ng-container>
 		
 					<ng-container matColumnDef="lastReadingValue">
 						<th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
 						<td mat-cell *matCellDef="let sensor" [class.animate-new-item]="sensor.newReading">
-							{{ sensor.lastReadingValue }} {{ sensor.unit }}
+							{{ sensor.lastReading.value }} {{ sensor.lastReading.unit }}
 						</td>
 					</ng-container>
 		

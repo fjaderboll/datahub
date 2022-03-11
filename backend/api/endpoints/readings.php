@@ -171,12 +171,15 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "readings"
  *         @OA\Schema(type="string")
  *     ),
  *     @OA\Response(response=200, description="OK"),
- *     @OA\Response(response=404, description="Sensor not found")
+ *     @OA\Response(response=404, description="Reading not found")
  * )
  */
 registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings/{id}", function($nodeName, $sensorName, $id) {
     $dbSensor = findSensor($nodeName, $sensorName);
-    dbUpdate("DELETE FROM reading WHERE sensor_id = ? AND id = ?", $dbSensor['id'], $id);
+    $changes = dbUpdate("DELETE FROM reading WHERE sensor_id = ? AND id = ?", $dbSensor['id'], $id);
+    if($changes == 0) {
+        requestFail("Reading not found", 404);
+    }
     return "Deleted reading $id";
 });
 
@@ -201,6 +204,16 @@ function createReading($nodeName, $sensorName, $value) {
     $readingId = dbGetLastId();
     cleanup();
     return $readingId;
+}
+
+function getReading($id) {
+    if($id === null) {
+        return null;
+    } else {
+        $dbReading = dbQuerySingle("SELECT * FROM e_reading WHERE id = ?", $id);
+        $reading = convertFromDbObject($dbReading, array('id', 'node_name', 'sensor_name', 'timestamp', 'value', 'unit'));
+        return $reading;
+    }
 }
 
 function getReadings($nodeName, $sensorName) {

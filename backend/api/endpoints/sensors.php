@@ -80,7 +80,8 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{no
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{nodeName}/sensors/{sensorName}", function($nodeName, $sensorName) {
     $dbSensor = findSensor($nodeName, $sensorName);
     $dbESensor = dbQuerySingle("SELECT * FROM e_sensor WHERE id = ?", $dbSensor['id']);
-    $sensor = convertFromDbObject($dbESensor, array('name', 'desc', 'unit', 'reading_count', 'last_reading_timestamp', 'last_reading_value'));
+    $sensor = convertFromDbObject($dbESensor, array('name', 'desc', 'unit', 'reading_count'));
+    $sensor['lastReading'] = getReading($dbESensor['last_reading_id']);
     return $sensor;
 });
 
@@ -209,7 +210,8 @@ function getSensors($nodeName) {
     $dbSensors = dbQuery("SELECT * FROM e_sensor WHERE node_id = ?", $dbNode['id']);
     $sensors = array();
     foreach($dbSensors as $dbSensor) {
-		$sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit', 'reading_count', 'last_reading_timestamp'));
+		$sensor = convertFromDbObject($dbSensor, array('name', 'desc', 'unit', 'reading_count'));
+        $sensor['lastReading'] = getReading($dbSensor['last_reading_id']);
         array_push($sensors, $sensor);
 	}
     return $sensors;
