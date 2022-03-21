@@ -42,7 +42,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.swaggerUrl = environment.apiUrl;
-		this.loadOverview();
 
 		this.updateTimer = setInterval(() => {
 			this.secondsLeft = Math.ceil(this.getTimeLeft() / 1000);
