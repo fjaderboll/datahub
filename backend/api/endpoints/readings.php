@@ -286,7 +286,7 @@ function getReadings($nodeName, $sensorName) {
 
     $limit = getOptionalQueryValue("limit", null);
     if($limit === null || $limit === "") {
-        $sql .= "LIMIT 100";
+        $sql .= "LIMIT 10000";
     } else if(ctype_digit($limit)) {
         if($limit == 0) {
             $sql .= "LIMIT -1";

@@ -29,3 +29,4 @@ ng build                                       # build for production
 
 ## Future improvements
 * Mobile friendly
+* Store last reading and reading counts for faster read

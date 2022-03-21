@@ -18,20 +18,19 @@ hosted on your own webserver.
 ...TODO create visual graph
 
 ## Usage
-The IoT devices can do simple HTTP requests like this:
+The IoT devices can for example do a simple HTTP request like this:
 ```
-POST /api/nodes/my-house/sensors/temp-outdoor/readings
-POST /api/nodes/my-house/sensors/temp-indoor/readings
-POST /api/nodes/garage/sensors/temp/readings
+POST /api/nodes/my-house/readings
 ```
 with this data:
 ```
-value=22.5
+temperature=22.5
+humidity=30.3
 ```
 
 This data can later be retrieved with:
 ```
-GET /api/nodes/my-house/sensors/temp-outdoor/readings
+GET /api/nodes/my-house/sensors/temperature/readings
 ```
 returning:
 ```json

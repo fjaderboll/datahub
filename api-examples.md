@@ -55,28 +55,31 @@ Returned as JSON array:
         "nodeName": "my-house",
         "sensorName": "temperature",
         "timestamp": "2022-02-12T21:41:47+01:00",
-        "value": 21
+        "value": 21,
+        "unit": "°C"
     },
     {
         "id": 237,
         "nodeName": "my-house",
         "sensorName": "humidity",
         "timestamp": "2022-02-12T21:41:47+01:00",
-        "value": 34
+        "value": 34,
+        "unit": "%"
     },
     {
         "id": 236,
         "nodeName": "my-house",
         "sensorName": "temperature",
         "timestamp": "2022-02-12T19:39:40+01:00",
-        "value": 20
+        "value": 20,
+        "unit": "°C"
     }
 ]
 ```
 
-## Additional query parameters when pushing readings
-* `limit` - Limits the number of returned readings to this number. Use `0` to get all. Defaults to `100`.
-* `sort` - Sort readings before applying `limit`. Must be `asc` or `desc`. Defaults to `desc`.
+## Additional query parameters when retrieving readings
+* `limit` - Limits the number of returned readings to this number. Use `0` to get all. Defaults to `10000`.
+* `sort` - Sort readings based on *timestamp* before applying `limit`. Must be `asc` or `desc`. Defaults to `desc`.
 * `maxAge` - Return all readings younger than this number of seconds.
 * `minAge` - Return all readings older than this number of seconds.
 * `before` - Only return readings before this ISO timestamp.
@@ -93,4 +96,51 @@ GET /api/nodes/my-house/sensors/temperature/readings?limit=0
 GET /api/nodes/my-house/readings?maxAge=600
 // get all in January
 GET /api/readings?after=2022-01-01&before=2022-02-01
+```
+
+## Last readings
+The last stored readings are also returned when loading nodes and sensors:
+
+```php
+GET /api/nodes/my-house/sensors/temperature
+GET /api/nodes/my-house
+```
+
+Node data response example:
+
+```json
+{
+  "name": "my-house",
+  "desc": "Placed in the hallway",
+  "sensors": [
+    {
+      "name": "temperature",
+      "desc": null,
+      "unit": "°C",
+      "readingCount": 118,
+      "lastReading": {
+        "id": 238,
+        "nodeName": "my-house",
+        "sensorName": "temperature",
+        "timestamp": "2022-03-21T20:30:18+00:00",
+        "value": 33.7,
+        "unit": "°C"
+      }
+    },
+    {
+      "name": "humidity",
+      "desc": null,
+      "unit": "%",
+      "readingCount": 109,
+      "lastReading": {
+        "id": 237,
+        "nodeName": "my-house",
+        "sensorName": "humidity",
+        "timestamp": "2022-03-21T20:30:18+00:00",
+        "value": 1,
+        "unit": "%"
+      }
+    }
+  ]
+}
 ```
