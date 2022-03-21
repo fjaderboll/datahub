@@ -80,6 +80,15 @@ This basically just zips the content of the `api` directory:
 Unzip the resulting `dist/api.tar.gz` on your PHP enabled web server.
 Make sure the `data` directory is writeable by the PHP executor.
 
+### Patching database
+Existing databases will not automatically get updates made in `setup-main.sql` and `setup-user.sql`.
+
+```shell
+cd api/data/users
+sqlite3 1.db < patch.sql
+sqlite3 2.db < patch.sql
+```
+
 ## Future improvements
 * Allow changing password
 * Add Swagger authorization annotation

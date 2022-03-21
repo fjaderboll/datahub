@@ -63,16 +63,12 @@ CREATE INDEX reading_ix_timestamp ON reading(timestamp DESC);
 CREATE VIEW e_node AS
 SELECT n.*,
        (SELECT count(*)
-        FROM sensor
-        WHERE node_id = n.id
+        FROM sensor s
+        WHERE s.node_id = n.id
        ) AS sensor_count,
-       (SELECT id
-        FROM reading
-        WHERE sensor_id IN (SELECT id
-                            FROM sensor
-                            WHERE node_id = n.id)
-        ORDER BY "timestamp" DESC
-        LIMIT 1
+       (SELECT max(r.id)   -- techically not correct, should order by timestamp, but this is way faster
+        FROM reading r
+        INNER JOIN sensor s ON s.id = r.sensor_id AND s.node_id = n.id
        ) AS last_reading_id
 FROM node n;
 
@@ -80,14 +76,12 @@ CREATE VIEW e_sensor AS
 SELECT n.name AS node_name,
        s.*,
        (SELECT count(*)
-        FROM reading
-        WHERE sensor_id = s.id
+        FROM reading r
+        WHERE r.sensor_id = s.id
        ) AS reading_count,
-       (SELECT id
-	    FROM reading
-	    WHERE sensor_id = s.id
-	    ORDER BY "timestamp" DESC
-	    LIMIT 1
+       (SELECT max(id)     -- techically not correct, should order by timestamp, but this is way faster
+	    FROM reading r
+	    WHERE r.sensor_id = s.id
 	   ) AS last_reading_id
 FROM sensor s
 INNER JOIN node n ON n.id = s.node_id;
