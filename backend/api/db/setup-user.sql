@@ -1,14 +1,11 @@
 ---------------- tables ---------------
 CREATE TABLE token (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    --"user_id" INTEGER NOT NULL,
     "token" TEXT UNIQUE NOT NULL,
     "enabled" INTEGER DEFAULT 1 NOT NULL,
     "read" INTEGER DEFAULT 1 NOT NULL,
     "write" INTEGER DEFAULT 1 NOT NULL,
     "desc" TEXT
-
-    --FOREIGN KEY(user_id) REFERENCES user(id)
 );
 
 CREATE TABLE export (
@@ -28,12 +25,12 @@ CREATE TABLE export (
 
 CREATE TABLE node (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-	--"user_id" INTEGER NOT NULL,
-    "name" TEXT UNIQUE NOT NULL,
-    "desc" TEXT
+	"name" TEXT UNIQUE NOT NULL,
+    "desc" TEXT,
+    "reading_count" INTEGER NOT NULL DEFAULT 0,
+    "last_reading_id" INTEGER,
 
-    --UNIQUE(user_id, name),
-	--FOREIGN KEY(user_id) REFERENCES user(id)
+    FOREIGN KEY(last_reading_id) REFERENCES reading(id)
 );
 
 CREATE TABLE sensor (
@@ -42,9 +39,12 @@ CREATE TABLE sensor (
     "name" TEXT NOT NULL,
 	"desc" TEXT,
 	"unit" TEXT,
+    "reading_count" INTEGER NOT NULL DEFAULT 0,
+    "last_reading_id" INTEGER,
 
     UNIQUE(node_id, name),
-	FOREIGN KEY(node_id) REFERENCES node(id)
+	FOREIGN KEY(node_id) REFERENCES node(id),
+    FOREIGN KEY(last_reading_id) REFERENCES reading(id)
 );
 CREATE INDEX sensor_ix_node_id ON sensor(node_id);
 
@@ -65,26 +65,14 @@ SELECT n.*,
        (SELECT count(*)
         FROM sensor s
         WHERE s.node_id = n.id
-       ) AS sensor_count,
-       (SELECT max(r.id)   -- techically not correct, should order by timestamp, but this is way faster
-        FROM reading r
-        INNER JOIN sensor s ON s.id = r.sensor_id AND s.node_id = n.id
-       ) AS last_reading_id
+       ) AS sensor_count
 FROM node n;
 
 CREATE VIEW e_sensor AS
 SELECT n.name AS node_name,
-       s.*,
-       (SELECT count(*)
-        FROM reading r
-        WHERE r.sensor_id = s.id
-       ) AS reading_count,
-       (SELECT max(id)     -- techically not correct, should order by timestamp, but this is way faster
-	    FROM reading r
-	    WHERE r.sensor_id = s.id
-	   ) AS last_reading_id
+       s.*
 FROM sensor s
-INNER JOIN node n ON n.id = s.node_id;
+JOIN node n ON n.id = s.node_id;
 
 CREATE VIEW e_reading AS
 SELECT n.name AS node_name,

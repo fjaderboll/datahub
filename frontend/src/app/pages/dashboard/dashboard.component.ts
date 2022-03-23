@@ -84,7 +84,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 							return sensor.nodeName == s.nodeName && sensor.name == s.name;
 						});
 						sensor.newReading = this.overview.sensors.some((s: any) => {
-							return sensor.nodeName == s.nodeName && sensor.name == s.name && sensor.lastReadingTimestamp != s.lastReadingTimestamp;
+							return sensor.nodeName == s.nodeName && sensor.name == s.name && sensor.lastReading.id != s.lastReading.id;
 						});
 					});
 				}
@@ -92,6 +92,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.totalReadingCount = 0;
 				overview.sensors.forEach((sensor: any) => {
 					this.totalReadingCount += sensor.readingCount;
+					sensor.lastReadingTimestamp = sensor.lastReading?.timestamp;
 				});
 
 				this.dataSource1.data = overview.lastReadings;

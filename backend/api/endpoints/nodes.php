@@ -36,7 +36,7 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes", f
     $dbNodes = dbQuery("SELECT * FROM e_node");
     $nodes = array();
     foreach($dbNodes as $dbNode) {
-		$node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count'));
+		$node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'reading_count'));
         $node['lastReading'] = getReading($dbNode['last_reading_id']);
         array_push($nodes, $node);
 	}
@@ -60,7 +60,8 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes", f
  */
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{name}", function($name) {
     $dbNode = findNode($name);
-    $node = convertFromDbObject($dbNode, array('name', 'desc'));
+    $node = convertFromDbObject($dbNode, array('name', 'desc', 'sensor_count', 'reading_count'));
+    $node['lastReading'] = getReading($dbNode['last_reading_id']);
     $node['sensors'] = getSensors($dbNode['name']);
     return $node;
 });
@@ -124,6 +125,8 @@ registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{n
  */
 registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes/{name}", function($name) {
     $dbNode = findNode($name);
+    dbUpdate("UPDATE node SET last_reading_id = null WHERE id = ?", $dbNode['id']);
+    dbUpdate("UPDATE sensor SET last_reading_id = null WHERE node_id = ?", $dbNode['id']);
     dbUpdate("DELETE FROM reading WHERE sensor_id IN (SELECT id FROM sensor WHERE node_id = ?)", $dbNode['id']);
     dbUpdate("DELETE FROM sensor WHERE node_id = ?", $dbNode['id']);
     dbUpdate("DELETE FROM node WHERE id = ?", $dbNode['id']);
@@ -143,7 +146,7 @@ function createNode($name, $desc) {
 
 function findNode($name) {
     $name = strtolower($name);
-    $nodes = dbQuery("SELECT * FROM node WHERE name = ?", $name);
+    $nodes = dbQuery("SELECT * FROM e_node WHERE name = ?", $name);
     if(count($nodes) == 0) {
         requestFail("Node not found", 404);
     } else {

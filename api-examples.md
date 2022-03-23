@@ -88,6 +88,7 @@ Returned as JSON array:
 ```php
 // get last temperature
 GET /api/nodes/my-house/sensors/temperature/readings?limit=1
+GET /api/nodes/my-house/sensors/temperature
 // get first temperature
 GET /api/nodes/my-house/sensors/temperature/readings?limit=1&sort=asc
 // get all temperatures
@@ -99,7 +100,7 @@ GET /api/readings?after=2022-01-01&before=2022-02-01
 ```
 
 ## Last readings
-The last stored readings are also returned when loading nodes and sensors:
+The last readings are pre-cached and returned when loading nodes and sensors:
 
 ```php
 GET /api/nodes/my-house/sensors/temperature

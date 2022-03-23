@@ -8,7 +8,7 @@
 		</button>
 	</div>
 
-	<div *ngIf="totalSensorCount > 0" class="margin-left">
+	<div *ngIf="totalReadingCount > 0" class="margin-left">
 		<button mat-raised-button color="primary" (click)="visualizeReadings()">
 			<mat-icon>show_chart</mat-icon>
 			<span>Visualize</span>
@@ -31,6 +31,11 @@
 		<ng-container matColumnDef="sensorCount">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Sensor Count</th>
 			<td mat-cell *matCellDef="let node">{{ node.sensorCount }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="readingCount">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Reading Count</th>
+			<td mat-cell *matCellDef="let node">{{ node.readingCount }}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="lastReadingTimestamp">

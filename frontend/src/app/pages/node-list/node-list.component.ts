@@ -15,9 +15,9 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./node-list.component.css']
 })
 export class NodeListComponent implements OnInit, AfterViewInit {
-	public displayedColumns: string[] = ['name', 'sensorCount', 'lastReadingTimestamp', 'desc'];
+	public displayedColumns: string[] = ['name', 'sensorCount', 'readingCount', 'lastReadingTimestamp', 'desc'];
 	public dataSource = new MatTableDataSource<any>();
-	public totalSensorCount = 0;
+	public totalReadingCount = 0;
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
@@ -41,9 +41,10 @@ export class NodeListComponent implements OnInit, AfterViewInit {
 	private loadNodes() {
 		this.server.getNodes().subscribe({
 			next: (v: any) => {
-				this.totalSensorCount = 0;
+				this.totalReadingCount = 0;
 				v.forEach((node: any) => {
-					this.totalSensorCount += node.sensorCount;
+					this.totalReadingCount += node.readingCount;
+					node.lastReadingTimestamp = node.lastReading?.timestamp;
 				});
 				this.dataSource.data = v;
 			},

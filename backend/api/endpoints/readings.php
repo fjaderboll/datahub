@@ -202,7 +202,11 @@ function createReading($nodeName, $sensorName, $value) {
 
     dbUpdate("INSERT INTO reading(sensor_id, value, timestamp) VALUES (?, ?, ?)", $dbSensor['id'], $value, $validatedTimestamp);
     $readingId = dbGetLastId();
-    cleanup();
+
+    readingCleanup();
+    readingAggregateSensor($dbSensor['id']);
+    readingAggregateNode($nodeName);
+
     return $readingId;
 }
 
@@ -306,10 +310,53 @@ function getReadings($nodeName, $sensorName) {
     return $readings;
 }
 
-function cleanup() {
+function readingCleanup() {
     global $MAX_READINGS;
 
     if(isRandom(1000)) {
-        dbUpdate('DELETE FROM reading WHERE id IN (SELECT id FROM reading ORDER BY "timestamp" DESC LIMIT -1 OFFSET ?)', $MAX_READINGS);
+        dbUpdate('DELETE FROM reading
+                  WHERE id IN (SELECT id 
+                               FROM reading 
+                               WHERE id NOT IN (SELECT last_reading_id FROM sensor)
+                               ORDER BY "timestamp" DESC
+                               LIMIT -1 OFFSET ?
+                              )
+        ', $MAX_READINGS);
     }
+}
+
+function readingAggregateSensor($sensorId) {
+    dbUpdate('UPDATE sensor
+              SET last_reading_id = (SELECT r.id
+                                     FROM reading r
+                                     WHERE r.sensor_id = sensor.id
+                                     ORDER BY r."timestamp" DESC
+                                     LIMIT 1
+                                    ),
+                  reading_count = (SELECT count(r.id)
+                                   FROM reading r
+                                   WHERE r.sensor_id = sensor.id
+                                  )
+              WHERE id = ?',
+              $sensorId
+    );
+}
+
+function readingAggregateNode($nodeName) {
+    dbUpdate('UPDATE node
+              SET last_reading_id = (SELECT r.id 
+                                     FROM reading r
+                                     JOIN sensor s ON s.node_id = node.id AND s.last_reading_id = r.id
+                                     ORDER BY r."timestamp" DESC
+                                     LIMIT 1
+                                    ),
+                  reading_count = ifnull( (SELECT sum(s.reading_count)
+                                           FROM sensor s
+                                           WHERE s.node_id = node.id
+                                          ),
+                                          0
+                                  )
+              WHERE name = ?',
+              $nodeName
+    );
 }
