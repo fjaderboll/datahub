@@ -180,6 +180,10 @@ registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes
     if($changes == 0) {
         requestFail("Reading not found", 404);
     }
+
+    readingAggregateSensor($dbSensor['id']);
+    readingAggregateNode($nodeName);
+
     return "Deleted reading $id";
 });
 
