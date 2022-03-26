@@ -163,6 +163,7 @@ registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{n
  */
 registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}", function($nodeName, $sensorName) {
     $dbSensor = findSensor($nodeName, $sensorName);
+    dbUpdate("UPDATE node SET last_reading_id = null WHERE id = ?", $dbSensor['node_id']);
     dbUpdate("UPDATE sensor SET last_reading_id = null WHERE id = ?", $dbSensor['id']);
     dbUpdate("DELETE FROM reading WHERE sensor_id = ? ", $dbSensor['id']);
     dbUpdate("DELETE FROM sensor WHERE id = ?", $dbSensor['id']);
