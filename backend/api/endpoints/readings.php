@@ -176,11 +176,20 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "readings"
  */
 registerEndpoint(Method::DELETE, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings/{id}", function($nodeName, $sensorName, $id) {
     $dbSensor = findSensor($nodeName, $sensorName);
+
+    // remove potential foreign key constraints
+    dbUpdate("UPDATE node SET last_reading_id = null WHERE id = ? AND last_reading_id = ?", $dbSensor['node_id'], $id);
+    if($dbSensor['last_reading_id'] == $id) {
+        dbUpdate("UPDATE sensor SET last_reading_id = null WHERE id = ? AND last_reading_id = ?", $dbSensor['id'], $id);
+    }
+
+    // delete reading
     $changes = dbUpdate("DELETE FROM reading WHERE sensor_id = ? AND id = ?", $dbSensor['id'], $id);
     if($changes == 0) {
         requestFail("Reading not found", 404);
     }
 
+    // restore/update aggregated values
     readingAggregateSensor($dbSensor['id']);
     readingAggregateNode($nodeName);
 
