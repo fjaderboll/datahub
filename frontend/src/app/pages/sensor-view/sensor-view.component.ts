@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/dialogs/confirm-dialog/confirm-dialog.component';
+import { CreateReadingDialogComponent } from 'src/app/dialogs/create-reading-dialog/create-reading-dialog.component';
 import { VisualizeReadingDialogComponent } from 'src/app/dialogs/visualize-reading-dialog/visualize-reading-dialog.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ServerService } from 'src/app/services/server.service';
@@ -130,6 +131,21 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 			},
 			error: (e) => {
 				this.server.showHttpError(e);
+			}
+		});
+	}
+
+	public createReading() {
+		const dialog = this.dialog.open(CreateReadingDialogComponent, {
+			data: {
+				nodeName: this.nodeName,
+				sensorName: this.sensorName
+			}
+		});
+		dialog.afterClosed().subscribe(newSensorName => {
+			if(newSensorName) {
+				this.loadSensor();
+				this.loadReadings();
 			}
 		});
 	}

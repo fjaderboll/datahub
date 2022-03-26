@@ -176,6 +176,11 @@ export class ServerService {
 		return this.http.get(url, this.httpOptionsJson);
 	}
 
+	public createReading(nodeName: string, sensorName: string, value: string, offset: number) {
+		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName + "/readings?offset=" + offset;
+		return this.http.post(url, { value }, this.httpOptionsText);
+	}
+
 	public deleteReading(nodeName: string, sensorName: string, readingId: number) {
 		const url = this.apiUrl + "nodes/" + nodeName + "/sensors/" + sensorName + "/readings/" + readingId;
 		return this.http.delete(url, this.httpOptionsText);

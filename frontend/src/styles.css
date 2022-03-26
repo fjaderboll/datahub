@@ -126,3 +126,7 @@ pre.shell {
 pre.shell .fail {
 	color: #ec7c7c;
 }
+
+.mat-elevation-z8 {
+	display: inline-block;
+}

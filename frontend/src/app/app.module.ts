@@ -25,6 +25,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox'; 
+import { MatSelectModule } from '@angular/material/select';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
@@ -38,6 +39,7 @@ import { CreateSensorDialogComponent } from './dialogs/create-sensor-dialog/crea
 import { CreateTokenDialogComponent } from './dialogs/create-token-dialog/create-token-dialog.component';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import { VisualizeReadingDialogComponent } from './dialogs/visualize-reading-dialog/visualize-reading-dialog.component';
+import { CreateReadingDialogComponent } from './dialogs/create-reading-dialog/create-reading-dialog.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,8 @@ import { VisualizeReadingDialogComponent } from './dialogs/visualize-reading-dia
     CreateSensorDialogComponent,
     CreateTokenDialogComponent,
     ConfirmDialogComponent,
-    VisualizeReadingDialogComponent
+    VisualizeReadingDialogComponent,
+    CreateReadingDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +86,8 @@ import { VisualizeReadingDialogComponent } from './dialogs/visualize-reading-dia
 	MatDialogModule,
 	MatRadioModule,
 	MatTabsModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

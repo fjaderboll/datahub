@@ -26,8 +26,10 @@
 	</div>
 </div>
 
-<div class="margin-top">
-	Loaded {{ readings?.length }} of {{ sensor?.readingCount }} readings
+<div class="margin-top row align-vertically">
+	<span>
+		Loaded {{ readings?.length }} of {{ sensor?.readingCount }} readings
+	</span>
 
 	<span *ngIf="readings?.length < sensor?.readingCount" class="margin-left">
 		<button mat-raised-button color="primary" (click)="loadMore()">
@@ -42,6 +44,13 @@
 			<span>Visualize</span>
 		</button>
 	</span>
+
+	<div class="margin-left">
+		<button mat-raised-button color="primary" (click)="createReading()">
+			<mat-icon>add</mat-icon>
+			<span>Create Reading</span>
+		</button>
+	</div>
 </div>
 
 <div class="mat-elevation-z8 margin-top margin-bottom">
