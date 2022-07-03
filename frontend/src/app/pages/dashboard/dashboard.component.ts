@@ -93,6 +93,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 				overview.sensors.forEach((sensor: any) => {
 					this.totalReadingCount += sensor.readingCount;
 					sensor.lastReadingTimestamp = sensor.lastReading?.timestamp;
+					sensor.lastReadingValue = sensor.lastReading?.value;
 				});
 
 				this.dataSource1.data = overview.lastReadings;

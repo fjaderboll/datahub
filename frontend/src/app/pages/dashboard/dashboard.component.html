@@ -1,6 +1,6 @@
 <app-breadcrumb [links]="[]" [names]="[]"></app-breadcrumb>
 
-<div *ngIf="overview">
+<div [hidden]="!overview">
 	<mat-tab-group>
 		<mat-tab label="Getting started">
 			<ol>
@@ -50,7 +50,7 @@
 			</ol>
 		</mat-tab>
 
-		<mat-tab label="Last readings">
+		<mat-tab label="Last {{ overview?.lastReadings.length }} readings">
 			<div *ngIf="!overview?.lastReadings.length">No readings</div>
 
 			<div [hidden]="!overview?.lastReadings.length" class="align-center">
@@ -161,6 +161,8 @@
 						<mat-paginator [pageSizeOptions]="[10, 100]"></mat-paginator>
 					</div>
 				</div>
+				<br/>
+				<br/>
 			</div>
 		</mat-tab>
 	</mat-tab-group>
