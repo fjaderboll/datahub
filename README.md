@@ -9,13 +9,13 @@ the offered the simplicity I was looking for so I decided to write my own
 IoT database.
 
 ### Goal
-The goal is a fast lightweight system that uses standard REST for storing
+The goal is a fast lightweight system that uses standard HTTP REST for storing
 and retrieving data. Backend is written in PHP and frontend using Angular,
 so this can easily be put on any web hotel or be self
 hosted on your own webserver.
 
-### Structure
-...TODO create visual graph
+### Architecture
+![architecture](architecture.png)
 
 ## Usage
 The IoT devices can for example do a simple HTTP request like this:
