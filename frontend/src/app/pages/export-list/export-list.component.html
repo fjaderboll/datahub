@@ -1,6 +1,84 @@
 <app-breadcrumb [links]="['/exports']" [names]="['Exports']"></app-breadcrumb>
 
-<div class="row align-vertically margin-top">
-    <mat-icon class="medium">announcement</mat-icon>
-    <span class="margin-left">Export functionality not yet implemented!</span>
+<div class="align-right margin-bottom">
+	<button mat-raised-button color="primary" (click)="createExport()">
+		<mat-icon>add</mat-icon>
+		<span>Create Export</span>
+	</button>
+</div>
+
+<div class="mat-elevation-z8">
+	<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDisableClear matSortDirection="asc">
+
+        <ng-container matColumnDef="enabled">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Enabled</th>
+			<td mat-cell *matCellDef="let ec">
+				<app-inline-edit type="boolean" [value]="ec?.enabled" (onChange)="changedValue(ec, 'enabled', $event)"></app-inline-edit>
+			</td>
+		</ng-container>
+
+		<ng-container matColumnDef="protocol">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Protocol</th>
+			<td mat-cell *matCellDef="let ec">
+				<span>{{ ec?.protocol.name }}</span>
+			</td>
+		</ng-container>
+
+		<ng-container matColumnDef="format">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Format</th>
+			<td mat-cell *matCellDef="let ec">
+				<span>{{ ec?.format.name }}</span>
+			</td>
+		</ng-container>
+
+        <ng-container matColumnDef="url">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>URL</th>
+			<td mat-cell *matCellDef="let ec">
+				<app-inline-edit type="text" [value]="ec?.url" (onChange)="changedValue(ec, 'url', $event)"></app-inline-edit>
+			</td>
+		</ng-container>
+
+        <ng-container matColumnDef="authentication">
+			<th mat-header-cell *matHeaderCellDef>Authentication</th>
+			<td mat-cell *matCellDef="let ec">
+                <span>{{ ec?.protocol.auth1Name }}</span>:
+                <app-inline-edit type="text" [value]="ec?.auth1" (onChange)="changedValue(ec, 'auth1', $event)"></app-inline-edit>
+                <br/>
+                
+				<span>{{ ec?.protocol.auth2Name }}</span>:
+				<app-inline-edit type="text" [value]="ec?.auth2" (onChange)="changedValue(ec, 'auth2', $event)"></app-inline-edit>
+			</td>
+		</ng-container>
+
+        <ng-container matColumnDef="failCount">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Fail Count</th>
+			<td mat-cell *matCellDef="let ec">
+                <span>{{ ec?.failCount }}</span>
+			</td>
+		</ng-container>
+
+        <ng-container matColumnDef="status">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+			<td mat-cell *matCellDef="let ec">
+                <span>{{ ec?.status }}</span>
+			</td>
+		</ng-container>
+
+		<ng-container matColumnDef="actions">
+			<th mat-header-cell *matHeaderCellDef>Actions</th>
+			<td mat-cell *matCellDef="let ec">
+				<button mat-button color="warn" (click)="deleteExport(ec)">
+					<mat-icon>delete</mat-icon>
+					<span>Delete</span>
+				</button>
+			</td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+	</table>
+
+	<div [hidden]="dataSource.data.length <= 10">
+		<mat-paginator [pageSizeOptions]="[10, 100]"></mat-paginator>
+	</div>
 </div>

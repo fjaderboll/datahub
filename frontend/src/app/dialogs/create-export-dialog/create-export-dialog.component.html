@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>Create Export Configuration</h1>
+<div mat-dialog-content>
+    <div>
+		<mat-form-field appearance="fill">
+			<mat-label>Protocol</mat-label>
+			<mat-select [(ngModel)]="protocol" required>
+				<mat-option *ngFor="let p of protocols" [value]="p">{{ p.name }}</mat-option>
+			</mat-select>
+		</mat-form-field>
+    </div>
+	<div>
+		<mat-form-field appearance="fill">
+			<mat-label>Format</mat-label>
+			<mat-select [(ngModel)]="format" required>
+				<mat-option *ngFor="let f of formats" [value]="f">{{ f.name }}</mat-option>
+			</mat-select>
+		</mat-form-field>
+    </div>
+	<div>
+		<mat-form-field appearance="outline">
+			<mat-label>URL</mat-label>
+			<input type="text" matInput required [(ngModel)]="url" placeholder="URL">
+		</mat-form-field>
+	</div>
+    <div *ngIf="protocol">
+		<mat-form-field appearance="outline">
+			<mat-label>{{ protocol.auth1Name }}</mat-label>
+			<input type="text" matInput [(ngModel)]="auth1" placeholder="{{ protocol.auth1Name }}">
+		</mat-form-field>
+	</div>
+    <div *ngIf="protocol">
+		<mat-form-field appearance="outline">
+			<mat-label>{{ protocol.auth2Name }}</mat-label>
+			<input type="text" matInput [(ngModel)]="auth2" placeholder="{{ protocol.auth2Name }}">
+		</mat-form-field>
+	</div>
+	
+</div>
+<div mat-dialog-actions>
+	<button mat-stroked-button color="primary" [mat-dialog-close]="false">
+		<mat-icon>close</mat-icon>
+		<span>Cancel</span>
+	</button>
+	<button mat-flat-button color="accent" (click)="create()" [disabled]="!isFormValid()">
+		<mat-icon>add</mat-icon>
+		<span>Create</span>
+	</button>
+</div>

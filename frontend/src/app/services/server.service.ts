@@ -132,6 +132,36 @@ export class ServerService {
 		return this.http.delete(url, this.httpOptionsText);
 	}
 
+	public createExport(enabled: boolean, protocol: string, format: string, url: string, auth1: string, auth2: string) {
+		const url0 = this.apiUrl + "exports/";
+		return this.http.post(url0, { enabled, protocol, format, url, auth1, auth2 }, this.httpOptionsText);
+	}
+
+	public getExports() {
+		const url = this.apiUrl + "exports/";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public getExportProtocols() {
+		const url = this.apiUrl + "exports/protocols";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public getExportFormats() {
+		const url = this.apiUrl + "exports/formats";
+		return this.http.get(url, this.httpOptionsJson);
+	}
+
+	public updateExport(id: number, property: string, value: any) {
+		const url = this.apiUrl + "exports/" + id;
+		return this.http.put(url, { [property]: value }, this.httpOptionsText);
+	}
+
+	public deleteExport(id: number) {
+		const url = this.apiUrl + "exports/" + id;
+		return this.http.delete(url, this.httpOptionsText);
+	}
+
 	public createSensor(nodeName: string, name: string, desc: string) {
 		const url = this.apiUrl + "nodes/" + nodeName + "/sensors";
 		return this.http.post(url, { name, desc }, this.httpOptionsText);

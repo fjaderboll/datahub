@@ -10,17 +10,14 @@ CREATE TABLE token (
 
 CREATE TABLE export (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    --"user_id" INTEGER NOT NULL,
-    "export_protocol_id" INTEGER NOT NULL,
-    "export_format_id" INTEGER NOT NULL,
     "enabled" INTEGER DEFAULT 1 NOT NULL,
+    "protocol" TEXT NOT NULL,
+    "format" TEXT NOT NULL,
     "url" TEXT,
-    "username" TEXT,
-    "password" TEXT
-
-    --FOREIGN KEY(user_id) REFERENCES dataset(id),
-    --FOREIGN KEY(export_protocol_id) REFERENCES export_protocol(id),
-    --FOREIGN KEY(export_format_id) REFERENCES export_format(id)
+    "auth1" TEXT,
+    "auth2" TEXT,
+    "fail_count" INTEGER DEFAULT 0 NOT NULL,
+    "status" TEXT
 );
 
 CREATE TABLE node (

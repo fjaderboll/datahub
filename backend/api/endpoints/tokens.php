@@ -44,7 +44,7 @@ registerEndpoint(Method::GET, Authorization::USER, Operation::READ, "tokens", fu
 
 /**
  * @OA\Put(
- *     path="/token/{id}",
+ *     path="/tokens/{id}",
  *     summary="Update token",
  *     @OA\Parameter(
  *         description="Id of token.",

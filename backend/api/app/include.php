@@ -13,6 +13,7 @@
 	require_once(__DIR__."/../endpoints/overview.php");
 	require_once(__DIR__."/../endpoints/users.php");
 	require_once(__DIR__."/../endpoints/tokens.php");
+	require_once(__DIR__."/../endpoints/exports.php");
 	require_once(__DIR__."/../endpoints/nodes.php");
 	require_once(__DIR__."/../endpoints/sensors.php");
 	require_once(__DIR__."/../endpoints/readings.php");

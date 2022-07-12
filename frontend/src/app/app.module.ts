@@ -40,6 +40,7 @@ import { CreateTokenDialogComponent } from './dialogs/create-token-dialog/create
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import { VisualizeReadingDialogComponent } from './dialogs/visualize-reading-dialog/visualize-reading-dialog.component';
 import { CreateReadingDialogComponent } from './dialogs/create-reading-dialog/create-reading-dialog.component';
+import { CreateExportDialogComponent } from './dialogs/create-export-dialog/create-export-dialog.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { CreateReadingDialogComponent } from './dialogs/create-reading-dialog/cr
     CreateTokenDialogComponent,
     ConfirmDialogComponent,
     VisualizeReadingDialogComponent,
-    CreateReadingDialogComponent
+    CreateReadingDialogComponent,
+    CreateExportDialogComponent
   ],
   imports: [
     BrowserModule,
