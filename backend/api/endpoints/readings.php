@@ -32,7 +32,8 @@
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings", function($nodeName, $sensorName) {
     $value = getMandatoryBodyValue("value");
-    createReading($nodeName, $sensorName, $value);
+    $readingId = createReading($nodeName, $sensorName, $value);
+    performExports(array($readingId));
     return "Reading created";
 });
 
@@ -62,10 +63,13 @@ registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{
  */
 registerEndpoint(Method::POST, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/readings", function($nodeName) {
     $values = getAllBodyValues();
+    $readingIds = array();
     foreach($values as $name => $value) {
-        createReading($nodeName, $name, $value);
+        $readingId = createReading($nodeName, $name, $value);
+        array_push($readingIds, $readingId);
     }
-    return count($values)." readings created";
+    performExports($readingIds);
+    return count($readingIds)." readings created";
 });
 
 /**
@@ -143,6 +147,47 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "nodes/{no
  */
 registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "readings", function() {
     return getReadings(null, null);
+});
+
+/**
+ * @OA\Put(
+ *     path="/nodes/{nodeName}/sensors/{sensorName}/readings/{id}/export",
+ *     summary="Re-export this reading",
+ *     @OA\Parameter(
+ *         description="Name of node.",
+ *         in="path",
+ *         name="nodeName",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         description="Name of sensor.",
+ *         in="path",
+ *         name="sensorName",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         description="ID of reading.",
+ *         in="path",
+ *         name="id",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(response=200, description="OK"),
+ *     @OA\Response(response=404, description="Reading not found")
+ * )
+ */
+registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings/{id}/export", function($nodeName, $sensorName, $id) {
+    $dbSensor = findSensor($nodeName, $sensorName);
+    $dbReading = dbQuerySingle("SELECT id FROM e_reading WHERE id = ? AND sensor_id = ?", $id, $dbSensor['id']);
+    $errors = performExports(array($id));
+
+    if(count($errors) == 0) {
+        return "Exported reading $id";
+    } else {
+        return "Some exports failed: ".implode(",", $errors);
+    }
 });
 
 /**

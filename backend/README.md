@@ -90,6 +90,8 @@ sqlite3 2.db < patch.sql
 ```
 
 ## Future improvements
+* Implement MQTT export (only HTTP works currently)
+* Fork exports and finish POST requests earlier
 * Allow changing password
 * Add Swagger authorization annotation
 * Group endpoints in Swagger (now everyone is in "default")

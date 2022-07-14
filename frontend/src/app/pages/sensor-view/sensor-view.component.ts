@@ -123,6 +123,17 @@ export class SensorViewComponent implements OnInit, AfterViewInit {
 		});
 	}
 
+	public exportReading(reading: any) {
+		this.server.exportReading(this.nodeName, this.sensorName, reading.id).subscribe({
+			next: (response: any) => {
+				this.utils.toastSuccess(response);
+			},
+			error: (e) => {
+				this.server.showHttpError(e);
+			}
+		});
+	}
+
 	public deleteReading(reading: any) {
 		this.server.deleteReading(this.nodeName, this.sensorName, reading.id).subscribe({
 			next: (response: any) => {

@@ -246,3 +246,84 @@ function getExportFormats() {
         )
     );
 }
+
+function performExports($readingIds) {
+    if(count($readingIds) == 0) {
+        return;
+    }
+    
+    $dbExports = dbQuery("SELECT * FROM export WHERE enabled = ?", toDbBoolean(true));
+    if(count($dbExports) == 0) {
+        return;
+    }
+
+    $readings = array();
+    foreach($readingIds as $readingId) {
+        $reading = getReading($readingId);
+        if($reading) {
+            array_push($readings, $reading);
+        }
+    }
+    if(count($readings) == 0) {
+        return;
+    }
+
+	$errors = array();
+    foreach($dbExports as $dbExport) {
+        $data = null;
+        if($dbExport['format'] == 'JSON') {
+            $contentType = "application/json";
+            $data = jsonEncode($readings);
+        } else if($dbExport['format'] == 'CSV') {
+            $contentType = "text/csv";
+            $keys = array_keys($readings[0]);
+            $data = implode(",", $keys)."\n";
+            foreach($readings as $reading) {
+                $values = array();
+                foreach($keys as $key) {
+                    array_push($values, $reading[$key]);
+                }
+                $data .= implode(",", $values)."\n";
+            }
+        }
+
+		if($data) {
+            if($dbExport['protocol'] == 'HTTP') {
+                $options = array(
+                    'http' => array(
+                        'header'  => "Content-type: $contentType\r\n",
+                        'method'  => 'POST',
+                        'content' => $data,
+                        'ignore_errors' => true, // suppress warnings written to response
+						'timeout' => 1
+                    )
+                );
+                if($dbExport['auth1'] && $dbExport['auth1'] != "") {
+                    $options['http']['header'] .= $dbExport['auth1'].": ".$dbExport['auth2']."\r\n";
+                }
+
+                $context = stream_context_create($options);
+                $result = file_get_contents($dbExport['url'], false, $context);
+                if($result === FALSE) {
+                    dbUpdate("UPDATE export SET fail_count = ?, status = ?, enabled = ? WHERE id = ?", $dbExport['fail_count'] + 1, "Error", toDbBoolean($dbExport['fail_count'] < 99), $dbExport['id']);
+					array_push($errors, "Error");
+                } else {
+					$statusLine = $http_response_header[0];
+					preg_match('{HTTP\/\S*\s(\d{3})}', $statusLine, $match);
+					$statusCode = $match[1];
+
+					if(200 <= $statusCode && $statusCode < 300) {
+                    	dbUpdate("UPDATE export SET fail_count = 0, status = ? WHERE id = ? AND (fail_count != 0 OR status != ?)", $statusLine, $dbExport['id'], $statusLine);
+					} else {
+						dbUpdate("UPDATE export SET fail_count = ?, status = ?, enabled = ? WHERE id = ?", $dbExport['fail_count'] + 1, $statusLine, toDbBoolean($dbExport['fail_count'] < 99), $dbExport['id']);
+						array_push($errors, $statusLine);
+					}
+                }
+            } else if($dbExport['protocol'] == 'MQTT') {
+                dbUpdate("UPDATE export SET fail_count = ?, status = ?, enabled = ? WHERE id = ?", $dbExport['fail_count'] + 1, "Not implemented", toDbBoolean(false), $dbExport['id']);
+				array_push($errors, "Not implemented");
+            }
+        }
+    }
+	return $errors;
+}
