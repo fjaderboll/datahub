@@ -181,13 +181,8 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "readings"
 registerEndpoint(Method::PUT, Authorization::DEVICE, Operation::WRITE, "nodes/{nodeName}/sensors/{sensorName}/readings/{id}/export", function($nodeName, $sensorName, $id) {
     $dbSensor = findSensor($nodeName, $sensorName);
     $dbReading = dbQuerySingle("SELECT id FROM e_reading WHERE id = ? AND sensor_id = ?", $id, $dbSensor['id']);
-    $errors = performExports(array($id));
-
-    if(count($errors) == 0) {
-        return "Exported reading $id";
-    } else {
-        return "Some exports failed: ".implode(",", $errors);
-    }
+    performExports(array($id));
+    return "Export triggered for reading $id";
 });
 
 /**

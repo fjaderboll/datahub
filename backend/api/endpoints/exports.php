@@ -268,8 +268,7 @@ function performExports($readingIds) {
         return;
     }
 
-	$errors = array();
-    foreach($dbExports as $dbExport) {
+	foreach($dbExports as $dbExport) {
         $data = null;
         if($dbExport['format'] == 'JSON') {
             $contentType = "application/json";
@@ -306,7 +305,6 @@ function performExports($readingIds) {
                 $result = file_get_contents($dbExport['url'], false, $context);
                 if($result === FALSE) {
                     dbUpdate("UPDATE export SET fail_count = ?, status = ?, enabled = ? WHERE id = ?", $dbExport['fail_count'] + 1, "Error", toDbBoolean($dbExport['fail_count'] < 99), $dbExport['id']);
-					array_push($errors, "Error");
                 } else {
 					$statusLine = $http_response_header[0];
 					preg_match('{HTTP\/\S*\s(\d{3})}', $statusLine, $match);
@@ -316,14 +314,11 @@ function performExports($readingIds) {
                     	dbUpdate("UPDATE export SET fail_count = 0, status = ? WHERE id = ? AND (fail_count != 0 OR status != ?)", $statusLine, $dbExport['id'], $statusLine);
 					} else {
 						dbUpdate("UPDATE export SET fail_count = ?, status = ?, enabled = ? WHERE id = ?", $dbExport['fail_count'] + 1, $statusLine, toDbBoolean($dbExport['fail_count'] < 99), $dbExport['id']);
-						array_push($errors, $statusLine);
 					}
                 }
             } else if($dbExport['protocol'] == 'MQTT') {
                 dbUpdate("UPDATE export SET fail_count = ?, status = ?, enabled = ? WHERE id = ?", $dbExport['fail_count'] + 1, "Not implemented", toDbBoolean(false), $dbExport['id']);
-				array_push($errors, "Not implemented");
             }
         }
     }
-	return $errors;
 }
