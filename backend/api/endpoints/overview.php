@@ -40,3 +40,21 @@ registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "overview"
     );
     return $overview;
 });
+
+/**
+ * @OA\Get(
+ *     path="/overview/sensors",
+ *     summary="Return all sensors including latest readings",
+ *     @OA\Response(response=200, description="OK")
+ * )
+ */
+registerEndpoint(Method::GET, Authorization::DEVICE, Operation::READ, "overview/sensors", function() {
+    $dbSensors = dbQuery("SELECT * FROM e_sensor");
+    $sensors = array();
+    foreach($dbSensors as $dbSensor) {
+		$sensor = convertFromDbObject($dbSensor, array('node_name', 'name', 'desc', 'unit', 'reading_count'));
+        $sensor['lastReading'] = getReading($dbSensor['last_reading_id']);
+        array_push($sensors, $sensor);
+	}
+    return $sensors;
+});

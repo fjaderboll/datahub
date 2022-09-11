@@ -89,6 +89,19 @@ sqlite3 1.db < patch.sql
 sqlite3 2.db < patch.sql
 ```
 
+### Corrupt database
+In case of `database disk image is malformed`, run this:
+```shell
+mv 1.db 1-corrupt.db
+echo '.dump' | sqlite3 1-corrupt.db | sqlite3 1-fixed.db
+cp 1-fixed.db 1-new.db
+mv 1-new.db 1.db
+
+# after verification
+rm 1-corrupt.db
+rm 1-fixed.db
+```
+
 ## Future improvements
 * Implement MQTT export (only HTTP works currently)
 * Fork exports and finish POST requests earlier
