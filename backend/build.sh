@@ -6,8 +6,8 @@ cd "$(dirname "$0")"
 
 mkdir -p dist
 cd api
+composer install
 tar czf ../dist/api.tar.gz \
-    --exclude=vendor \
     --exclude=composer.json \
     --exclude=composer.lock \
     --exclude=data/main.db \

@@ -1,5 +1,6 @@
 {
     "require": {
-        "doctrine/annotations": "^1.13"
+        "doctrine/annotations": "^1.13",
+        "php-mqtt/client": "^1.7"
     }
 }
