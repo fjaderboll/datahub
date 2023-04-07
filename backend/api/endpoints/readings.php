@@ -267,9 +267,12 @@ function getReading($id) {
     if($id === null) {
         return null;
     } else {
-        $dbReading = dbQuerySingle("SELECT * FROM e_reading WHERE id = ?", $id);
-        $reading = convertFromDbObject($dbReading, array('id', 'node_name', 'sensor_name', 'timestamp', 'value', 'unit'));
-        return $reading;
+        $dbReadings = dbQuery("SELECT * FROM e_reading WHERE id = ?", $id);
+        if(count($dbReadings) == 1) {
+            $reading = convertFromDbObject($dbReadings[0], array('id', 'node_name', 'sensor_name', 'timestamp', 'value', 'unit'));
+            return $reading;
+        }
+        return null;
     }
 }
 
